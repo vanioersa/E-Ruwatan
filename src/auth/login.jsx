@@ -28,7 +28,7 @@ function Login() {
 
                         {/* Form */}
                         <form className="space-y-6" action="">
-                            {/* Email container */}
+                            {/* Email & Username container */}
                             <div>
                                 <label
                                     htmlFor="email"
