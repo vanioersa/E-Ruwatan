@@ -1,111 +1,152 @@
-import React, { useState } from 'react';
-import logobinus from '../asset/logobinus.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import axios from "axios";
+import logobinus from "../asset/logobinus.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
-function Login() {
-    const [passwordType, setPasswordType] = useState('password');
+const apiUrl = "http://localhost:4001";
 
-    const togglePassword = () => {
-        setPasswordType(passwordType === 'password' ? 'text' : 'password');
-    };
+function Logins() {
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordType, setPasswordType] = useState("password");
+  const navigate = useNavigate();
 
-    return (
-        <div>
-            {/* Main container dengan padding, box shadow, dan border radius */}
-            <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 mt-16">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    {/* Style card */}
-                    <div className="bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
-                        {/* Logo */}
-                        <div className="text-center mb-8">
-                            <img
-                                className="mx-auto h-32 w-auto"
-                                src={logobinus}
-                                alt="binusa"
-                            />
-                        </div>
+  const togglePasswordVisibility = () => {
+    setPasswordType(passwordType === "password" ? "text" : "password");
+  };
 
-                        {/* Form */}
-                        <form className="space-y-6" action="">
-                            {/* Email & Username container */}
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-base font-medium leading-6 text-gray-900"
-                                >
-                                    Email
-                                </label>
-                                <div className="mt-2">
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        required
-                                        autoComplete="email"
-                                        className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                                    />
-                                </div>
-                            </div>
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-                            {/* Password container */}
-                            <div>
-                                <div className="flex items-center justify-between">
-                                    <label
-                                        htmlFor="password"
-                                        className="block text-base font-medium leading-6 text-gray-900"
-                                    >
-                                        Password
-                                    </label>
-                                </div>
-                                <div className="relative mt-2">
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        required
-                                        type={passwordType}
-                                        autoComplete="current-password"
-                                        className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
-                                    />
-                                    <span
-                                        onClick={togglePassword}
-                                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                                    >
-                                        {passwordType === 'password' ? (
-                                            <FontAwesomeIcon icon={faEyeSlash} />
-                                        ) : (
-                                            <FontAwesomeIcon icon={faEye} />
-                                        )}
-                                    </span>
-                                </div>
-                            </div>
+    if (!usernameOrEmail || !password) {
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal",
+        text: "Email atau Username dan Password harus diisi.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
 
-                            {/* Style button */}
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                >
-                                    Masuk
-                                </button>
-                            </div>
-                        </form>
+    try {
+      const response = await axios.post(`${apiUrl}/login`, {
+        usernameOrEmail,
+        password,
+      });
+      if (response.data) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("username", response.data.username);
+        Swal.fire({
+          icon: "success",
+          title: "Login Berhasil",
+          text: "Anda berhasil login.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        navigate("/dashboard");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      let errorMessage = "Terjadi kesalahan";
+      if (error.response?.status === 401) {
+        errorMessage = "Email atau Username, atau Password salah";
+      } else {
+        errorMessage = error.response?.data?.message || "Terjadi kesalahan";
+      }
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal",
+        text: errorMessage,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  };
 
-                        {/* Register link */}
-                        <p className="mt-10 text-center text-sm text-gray-500">
-                            Belum Punya Akun?
-                            <a
-                                href="/register"
-                                className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
-                            >
-                                Register
-                            </a>
-                        </p>
-                    </div>
-                </div>
+  return (
+    <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 mt-16">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
+          <div className="text-center mb-8">
+            <img
+              className="mx-auto h-32 w-auto"
+              src={logobinus}
+              alt="Binus Logo"
+            />
+          </div>
+          <form className="space-y-6" onSubmit={handleLogin}>
+            <div>
+              <label
+                htmlFor="usernameOrEmail"
+                className="block text-base font-medium leading-6 text-gray-900"
+              >
+                Email atau Username
+              </label>
+              <div className="mt-2">
+                <input
+                  id="usernameOrEmail"
+                  type="text"
+                  required
+                  autoComplete="username"
+                  className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600"
+                  value={usernameOrEmail}
+                  onChange={(e) => setUsernameOrEmail(e.target.value)}
+                />
+              </div>
             </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-base font-medium text-gray-900"
+              >
+                Password
+              </label>
+              <div className="relative mt-2">
+                <input
+                  id="password"
+                  type={passwordType}
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600 pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <span
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                >
+                  <FontAwesomeIcon
+                    icon={passwordType === "password" ? faEyeSlash : faEye}
+                  />
+                </span>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Masuk
+            </button>
+          </form>
+          <p className="mt-10 text-center text-sm text-gray-500">
+            Belum Punya Akun?
+            <a
+              href="/register"
+              className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
+            >
+              Register
+            </a>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
-export default Login;
+export default Logins;
