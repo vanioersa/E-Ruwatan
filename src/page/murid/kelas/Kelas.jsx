@@ -5,9 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { getAllKelas, deleteKelas } from "./api_kelas";
 import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
 
 const Kelas = () => {
   const [kelas, setKelas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageNumber, setPageNumber] = useState(0);
+  const kelasPerPage = 10;
+  const pagesVisited = pageNumber * kelasPerPage;
 
   useEffect(() => {
     const fetchKelas = async () => {
@@ -61,6 +66,19 @@ const Kelas = () => {
     });
   };
 
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
+  const filteredKelas = kelas.filter((kelas) => {
+  return (
+    String(kelas.kelas).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(kelas.nama_kelas).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+});
+
+  const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
@@ -73,6 +91,13 @@ const Kelas = () => {
               Data Kelas
             </h1>
             <div className="flex items-center -space-x-4 hover:space-x-1">
+              <input
+                type="text"
+                placeholder="Cari kelas..."
+                className="rounded-lg shadow-xl px-3 py-3 bg-slate-100"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <Link to={``}>
                 <button className="rounded-lg shadow-xl px-3 py-3 bg-slate-100">
                   <FontAwesomeIcon
@@ -102,37 +127,50 @@ const Kelas = () => {
                 </tr>
               </thead>
               <tbody>
-                {kelas.length === 0 ? (
+                {filteredKelas.length === 0 ? (
                   <tr>
                     <td colSpan="4" className="text-center py-4">
-                      Data kelas kosong
+                      Data kelas tidak ditemukan
                     </td>
                   </tr>
                 ) : (
-                  kelas.map((kelas, index) => (
-                    <tr key={kelas.id}>
-                      <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2">{kelas.kelas}</td>
-                      <td className="px-4 py-2">{kelas.nama_kelas}</td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => handleDelete(kelas.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                        <Link to={`/update-kelas/${kelas.id}`}>
-                          <button className="text-blue-500 hover:text-blue-700 ml-2">
-                            <FontAwesomeIcon icon={faEdit} />
+                  filteredKelas
+                    .slice(pagesVisited, pagesVisited + kelasPerPage)
+                    .map((kelas, index) => (
+                      <tr key={kelas.id}>
+                        <td className="px-4 py-2">{index + 1}</td>
+                        <td className="px-4 py-2">{kelas.kelas}</td>
+                        <td className="px-4 py-2">{kelas.nama_kelas}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            onClick={() => handleDelete(kelas.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
+                          <Link to={`/update-kelas/${kelas.id}`}>
+                            <button className="text-blue-500 hover:text-blue-700 ml-2">
+                              <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
                 )}
               </tbody>
             </table>
           </div>
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          />
         </div>
       </div>
     </div>
@@ -140,4 +178,3 @@ const Kelas = () => {
 };
 
 export default Kelas;
-

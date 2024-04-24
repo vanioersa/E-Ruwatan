@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8080/siswa";
+const apiUrl = "http://localhost:4001/siswa";
 
 export const getAllSiswa = async () => {
   try {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Sidebar from "../../../component/Sidebar";
-import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { getAllSiswa, deleteSiswa } from "./api_siswa";
 
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
@@ -12,8 +12,7 @@ function Siswa() {
   useEffect(() => {
     const fetchSiswa = async () => {
       try {
-        let data = await getAllSiswa();
-        data = data.sort((a, b) => b.id - a.id);
+        const data = await getAllSiswa();
         setSiswa(data);
       } catch (error) {
         console.error("Failed to fetch Siswa: ", error);
