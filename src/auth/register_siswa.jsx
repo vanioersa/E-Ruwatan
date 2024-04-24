@@ -84,7 +84,7 @@ function Register_murid() {
         Swal.fire({
           icon: "success",
           title: "Registrasi Berhasil!",
-          text: "Anda berhasil terdaftar sebagai murid.",
+          text: "Anda berhasil terdaftar sebagai siswa.",
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {

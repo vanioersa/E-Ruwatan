@@ -63,13 +63,13 @@ function Logins() {
               Swal.fire({
                   icon: "success",
                   title: "Login Berhasil",
-                  text: `Selamat datang ${userData.username}. Anda berhasil login sebagai ${roleMessage}.`,
+                  text: `Selamat datang ${userData.username}. Anda berhasil login.`,
                   timer: 2000,
                   showConfirmButton: false,
               });
 
               if (userData.role === "murid") {
-                  navigate("/dashboard_murid");
+                  navigate("/dashboard_siswa");
               } else if (userData.role === "guru") {
                   navigate("/dashboard_guru");
               }
@@ -173,7 +173,7 @@ function Logins() {
           <p className="mt-10 text-center text-sm text-gray-500">
             Belum Punya Akun?
             <a
-              href="/register_murid"
+              href="/register_siswa"
               className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
             >
               Register
