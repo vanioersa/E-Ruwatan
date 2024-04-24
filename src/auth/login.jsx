@@ -38,8 +38,10 @@ function Logins() {
         password,
       });
       if (response.data) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("username", response.data.username);
+        const { userData, token } = response.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", userData.username);
+        localStorage.setItem("role", userData.role);
         Swal.fire({
           icon: "success",
           title: "Login Berhasil",
@@ -47,10 +49,13 @@ function Logins() {
           timer: 2000,
           showConfirmButton: false,
         });
-        navigate("/dashboard");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+
+        // Redirect to the respective dashboard based on the user's role
+        if (userData.role === "murid") {
+          navigate("/dashboard_murid");
+        } else if (userData.role === "guru") {
+          navigate("/dashboard_guru");
+        }
       }
     } catch (error) {
       let errorMessage = "Terjadi kesalahan";
