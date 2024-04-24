@@ -228,11 +228,11 @@ function Register_guru() {
             {/* Login link */}
             <p className="mt-10 text-center text-sm text-gray-500">
               Sudah Punya Akun?
-              <a
-                href="/login"
-                className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
-              >
-                Login
+              <a href="/" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
+                Masuk
+              </a>or
+              <a href="/register_siswa" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
+                Register Siswa
               </a>
             </p>
           </div>

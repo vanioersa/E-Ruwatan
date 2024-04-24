@@ -40,7 +40,7 @@ const Sidebar = () => {
               />
             </svg>
           </button>
-          <img src={logobinus} className="h-12 ml-3" alt="Logo" />
+          <img src={logobinus} className="h-12" alt="Logo" />
           <span className="text-black text-3xl font-medium ml-2">
             E-RUWATAN
           </span>
@@ -49,16 +49,15 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
-        <ul className="mt-6 text-xl mx-2">
-          <li className="py-2 px-3 my-2 hover:bg-gray-400 rounded cursor-pointer">
-            <a href="#" className="flex items-center">
+        <ul className="mt-6 text-xl mx-2 text-gray-600">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
+            <a href="/dashboard_siswa" className="flex items-center">
               <FontAwesomeIcon icon={faHome} className="mr-2" />
               <span
                 style={{ fontFamily: "Segoe UI" }}
@@ -68,7 +67,7 @@ const Sidebar = () => {
               </span>
             </a>
           </li>
-          <li className="py-2 px-3 my-2 hover:bg-gray-400 rounded cursor-pointer">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Siswa" className="flex items-center">
               <FontAwesomeIcon icon={faUser} className="mr-2" />
               <span
@@ -79,7 +78,7 @@ const Sidebar = () => {
               </span>
             </a>
           </li>
-          <li className="py-2 px-3 my-2 hover:bg-gray-400 rounded cursor-pointer">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Guru" className="flex items-center">
               <FontAwesomeIcon icon={faChalkboardTeacher} className="mr-2" />
               <span
@@ -90,7 +89,7 @@ const Sidebar = () => {
               </span>
             </a>
           </li>
-          <li className="py-2 px-3 my-2 hover:bg-gray-400 rounded cursor-pointer">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Kelas" className="flex items-center">
               <FontAwesomeIcon icon={faDoorOpen} className="mr-2" />
               <span
@@ -101,8 +100,8 @@ const Sidebar = () => {
               </span>
             </a>
           </li>
-          <li className="py-2 px-3 my-2 hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
-            <a href="#" className="flex items-center">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
+            <a href="/" className="flex items-center">
               <FontAwesomeIcon
                 icon={faArrowCircleRight}
                 className="ml-3 mr-2"

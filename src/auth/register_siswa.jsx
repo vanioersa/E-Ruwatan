@@ -24,24 +24,24 @@ function Register_murid() {
 
     if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
-          icon: "error",
-          title: "Registrasi Gagal",
-          text: "Username hanya boleh berisi huruf dan spasi",
-          timer: 2000,
-          showConfirmButton: false,
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Username hanya boleh berisi huruf dan spasi",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
-  }
-  if (!username.charAt(0).match(/^[A-Z]$/)) {
+    }
+    if (!username.charAt(0).match(/^[A-Z]$/)) {
       Swal.fire({
-          icon: "error",
-          title: "Registrasi Gagal",
-          text: "Huruf pertama username harus kapital",
-          timer: 2000,
-          showConfirmButton: false,
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Huruf pertama username harus kapital",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
-  }
+    }
     if (!validateEmail(email)) {
       Swal.fire({
         icon: "error",
@@ -229,10 +229,11 @@ function Register_murid() {
             <p className="mt-10 text-center text-sm text-gray-500">
               Sudah Punya Akun?
               <a
-                href="/login"
-                className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
-              >
-                Login
+                href="/" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
+                Masuk
+              </a>or
+              <a href="/register_guru" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
+                Register Guru
               </a>
             </p>
           </div>
