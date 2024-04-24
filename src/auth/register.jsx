@@ -93,7 +93,7 @@ function Register() {
       }
     } catch (error) {
       let errorMessage = "Registrasi gagal! Silakan coba lagi.";
-      if (error.response?.status === 409) {
+      if (error.response?.status === 401) {
         errorMessage = "Username atau email sudah digunakan.";
       } else {
         errorMessage = error.response?.data?.message || "Terjadi kesalahan.";
