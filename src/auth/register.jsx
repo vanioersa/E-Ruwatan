@@ -22,26 +22,26 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!username.match(/^[A-Za-z]+$/)) {
+    if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Username hanya boleh berisi huruf",
-        timer: 2000,
-        showConfirmButton: false,
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Username hanya boleh berisi huruf dan spasi",
+          timer: 2000,
+          showConfirmButton: false,
       });
       return;
-    }
-    if (!username.charAt(0).match(/^[A-Z]$/)) {
+  }
+  if (!username.charAt(0).match(/^[A-Z]$/)) {
       Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Huruf pertama username harus kapital",
-        timer: 2000,
-        showConfirmButton: false,
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Huruf pertama username harus kapital",
+          timer: 2000,
+          showConfirmButton: false,
       });
       return;
-    }
+  }
     if (!validateEmail(email)) {
       Swal.fire({
         icon: "error",
@@ -88,7 +88,7 @@ function Register() {
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {
-          navigate("/login");
+          navigate("/");
         });
       }
     } catch (error) {
