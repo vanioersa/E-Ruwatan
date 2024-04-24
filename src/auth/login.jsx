@@ -22,88 +22,77 @@ function Logins() {
     e.preventDefault();
 
     if (!usernameOrEmail || !password) {
-        Swal.fire({
-            icon: "error",
-            title: "Login Gagal",
-            text: "Email atau Username dan Password harus diisi.",
-            timer: 2000,
-            showConfirmButton: false,
-        });
-        return;
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal",
+        text: "Email atau Username dan Password harus diisi.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
     }
 
-    const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(usernameOrEmail);
+    const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+      usernameOrEmail
+    );
     const isUsername = /^(?=.*[A-Z])[A-Za-z\s]+$/.test(usernameOrEmail);
-  
+
     if (isEmail || isUsername) {
       try {
-          const response = await axios.post(`${apiUrl}/login`, {
-              usernameOrEmail,
-              password,
-          });
-          if (response.data) {
-              const { userData, token } = response.data;
-              localStorage.setItem("token", token);
-              localStorage.setItem("username", userData.username);
-              localStorage.setItem("role", userData.role);
-
-              let roleMessage = "";
-              switch (userData.role) {
-                  case "murid":
-                      roleMessage = "murid";
-                      break;
-                  case "guru":
-                      roleMessage = "guru";
-                      break;
-                  default:
-                      roleMessage = "pengguna";
-                      break;
-              }
-
-              Swal.fire({
-                  icon: "success",
-                  title: "Login Berhasil",
-                  text: `Selamat datang ${userData.username}. Anda berhasil login.`,
-                  timer: 2000,
-                  showConfirmButton: false,
-              });
-
-              if (userData.role === "murid") {
-                  navigate("/dashboard_siswa");
-              } else if (userData.role === "guru") {
-                  navigate("/dashboard_guru");
-              }
-          }
-      } catch (error) {
-          let errorMessage = "Terjadi kesalahan";
-          if (error.response?.status === 401) {
-              if (isEmail) {
-                  errorMessage = "Email atau Password salah";
-              } else if (isUsername) {
-                  errorMessage = "Username atau Password salah";
-              }
-          } else {
-              errorMessage = error.response?.data?.message || "Terjadi kesalahan";
-          }
+        const response = await axios.post(`${apiUrl}/login`, {
+          usernameOrEmail,
+          password,
+        });
+        if (response.data) {
+          const { userData, token } = response.data;
+          localStorage.setItem("token", token);
+          localStorage.setItem("username", userData.username);
+          localStorage.setItem("role", userData.role);
 
           Swal.fire({
-              icon: "error",
-              title: "Login Gagal",
-              text: errorMessage,
-              timer: 2000,
-              showConfirmButton: false,
+            icon: "success",
+            title: "Login Berhasil",
+            text: `Selamat datang ${userData.username}. Anda berhasil login.`,
+            timer: 2000,
+            showConfirmButton: false,
           });
-      }
-  } else {
-      Swal.fire({
+
+          if (userData.role === "murid") {
+            navigate("/dashboard_siswa");
+          } else if (userData.role === "guru") {
+            navigate("/dashboard_guru");
+          }
+        }
+      } catch (error) {
+        let errorMessage = "Terjadi kesalahan";
+        if (error.response?.status === 401) {
+          if (isEmail) {
+            errorMessage = "Email atau Password salah";
+          } else if (isUsername) {
+            errorMessage = "Username atau Password salah";
+          }
+        } else {
+          errorMessage = error.response?.data?.message || "Terjadi kesalahan";
+        }
+
+        Swal.fire({
           icon: "error",
           title: "Login Gagal",
-          text: "Format Username tidak sesuai.",
+          text: errorMessage,
           timer: 2000,
           showConfirmButton: false,
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal",
+        text: "Format Username tidak sesuai.",
+        timer: 2000,
+        showConfirmButton: false,
       });
-  }
-};
+    }
+  };
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 mt-16">
