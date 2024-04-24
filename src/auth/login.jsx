@@ -173,7 +173,7 @@ function Logins() {
           <p className="mt-10 text-center text-sm text-gray-500">
             Belum Punya Akun?
             <a
-              href="/register"
+              href="/register_murid"
               className="mx-2 font-semibold leading-6 text-sky-600 hover:text-blue-600"
             >
               Register

@@ -8,7 +8,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const apiUrl = "http://localhost:4001";
 
-function Register() {
+function Register_murid() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +78,7 @@ function Register() {
         username,
         email,
         password,
-        role: "murid", // Set role to 'murid'
+        role: "murid",
       });
       if (response.data) {
         Swal.fire({
@@ -242,4 +242,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Register_murid;
