@@ -66,7 +66,7 @@ function Siswa() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="tabel-siswa mt-12 bg-white p-5 rounded-xl shadow-lg">
+        <div className="tabel-siswa my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
             <h1 className="judul text-3xl text-white font-semibold ">
               Data Siswa

@@ -71,11 +71,11 @@ const Kelas = () => {
   };
 
   const filteredKelas = kelas.filter((kelas) => {
-  return (
-    String(kelas.kelas).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(kelas.nama_kelas).toLowerCase().includes(searchTerm.toLowerCase())
-  );
-});
+    return (
+      String(kelas.kelas).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(kelas.nama_kelas).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
 
@@ -85,28 +85,28 @@ const Kelas = () => {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="tabel-siswa mt-12 bg-white p-5 rounded-xl shadow-lg">
+        <div className="tabel-siswa my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
             <h1 className="judul text-3xl text-white font-semibold ">
               Data Kelas
             </h1>
-            <div className="flex items-center -space-x-4 hover:space-x-1">
+            <div className="flex items-center ml-auto">
               <input
                 type="text"
-                placeholder="Cari kelas..."
+                placeholder="Cari Kelas..."
                 className="rounded-lg shadow-xl px-3 py-3 bg-slate-100"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Link to={``}>
-                <button className="rounded-lg shadow-xl px-3 py-3 bg-slate-100">
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="h-5 w-5 text-blue-500"
-                  />
-                </button>
-              </Link>
             </div>
+            <Link to={``}>
+              <button className="ml-2 rounded-lg shadow-xl px-3 py-3 bg-slate-100">
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className="h-4 w-5 mt-1 text-blue-500"
+                />
+              </button>
+            </Link>
           </div>
           <div className="overflow-x-auto rounded-lg border border-gray-200 mt-4">
             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-s">
@@ -161,15 +161,19 @@ const Kelas = () => {
             </table>
           </div>
           <ReactPaginate
-            previousLabel={"← Previous"}
-            nextLabel={"Next →"}
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
             pageCount={pageCount}
             onPageChange={changePage}
-            containerClassName={"pagination"}
-            previousLinkClassName={"pagination__link"}
-            nextLinkClassName={"pagination__link"}
-            disabledClassName={"pagination__link--disabled"}
-            activeClassName={"pagination__link--active"}
+            containerClassName={"pagination flex justify-center mt-4"}
+            pageClassName={"page-item mx-1"}
+            pageLinkClassName={"page-link py-2 px-3 border border rounded-md hover:bg-blue-500 hover:text-white"}
+            previousClassName={"prev-item"}
+            previousLinkClassName={"prev-link py-2 px-3 border border-gray-200 rounded-md mr-2 bg-blue-600 hover:bg-blue-800 hover:text-white"}
+            nextClassName={"next-item"}
+            nextLinkClassName={"next-link py-2 px-3 border border-gray-200 rounded-md ml-2 bg-blue-600 hover:bg-blue-800 hover:text-white"}
+            activeClassName={"active-page bg-blue-500 text-white"}
           />
         </div>
       </div>
