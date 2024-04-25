@@ -60,7 +60,7 @@ const TambahKelas = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah Kelas</h1>
-        <div className="add-guru mt-12 bg-white p-5 rounded-xl shadow-lg">
+        <div className="add-guru mt-12 bg-white p-5 ml-8 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
             Tambah Kelas
           </p>
@@ -103,13 +103,13 @@ const TambahKelas = () => {
               <button
                 type="button"
                 onClick={batal}
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan
               </button>
