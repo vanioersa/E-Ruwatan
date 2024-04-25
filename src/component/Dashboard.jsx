@@ -1,50 +1,46 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChalkboardTeacher, faDoorOpen, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faChalkboardTeacher, faDoorOpen, faUser } from '@fortawesome/free-solid-svg-icons';
 
 function Dashboard() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
-      <section className="text-gray-800 body-font">
-        <div className="container mx-auto py-24 px-4">
-          <div className="flex justify-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {/* Kartu pertama */}
-              <div className="p-4">
-                <div className="ring-0 shadow-lg bg-emerald-500 px-6 py-6 rounded-lg flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUser} className="inline-block w-12 h-12 text-white mr-4" />
-                  <div>
-                    <h2 className="title-font font-medium text-3xl text-white">200</h2>
-                    <p className="leading-relaxed font-medium text-white">Total Siswa</p>
-                  </div>
+      <section className="text-gray-800 body-font flex-1">
+        <div className="container mx-auto py-24 sm:py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap justify-center">
+            {/* Kartu pertama */}
+            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+              <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
+                <FontAwesomeIcon icon={faBook} className="inline-block w-12 h-12 text-white mr-4" />
+                <div>
+                  <h2 className="title-font font-medium text-3xl text-white">20</h2>
+                  <p className="leading-relaxed font-medium text-white">KBM Guru</p>
                 </div>
               </div>
-
-              {/* Kartu kedua */}
-              <div className="p-4">
-                <div className="ring-0 shadow-lg bg-sky-500 px-6 py-6 rounded-lg flex items-center justify-center">
-                  <FontAwesomeIcon icon={faChalkboardTeacher} className="inline-block w-12 h-12 text-white mr-4" />
-                  <div>
-                    <h2 className="title-font font-medium text-3xl text-white">200</h2>
-                    <p className="leading-relaxed font-medium text-white">Total Guru</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Kartu ketiga */}
-              <div className="p-4">
-                <div className="ring-0 shadow-lg bg-cyan-500 px-6 py-6 rounded-lg flex items-center justify-center">
-                  <FontAwesomeIcon icon={faDoorOpen} className="inline-block w-12 h-12 text-white mr-4" />
-                  <div>
-                    <h2 className="title-font font-medium text-3xl text-white">200</h2>
-                    <p className="leading-relaxed font-medium text-white">Total Kelas</p>
-                  </div>
-                </div>
-              </div>
-
             </div>
+            {/* Kartu kedua */}
+            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+              <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
+                <FontAwesomeIcon icon={faUser} className="inline-block w-12 h-12 text-white mr-4" />
+                <div>
+                  <h2 className="title-font font-medium text-3xl text-white">200</h2>
+                  <p className="leading-relaxed font-medium text-white">Piketan</p>
+                </div>
+              </div>
+            </div>
+            {/* Kartu ketiga */}
+            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+              <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
+                <FontAwesomeIcon icon={faUser} className="inline-block w-12 h-12 text-white mr-4" />
+                <div>
+                  <h2 className="title-font font-medium text-3xl text-white">200</h2>
+                  <p className="leading-relaxed font-medium text-white">Piketan</p>
+                </div>
+              </div>
+            </div>
+            {/* Tambahkan lebih banyak kartu jika diperlukan */}
           </div>
         </div>
       </section>
