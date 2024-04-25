@@ -26,9 +26,7 @@ function Siswa() {
   useEffect(() => {
     const fetchKelas = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4001/kelas/all"
-        );
+        const response = await axios.get("http://localhost:4001/kelas/all");
         setKelas(response.data);
       } catch (error) {
         console.error("Failed to fetch Kelas and Jurusan: ", error);
@@ -88,7 +86,7 @@ function Siswa() {
               Data Siswa
             </h1>
             <div className="flex items-center -space-x-4 hover:space-x-1">
-              <Link to={``}>
+              <Link to={`/TambahSiswa`}>
                 <button className="rounded-lg shadow-xl px-3 py-3 bg-slate-100">
                   <FontAwesomeIcon
                     icon={faPlus}

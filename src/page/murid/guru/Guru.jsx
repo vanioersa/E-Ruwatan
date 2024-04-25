@@ -17,7 +17,7 @@ const Guru = () => {
               Data Guru
             </h1>
             <div className="flex items-center -space-x-4 hover:space-x-1">
-              <Link to={``}>
+              <Link to={`/TambahGuru`}>
                 <button className="rounded-lg shadow-xl px-3 py-3 bg-slate-100">
                   <FontAwesomeIcon
                     icon={faPlus}
