@@ -99,7 +99,7 @@ const Kelas = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Link to={``}>
+            <Link to={`/TambahKelas`}>
               <button className="ml-2 rounded-lg shadow-xl px-3 py-3 bg-slate-100">
                 <FontAwesomeIcon
                   icon={faPlus}
@@ -142,7 +142,9 @@ const Kelas = () => {
                           index + 1 + pageNumber * kelasPerPage
                         }.`}</td>
                         <td className="px-4 py-2 text-center">{kelas.kelas}</td>
-                        <td className="px-4 py-2 text-center">{kelas.nama_kelas}</td>
+                        <td className="px-4 py-2 text-center">
+                          {kelas.nama_kelas}
+                        </td>
                         <td className="px-4 py-2 text-center">
                           <Link to={`/update-kelas/${kelas.id}`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">

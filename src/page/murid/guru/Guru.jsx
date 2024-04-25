@@ -42,6 +42,7 @@ const Guru = () => {
       <div className="content-page flex-1 container p-8 overflow-y-auto">
         <div className="table-guru my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
+
             <h1 className="title text-3xl text-white font-semibold">Data Guru</h1>
             <div className="flex items-center ml-auto">
               <input
