@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
+import axios from "axios";
 
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
+  const [kelas, setKelas] = useState([]);
 
   useEffect(() => {
     const fetchSiswa = async () => {
@@ -19,6 +21,20 @@ function Siswa() {
       }
     };
     fetchSiswa();
+  }, []);
+
+  useEffect(() => {
+    const fetchKelas = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4001/kelas/all"
+        );
+        setKelas(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Kelas and Jurusan: ", error);
+      }
+    };
+    fetchKelas();
   }, []);
 
   const handleDelete = async (id) => {
@@ -121,9 +137,15 @@ function Siswa() {
                     <tr key={siswa.id}>
                       <td className="px-4 py-2">{index + 1}</td>
                       <td className="px-4 py-2">{siswa.nama_siswa}</td>
-                      <td className="px-4 py-2">{siswa.NISN}</td>
-                      <td className="px-4 py-2">{siswa.kelas}</td>
-                      <td className="px-4 py-2">{siswa.tempat_lahir}</td>
+                      <td className="px-4 py-2">{siswa.nisn}</td>
+                      <td className="px-4 py-2">
+                        {siswa.kelasId &&
+                          `${
+                            kelas.find((kelas) => kelas.id === siswa.kelasId)
+                              ?.kelas
+                          }`}
+                      </td>
+                      <td className="px-4 py-2">{siswa.tempat}</td>
                       <td className="px-4 py-2">{siswa.alamat}</td>
                       <td className="px-4 py-2">
                         <button
