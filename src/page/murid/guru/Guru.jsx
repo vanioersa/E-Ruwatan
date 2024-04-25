@@ -32,7 +32,10 @@ const Guru = () => {
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
   // Slice the filtered list to only include items for the current page
-  const displayGuru = filteredGuru.slice(pagesVisited, pagesVisited + guruPerPage);
+  const displayGuru = filteredGuru.slice(
+    pagesVisited,
+    pagesVisited + guruPerPage
+  );
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -42,8 +45,9 @@ const Guru = () => {
       <div className="content-page flex-1 container p-8 overflow-y-auto">
         <div className="table-guru my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
-
-            <h1 className="title text-3xl text-white font-semibold">Data Guru</h1>
+            <h1 className="title text-3xl text-white font-semibold">
+              Data Guru
+            </h1>
             <div className="flex items-center ml-auto">
               <input
                 type="text"
@@ -68,18 +72,35 @@ const Guru = () => {
             <table className="min-w-full divide-y divide-gray-200 bg-white text-sm">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">No</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Nama Guru</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">NIP</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Tempat Lahir</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Mapel</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Kelas</th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Aksi</th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    No
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    Nama Guru
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    NIP
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    Tempat Lahir
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    Mapel
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    Kelas
+                  </th>
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {displayGuru.map((guru, index) => (
-                  <tr key={guru.id} className="border-b border-gray-200 hover:bg-gray-100">
+                  <tr
+                    key={guru.id}
+                    className="border-b border-gray-200 hover:bg-gray-100"
+                  >
                     <td className="px-4 py-2">{pagesVisited + index + 1}</td>
                     <td className="px-4 py-2">{guru.nama_guru}</td>
                     <td className="px-4 py-2">{guru.nip}</td>
