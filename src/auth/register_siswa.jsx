@@ -231,9 +231,6 @@ function Register_murid() {
               <a
                 href="/" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
                 Masuk
-              </a>or
-              <a href="/register_guru" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
-                Register Guru
               </a>
             </p>
           </div>

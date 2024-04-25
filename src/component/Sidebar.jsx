@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
-  faArrowCircleRight,
   faDoorOpen,
   faHome,
   faChalkboardTeacher,
+  faRightToBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import IconLoader from "./Loader";
@@ -130,7 +130,7 @@ const Sidebar = () => {
           </li>
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
             <a href="/" className="flex items-center">
-              <FontAwesomeIcon icon={faArrowCircleRight} className="ml-3 mr-2" />
+              <FontAwesomeIcon icon={faRightToBracket} className="ml-3 mr-2" />
               <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
                 Keluar
               </span>
