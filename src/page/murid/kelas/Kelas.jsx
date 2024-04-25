@@ -60,8 +60,13 @@ const Kelas = () => {
           ) {
             errorMessage = error.response.data.message;
           }
-          Swal.fire("Gagal", errorMessage, "error");
-        }
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: errorMessage,
+            timer: 2000,
+            showConfirmButton: false,
+          });        }
       }
     });
   };
@@ -142,12 +147,10 @@ const Kelas = () => {
                           index + 1 + pageNumber * kelasPerPage
                         }.`}</td>
                         <td className="px-4 py-2 text-center">{kelas.kelas}</td>
-                        <td className="px-4 py-2 text-center">
-                          {kelas.nama_kelas}
-                        </td>
-                        <td className="px-4 py-2 text-center">
+                        <td className="px-4 py-2 text-center">{kelas.nama_kelas} </td>
+                        <td className="px-4 py-2 text-center flex justify-center gap-2">
                           <Link to={`/update-kelas/${kelas.id}`}>
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1">
                               <FontAwesomeIcon icon={faEdit} />
                             </button>
                           </Link>

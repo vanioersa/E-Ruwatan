@@ -11,7 +11,7 @@ import ReactPaginate from "react-paginate";
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
   const [kelas, setKelas] = useState([]);
-  const searchTerm = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const siswaPerPage = 10;
   const pagesVisited = pageNumber * siswaPerPage;
@@ -34,7 +34,7 @@ function Siswa() {
         const response = await axios.get("http://localhost:4001/kelas/all");
         setKelas(response.data);
       } catch (error) {
-        console.error("Failed to fetch Kelas and Jurusan: ", error);
+        console.error("Failed to fetch Kelas: ", error);
       }
     };
     fetchKelas();
@@ -84,19 +84,24 @@ function Siswa() {
   };
 
   const filteredSiswa = siswa.filter((siswa) => {
+    const kelasNama =
+    siswa.kelasId && kelas.find((k) => k.id === siswa.kelasId)?.nama;
     return (
       siswa.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      siswa.nisn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (siswa.kelasId &&
-        kelas
-          .find((kelas) => kelas.id === siswa.kelasId)
-          ?.kelas.toLowerCase()
+      (siswa.nisn &&
+        siswa.nisn
+          .toString()
+          .toLowerCase()
           .includes(searchTerm.toLowerCase())) ||
-      siswa.tempat.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      siswa.alamat.toLowerCase().includes(searchTerm.toLowerCase())
+      (kelasNama &&
+        kelasNama.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (siswa.tempat &&
+        siswa.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (siswa.alamat &&
+        siswa.alamat.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-
+  
   const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
 
   return (
@@ -107,19 +112,26 @@ function Siswa() {
       <div className="content-page flex-1 container p-8 overflow-y-auto">
         <div className="tabel-siswa my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
-            <h1 className="judul text-3xl text-white font-semibold">
+            <h1 className="judul text-3xl text-white font-semibold ">
               Data Siswa
             </h1>
-            <div className="flex items-center -space-x-4 hover:space-x-1">
-              <Link to={`/TambahSiswa`}>
-                <button className="rounded-lg shadow-xl px-3 py-3 bg-slate-100">
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="h-5 w-5 text-blue-500"
-                  />
-                </button>
-              </Link>
+            <div className="flex items-center ml-auto">
+              <input
+                type="text"
+                placeholder="Cari siswa..."
+                className="rounded-lg shadow-xl px-3 py-3 bg-slate-100"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
+            <Link to={`/Tambahsiswa`}>
+              <button className="ml-2 rounded-lg shadow-xl px-3 py-3 bg-slate-100">
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className="h-4 w-5 mt-1 text-blue-500"
+                />
+              </button>
+            </Link>
           </div>
           <div className="overflow-x-auto rounded-lg border border-gray-200 mt-4">
             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-s">
@@ -160,26 +172,21 @@ function Siswa() {
                     .slice(pagesVisited, pagesVisited + siswaPerPage)
                     .map((siswa, index) => (
                       <tr key={siswa.id}>
-                        {/* <td className="px-4 py-2">{index + 1}</td> */}
                         <td className="px-4 py-2">{`${
                           index + 1 + pageNumber * siswaPerPage
                         }.`}</td>
-                        <td className="px-4 py-2 text-center">
-                          {siswa.nama_siswa}
-                        </td>
+                        <td className="px-4 py-2 text-center">{siswa.nama_siswa}</td>
                         <td className="px-4 py-2 text-center">{siswa.nisn}</td>
                         <td className="px-4 py-2 text-center">
                           {siswa.kelasId &&
-                            kelas.find((kelas) => kelas.id === siswa.kelasId)
-                              ?.kelas}
+                            `${
+                              kelas.find((kelas) => kelas.id === siswa.kelasId)
+                                ?.kelas
+                            }`}
                         </td>
-                        <td className="px-4 py-2 text-center">
-                          {siswa.tempat}
-                        </td>
-                        <td className="px-4 py-2 text-center">
-                          {siswa.alamat}
-                        </td>
-                        <td className="px-4 py-2 text-center">
+                        <td className="px-4 py-2 text-center">{siswa.tempat}</td>
+                        <td className="px-4 py-2 text-center">{siswa.alamat}</td>
+                        <td className="px-4 py-2 text-center flex justify-center gap-2">
                           <Link to={`/update-siswa/${siswa.id}`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
                               <FontAwesomeIcon icon={faEdit} />
