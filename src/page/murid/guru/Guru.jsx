@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
 const Guru = () => {
-  const [guru, setGuru] = useState([]); // Initialize with data from an API or other source
+  const [guru, setGuru] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const guruPerPage = 10;

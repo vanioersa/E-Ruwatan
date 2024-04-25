@@ -1,5 +1,4 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Login from './auth/login';
 import RegisterSiswa from './auth/register_siswa';
 import RegisterGuru from './auth/register_guru';
@@ -12,49 +11,19 @@ import TambahKelas from './page/murid/kelas/TambahKelas';
 import TambahGuru from './page/murid/guru/TambahGuru';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
   return (
     <div className="App">
-      <Routes>
-        <Route
-          path="/"
-          element={<Login setIsLoggedIn={setIsLoggedIn} />}
-        />
-        <Route
-          path="/register_siswa"
-          element={<RegisterSiswa setIsLoggedIn={setIsLoggedIn} />}
-        />
-        <Route
-          path="/register_guru"
-          element={<RegisterGuru setIsLoggedIn={setIsLoggedIn} />}
-        />
-        {isLoggedIn ? (
-          <>
-            <Route
-              path="/dashboard_siswa/*"
-              element={<DashboardSiswa />}
-            />
-            <Route path="/siswa" element={<Siswa />} />
-            <Route path="/kelas" element={<Kelas />} />
-            <Route path="/guru" element={<Guru />} />
-            <Route path="/tambahsiswa" element={<TambahSiswa />} />
-            <Route path="/tambahkelas" element={<TambahKelas />} />
-            <Route path="/tambahguru" element={<TambahGuru />} />
-          </>
-        ) : (
-          <Route
-            path="*"
-            element={<Navigate to="/" replace={true} />}
-          />
-        )}
+    <Routes>
+        <Route path='/' element={<Login />} />
+        <Route path='/register_siswa' element={<RegisterSiswa />} />
+        <Route path='/register_guru' element={<RegisterGuru />} />
+        <Route path='/dashboard_siswa/*' element={<DashboardSiswa />} exact />
+        <Route path='/siswa' element={<Siswa />} exact />
+        <Route path='/kelas' element={<Kelas />} exact />
+        <Route path='/guru' element={<Guru />} exact />
+        <Route path='/tambahsiswa' element={<TambahSiswa />} exact />
+        <Route path='/tambahkelas' element={<TambahKelas />} exact />
+        <Route path='/tambahguru' element={<TambahGuru />} exact />
       </Routes>
     </div>
   );
