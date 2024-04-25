@@ -40,10 +40,10 @@ function Siswa() {
     fetchKelas();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, namaSiswa) => {
     Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data siswa akan dihapus",
+      title: "Konfirmasi",
+      text: `Anda yakin ingin menghapus data siswa ${namaSiswa}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -58,14 +58,14 @@ function Siswa() {
           setSiswa(updatedSiswa);
           Swal.fire({
             title: "Berhasil",
-            text: "Siswa berhasil dihapus",
+            text: `Data siswa ${namaSiswa} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
           });
         } catch (error) {
           console.error("Failed to delete Siswa: ", error);
-          let errorMessage = "Gagal menghapus siswa. Silakan coba lagi.";
+          let errorMessage = `Gagal menghapus data siswa ${namaSiswa}. Silakan coba lagi.`;
           if (
             error.response &&
             error.response.data &&
@@ -73,7 +73,12 @@ function Siswa() {
           ) {
             errorMessage = error.response.data.message;
           }
-          Swal.fire("Gagal", errorMessage, "error");
+          Swal.fire({
+            title: "Gagal", 
+            text: errorMessage,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000,});
         }
       }
     });
@@ -85,7 +90,7 @@ function Siswa() {
 
   const filteredSiswa = siswa.filter((siswa) => {
     const kelasNama =
-    siswa.kelasId && kelas.find((k) => k.id === siswa.kelasId)?.nama;
+      siswa.kelasId && kelas.find((k) => k.id === siswa.kelasId)?.nama;
     return (
       siswa.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (siswa.nisn &&
@@ -101,7 +106,7 @@ function Siswa() {
         siswa.alamat.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-  
+
   const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
 
   return (
@@ -175,7 +180,9 @@ function Siswa() {
                         <td className="px-4 py-2">{`${
                           index + 1 + pageNumber * siswaPerPage
                         }.`}</td>
-                        <td className="px-4 py-2 text-center">{siswa.nama_siswa}</td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.nama_siswa}
+                        </td>
                         <td className="px-4 py-2 text-center">{siswa.nisn}</td>
                         <td className="px-4 py-2 text-center">
                           {siswa.kelasId &&
@@ -184,8 +191,12 @@ function Siswa() {
                                 ?.kelas
                             }`}
                         </td>
-                        <td className="px-4 py-2 text-center">{siswa.tempat}</td>
-                        <td className="px-4 py-2 text-center">{siswa.alamat}</td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.tempat}
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.alamat}
+                        </td>
                         <td className="px-4 py-2 text-center flex justify-center gap-2">
                           <Link to={`/update-siswa/${siswa.id}`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
@@ -193,7 +204,9 @@ function Siswa() {
                             </button>
                           </Link>
                           <button
-                            onClick={() => handleDelete(siswa.id)}
+                            onClick={() =>
+                              handleDelete(siswa.id, siswa.nama_siswa)
+                            }
                             className="bg-rose-500 hover:bg-rose-700 text-white border border-red-500 hover:border-red-700 rounded-md px-3 py-1"
                           >
                             <FontAwesomeIcon icon={faTrash} />

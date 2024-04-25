@@ -40,10 +40,10 @@ function Guru() {
     fetchKelas();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, nama_guru) => {
     Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data guru akan dihapus",
+      title: "Konfirmasi",
+      text: `Anda yakin ingin menghapus data guru ${nama_guru}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -58,20 +58,26 @@ function Guru() {
           setGuru(updatedGuru);
           Swal.fire({
             title: "Berhasil",
-            text: "Guru berhasil dihapus",
+            text: `Data guru ${nama_guru} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
           });
         } catch (error) {
           console.error("Failed to delete Guru: ", error);
-          let errorMessage = "Gagal menghapus guru. Silakan coba lagi.";
-          Swal.fire("Gagal", errorMessage, "error");
+          let errorMessage = `Gagal menghapus data guru ${nama_guru}. Silakan coba lagi.`;
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: errorMessage,
+            timer: 2000,
+            showConfirmButton: false,
+          });
         }
       }
     });
   };
-
+  
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
@@ -186,7 +192,9 @@ function Guru() {
                             </button>
                           </Link>
                           <button
-                            onClick={() => handleDelete(guru.id)}
+                            onClick={() =>
+                              handleDelete(guru.id, guru.nama_guru)
+                            }
                             className="bg-rose-500 hover:bg-rose-700 text-white border border-red-500 hover:border-red-700 rounded-md px-3 py-1"
                           >
                             <FontAwesomeIcon icon={faTrash} />

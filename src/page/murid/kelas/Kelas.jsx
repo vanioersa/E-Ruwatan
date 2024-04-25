@@ -27,10 +27,10 @@ const Kelas = () => {
     fetchKelas();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, kelas, nama_kelas) => {
     Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data kelas akan dihapus",
+      title: "Konfirmasi",
+      text: `Anda yakin ingin menghapus data kelas ${kelas} ${nama_kelas}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -45,14 +45,14 @@ const Kelas = () => {
           setKelas(updatedKelas);
           Swal.fire({
             title: "Berhasil",
-            text: "Kelas berhasil dihapus",
+            text: `Data kelas ${kelas} ${nama_kelas} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
           });
         } catch (error) {
           console.error("Failed to delete Kelas: ", error);
-          let errorMessage = "Gagal menghapus kelas. Silakan coba lagi.";
+          let errorMessage =`Gagal menghapus data kelas ${kelas} ${nama_kelas}. Silakan coba lagi.`;
           if (
             error.response &&
             error.response.data &&
@@ -66,11 +66,11 @@ const Kelas = () => {
             text: errorMessage,
             timer: 2000,
             showConfirmButton: false,
-          });        }
+          });
+        }
       }
     });
   };
-
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
@@ -147,7 +147,7 @@ const Kelas = () => {
                           index + 1 + pageNumber * kelasPerPage
                         }.`}</td>
                         <td className="px-4 py-2 text-center">{kelas.kelas}</td>
-                        <td className="px-4 py-2 text-center">{kelas.nama_kelas} </td>
+                        <td className="px-4 py-2 text-center">{kelas.nama_kelas}</td>
                         <td className="px-4 py-2 text-center flex justify-center gap-2">
                           <Link to={`/update-kelas/${kelas.id}`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1">
@@ -155,7 +155,7 @@ const Kelas = () => {
                             </button>
                           </Link>
                           <button
-                            onClick={() => handleDelete(kelas.id)}
+                            onClick={() => handleDelete(kelas.id, kelas.kelas, kelas.nama_kelas)}
                             className="bg-rose-500 hover:bg-rose-700 text-white border border-red-500 hover:border-red-700 rounded-md px-3 py-1"
                           >
                             <FontAwesomeIcon icon={faTrash} />
