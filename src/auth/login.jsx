@@ -163,9 +163,6 @@ function Logins() {
                         Belum Punya Akun?
                         <a href="/register_siswa" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
                             Register Siswa
-                        </a>or
-                        <a href="/register_guru" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
-                            Register Guru
                         </a>
                     </p>
                 </div>
