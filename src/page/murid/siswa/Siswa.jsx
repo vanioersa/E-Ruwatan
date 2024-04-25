@@ -6,10 +6,15 @@ import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
   const [kelas, setKelas] = useState([]);
+  const searchTerm = useState("");
+  const [pageNumber, setPageNumber] = useState(0);
+  const siswaPerPage = 10;
+  const pagesVisited = pageNumber * siswaPerPage;
 
   useEffect(() => {
     const fetchSiswa = async () => {
@@ -74,6 +79,26 @@ function Siswa() {
     });
   };
 
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
+  const filteredSiswa = siswa.filter((siswa) => {
+    return (
+      siswa.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      siswa.nisn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (siswa.kelasId &&
+        kelas
+          .find((kelas) => kelas.id === siswa.kelasId)
+          ?.kelas.toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
+      siswa.tempat.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      siswa.alamat.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
@@ -82,7 +107,7 @@ function Siswa() {
       <div className="content-page flex-1 container p-8 overflow-y-auto">
         <div className="tabel-siswa my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg">
           <div className="bg-gray-700 shadow-md rounded-lg p-4 flex justify-between items-center">
-            <h1 className="judul text-3xl text-white font-semibold ">
+            <h1 className="judul text-3xl text-white font-semibold">
               Data Siswa
             </h1>
             <div className="flex items-center -space-x-4 hover:space-x-1">
@@ -103,67 +128,97 @@ function Siswa() {
                   <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                     No
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     Nama Siswa
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     NISN
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     Kelas
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     Tempat Lahir
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     Alamat
                   </th>
-                  <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  <th className="whitespace-nowrap px-4 py-2 font-medium text-center text-gray-900">
                     Aksi
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {siswa.length === 0 ? (
+                {filteredSiswa.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center py-4">
-                      Data siswa kosong
+                      Data siswa tidak ditemukan
                     </td>
                   </tr>
                 ) : (
-                  siswa.map((siswa, index) => (
-                    <tr key={siswa.id}>
-                      <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2">{siswa.nama_siswa}</td>
-                      <td className="px-4 py-2">{siswa.nisn}</td>
-                      <td className="px-4 py-2">
-                        {siswa.kelasId &&
-                          `${
+                  filteredSiswa
+                    .slice(pagesVisited, pagesVisited + siswaPerPage)
+                    .map((siswa, index) => (
+                      <tr key={siswa.id}>
+                        {/* <td className="px-4 py-2">{index + 1}</td> */}
+                        <td className="px-4 py-2">{`${
+                          index + 1 + pageNumber * siswaPerPage
+                        }.`}</td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.nama_siswa}
+                        </td>
+                        <td className="px-4 py-2 text-center">{siswa.nisn}</td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.kelasId &&
                             kelas.find((kelas) => kelas.id === siswa.kelasId)
-                              ?.kelas
-                          }`}
-                      </td>
-                      <td className="px-4 py-2">{siswa.tempat}</td>
-                      <td className="px-4 py-2">{siswa.alamat}</td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => handleDelete(siswa.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                        <Link to={`/update-siswa/${siswa.id}`}>
-                          <button className="text-blue-500 hover:text-blue-700 ml-2">
-                            <FontAwesomeIcon icon={faEdit} />
+                              ?.kelas}
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.tempat}
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          {siswa.alamat}
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          <Link to={`/update-siswa/${siswa.id}`}>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
+                              <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(siswa.id)}
+                            className="bg-rose-500 hover:bg-rose-700 text-white border border-red-500 hover:border-red-700 rounded-md px-3 py-1"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                      </tr>
+                    ))
                 )}
               </tbody>
             </table>
           </div>
+          <ReactPaginate
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination flex justify-center mt-4"}
+            pageClassName={"page-item mx-1 flex"}
+            pageLinkClassName={
+              "page-link py-2 px-3 border border rounded-md hover:bg-blue-500 hover:text-white"
+            }
+            previousClassName={"prev-item"}
+            previousLinkClassName={
+              "prev-link py-2 px-3 flex border border-gray-200 rounded-md mr-2 bg-blue-600 hover:bg-blue-800 hover:text-white"
+            }
+            nextClassName={"next-item"}
+            nextLinkClassName={
+              "next-link py-2 px-3 flex border border-gray-200 rounded-md ml-2 bg-blue-600 hover:bg-blue-800 hover:text-white"
+            }
+            activeClassName={"active-page bg-blue-500 text-white rounded-lg"}
+          />
         </div>
       </div>
     </div>
