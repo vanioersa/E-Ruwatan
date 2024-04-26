@@ -12,7 +12,7 @@ function Dashboard() {
                     <div className="flex flex-wrap justify-center">
                         {/* Kartu pertama */}
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
-                            <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 rounded-lg flex items-center justify-center">
+                            <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 rounded-lg flex items-center justify-between">
                                 <FontAwesomeIcon icon={faBook} className="inline-block w-12 h-12 text-white mr-4" />
                                 <div>
                                     <h2 className="title-font font-medium text-3xl text-white">20</h2>
@@ -22,7 +22,7 @@ function Dashboard() {
                         </div>
                         {/* Kartu kedua */}
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
-                            <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 rounded-lg flex items-center justify-center">
+                            <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 rounded-lg flex items-center justify-b">
                                 <FontAwesomeIcon icon={faUser} className="inline-block w-12 h-12 text-white mr-4" />
                                 <div>
                                     <h2 className="title-font font-medium text-3xl text-white">200</h2>
