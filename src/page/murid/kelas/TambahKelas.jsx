@@ -4,8 +4,18 @@ import Swal from "sweetalert2";
 import { createKelas } from "./api_kelas";
 
 const TambahKelas = () => {
-  const [nama_kelas, setNamaKelas] = useState("");
-  const [kelas, setKelas] = useState("");
+  const [kelas, setKelas] = useState({
+    kelas: "",
+    nama_kelas: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setKelas((prevKelas) => ({
+      ...prevKelas,
+      [name]: value,
+    }));
+  };
 
   const batal = () => {
     window.location.href = "/Kelas";
@@ -24,26 +34,34 @@ const TambahKelas = () => {
       cancelButtonText: "Tidak",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const newKelas = {
-          nama_kelas: nama_kelas,
-          kelas: kelas,
-        };
         try {
-          await createKelas(newKelas);
+          await createKelas(kelas);
           Swal.fire({
             title: "Berhasil",
             text: "Kelas berhasil ditambahkan",
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
+          }).then(() => {
+            window.history.back();
           });
-          setNamaKelas("");
-          setKelas("");
+          setKelas({
+            kelas: "",
+            nama_kelas: "",
+          });
         } catch (error) {
           console.error("Failed to add Kelas: ", error);
+          let errorMessage = "Gagal menambahkan kelas. Silakan coba lagi.";
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            errorMessage = error.response.data.message;
+          }
           Swal.fire({
             title: "Gagal",
-            text: "Gagal menambahkan kelas. Silakan coba lagi.",
+            text: errorMessage,
             icon: "error",
             showConfirmButton: false,
             timer: 2000,
@@ -67,29 +85,37 @@ const TambahKelas = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 ">
+                <label
+                  htmlFor="nama_kelas"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
                   Nama Kelas
                 </label>
                 <input
                   type="text"
                   id="nama_kelas"
-                  value={nama_kelas}
-                  onChange={(e) => setNamaKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  placeholder="Masukan Nama Kelas"
+                  name="nama_kelas"
+                  value={kelas.nama_kelas}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Nama Kelas"
                   required
                   autoComplete="off"
                 />
               </div>
               <div className="relative">
-                <label className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 ">
+                <label
+                  htmlFor="kelas"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
                   Kelas
                 </label>
                 <select
                   id="kelas"
-                  value={kelas}
-                  onChange={(e) => setKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  name="kelas"
+                  value={kelas.kelas}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>

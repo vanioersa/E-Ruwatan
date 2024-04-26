@@ -2,10 +2,6 @@ import axios from "axios";
 
 const apiUrl = "http://localhost:4001/kelas";
 
-const getToken = () => {
-  return localStorage.getItem("token");
-};
-
 export const getAllKelas = async () => {
   try {
     const response = await axios.get(`${apiUrl}/all`);
@@ -33,9 +29,10 @@ export const getKelasById = async (id) => {
 
 export const createKelas = async (KelasData) => {
   try {
-    const response = await axios.post(`${apiUrl}/kelas/add`, KelasData, {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(`${apiUrl}/add`, KelasData, {
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
