@@ -105,7 +105,7 @@ function SidebarGuru() {
                         </button>
                     </li>
                     <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
-                        <a href="/" className="flex items-center">
+                        <a href="kbm_guru" className="flex items-center">
                             <FontAwesomeIcon icon={faBook} className="mr-2" />
                             <span style={{ fontFamily: "Segoe UI" }} className="mx-3 font-medium">
                                 KBM Guru
@@ -113,7 +113,7 @@ function SidebarGuru() {
                         </a>
                     </li>
                     <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
-                        <a href="/" className="flex items-center">
+                        <a href="/piketan_guru" className="flex items-center">
                             <FontAwesomeIcon icon={faUserGroup} className="mr-2" />
                             <span style={{ fontFamily: "Segoe UI" }} className="mx-1 font-medium">
                                 Piketan

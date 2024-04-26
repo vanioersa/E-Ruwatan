@@ -10,6 +10,10 @@ import Guru from './page/murid/guru/Guru';
 import TambahSiswa from './page/murid/siswa/TambahSiswa';
 import TambahKelas from './page/murid/kelas/TambahKelas';
 import TambahGuru from './page/murid/guru/TambahGuru';
+import PiketanGuru from './page/guru/guru/PiketanGuru';
+import KBMGuru from './page/guru/guru/KBMGuru';
+import TambahPiketan from './page/guru/guru/TambahPiketan';
+import TambahKBM from './page/guru/guru/TambahKBM';
 
 function App() {
   return (
@@ -20,12 +24,16 @@ function App() {
         <Route path='/register_guru' element={<RegisterGuru />} />
         <Route path='/dashboard_siswa/*' element={<DashboardSiswa />} exact />
         <Route path='/dashboard_guru/*' element={<DashboardGuru />} exact />
+        <Route path='/piketan_guru/' element={<PiketanGuru />} exact />
+        <Route path='/kbm_guru/' element={<KBMGuru />} exact />
         <Route path='/siswa' element={<Siswa />} exact />
         <Route path='/kelas' element={<Kelas />} exact />
         <Route path='/guru' element={<Guru />} exact />
         <Route path='/tambahsiswa' element={<TambahSiswa />} exact />
         <Route path='/tambahkelas' element={<TambahKelas />} exact />
         <Route path='/tambahguru' element={<TambahGuru />} exact />
+        <Route path='/tambahkbm' element={<TambahKBM />} exact />
+        <Route path='/tambahpiketan' element={<TambahPiketan />} exact />
       </Routes>
     </div>
   );
