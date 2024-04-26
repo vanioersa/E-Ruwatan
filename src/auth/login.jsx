@@ -57,9 +57,9 @@ function Logins() {
                         showConfirmButton: false,
                     });
 
-                    if (userData.role === "murid") {
+                    if (userData.role === "MURID") {
                         navigate("/dashboard_siswa");
-                    } else if (userData.role === "guru") {
+                    } else if (userData.role === "GURU") {
                         navigate("/dashboard_guru");
                     }
                 }
