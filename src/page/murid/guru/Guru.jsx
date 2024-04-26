@@ -77,7 +77,7 @@ function Guru() {
       }
     });
   };
-  
+
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
@@ -186,7 +186,7 @@ function Guru() {
                             }`}
                         </td>
                         <td className="px-4 py-2 text-center flex justify-center gap-2">
-                          <Link to={`/update-guru/${guru.id}`}>
+                          <Link to={`/UpdateGuru/${guru.id}`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
                               <FontAwesomeIcon icon={faEdit} />
                             </button>
