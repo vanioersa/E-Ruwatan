@@ -57,7 +57,13 @@ function Guru() {
         try {
           await deleteGuru(id);
           setGuru((prevGuru) => prevGuru.filter((g) => g.id !== id));
-          Swal.fire("Berhasil", `Data guru ${nama_guru} berhasil dihapus`, "success");
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data guru ${nama_guru} berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000
+          });
         } catch (error) {
           console.error("Gagal menghapus guru: ", error);
           Swal.fire("Gagal", `Gagal menghapus guru ${nama_guru}`, "error");

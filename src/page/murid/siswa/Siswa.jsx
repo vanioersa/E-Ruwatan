@@ -57,7 +57,14 @@ function Siswa() {
         try {
           await deleteSiswa(id);
           setSiswa((prevSiswa) => prevSiswa.filter((s) => s.id !== id));
-          Swal.fire("Berhasil", `Data siswa ${namaSiswa} berhasil dihapus`, "success");
+            Swal.fire({
+              title: "Berhasil",
+              text: `Data siswa ${namaSiswa} berhasil dihapus`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 2000
+            });
+          
         } catch (error) {
           console.error("Gagal menghapus siswa: ", error);
           Swal.fire("Gagal", `Gagal menghapus siswa ${namaSiswa}`, "error");

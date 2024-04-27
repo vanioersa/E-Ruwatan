@@ -42,7 +42,13 @@ function Kelas() {
         try {
           await deleteKelas(id);
           setKelas((prevKelas) => prevKelas.filter((k) => k.id !== id));
-          Swal.fire("Berhasil", `Data kelas ${kelasName} berhasil dihapus`, "success");
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data kelas ${kelasName} berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000
+          });
         } catch (error) {
           console.error("Failed to delete Kelas: ", error);
           Swal.fire("Gagal", `Gagal menghapus kelas ${kelasName}`, "error");
