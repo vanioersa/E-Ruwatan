@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Sidebar from "../../../component/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faEdit, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash, faEdit, faFileExport, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllGurus, deleteGuru } from "./api_guru";
 import ReactPaginate from "react-paginate";
@@ -121,7 +121,7 @@ function Guru() {
               placeholder="Cari guru..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
             <div className="flex">
               <Link to="/TambahGuru">
@@ -139,10 +139,10 @@ function Guru() {
               </CSVLink>
             </div>
           </div>
-          <div className="mt-4 overflow-x-auto">
-            <table className="min-w-full bg-white table-fixed rounded-xl shadow-lg">
+          <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
-                <tr className="bg-gray-200 text-gray-600 text-sm leading-normal">
+                <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
                   <th className="py-2 px-4 text-left">Nama Guru</th>
                   <th className="py-2 px-4 text-left">NIP</th>
@@ -171,14 +171,14 @@ function Guru() {
                           <div className="flex gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
                               <button
-                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
                             <button
                               onClick={() => handleDelete(g.id, g.nama_guru)}
-                              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
@@ -198,8 +198,8 @@ function Guru() {
           </div>
           <div className="mt-4">
             <ReactPaginate
-              previousLabel={"<"}
-              nextLabel={">"}
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft}/>}
+              nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
               pageCount={pageCount}
               onPageChange={changePage}
               containerClassName="pagination flex justify-center items-center gap-2"
