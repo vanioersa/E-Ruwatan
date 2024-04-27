@@ -17,7 +17,7 @@ import TambahKBM from './page/guru/guru/TambahKBM';
 import UpdateSiswa from './page/murid/siswa/UpdateSiswa';
 import UpdataKelas from './page/murid/kelas/UpdataKelas';
 import UpdateGuru from './page/murid/guru/UpdateGuru';
-import PDFpiket from './component/Pdf';
+import PDFpiket from './component/PDF';
 
 function App() {
   return (
