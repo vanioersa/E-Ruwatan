@@ -78,7 +78,7 @@ function Register_guru() {
         username,
         email,
         password,
-        role: "guru",
+        role: "GURU",
       });
       if (response.data) {
         Swal.fire({
