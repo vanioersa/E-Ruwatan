@@ -76,10 +76,10 @@ function Guru() {
   const filteredGuru = guru.filter((g) => {
     const kelasNama = kelas.find((k) => k.id === g.kelasId)?.kelas;
     return (
-      g.nama_guru.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      g.nip.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      g.tempat_lahir.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      g.mapel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (g.nama_guru && g.nama_guru.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (g.nip && g.nip.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (g.tempat_lahir && g.tempat_lahir.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (g.mapel && g.mapel.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
