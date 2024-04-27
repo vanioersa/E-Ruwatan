@@ -78,7 +78,7 @@ function Register_murid() {
         username,
         email,
         password,
-        role: "murid",
+        role: "MURID",
       });
       if (response.data) {
         Swal.fire({

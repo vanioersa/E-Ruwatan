@@ -14,11 +14,14 @@ import PiketanGuru from './page/guru/guru/PiketanGuru';
 import KBMGuru from './page/guru/guru/KBMGuru';
 import TambahPiketan from './page/guru/guru/TambahPiketan';
 import TambahKBM from './page/guru/guru/TambahKBM';
+import UpdateSiswa from './page/murid/siswa/UpdateSiswa';
+import UpdataKelas from './page/murid/kelas/UpdataKelas';
+import UpdateGuru from './page/murid/guru/UpdateGuru';
 
 function App() {
   return (
     <div className="App">
-    <Routes>
+      <Routes>
         <Route path='/' element={<Login />} />
         <Route path='/register_siswa' element={<RegisterSiswa />} />
         <Route path='/register_guru' element={<RegisterGuru />} />
@@ -34,6 +37,9 @@ function App() {
         <Route path='/tambahguru' element={<TambahGuru />} exact />
         <Route path='/tambahkbm' element={<TambahKBM />} exact />
         <Route path='/tambahpiketan' element={<TambahPiketan />} exact />
+        <Route path='/updatesiswa' element={<UpdateSiswa />} exact />
+        <Route path='/updatekelas' element={<UpdataKelas />} exact />
+        <Route path='/updateguru' element={<UpdateGuru />} exact />
       </Routes>
     </div>
   );

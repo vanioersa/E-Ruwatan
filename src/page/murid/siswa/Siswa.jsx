@@ -74,11 +74,12 @@ function Siswa() {
             errorMessage = error.response.data.message;
           }
           Swal.fire({
-            title: "Gagal", 
+            title: "Gagal",
             text: errorMessage,
             icon: "error",
             showConfirmButton: false,
-            timer: 2000,});
+            timer: 2000,
+          });
         }
       }
     });
@@ -198,7 +199,7 @@ function Siswa() {
                           {siswa.alamat}
                         </td>
                         <td className="px-4 py-2 text-center flex justify-center gap-2">
-                          <Link to={`/update-siswa/${siswa.id}`}>
+                          <Link to={`/UpdateSiswa`}>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
                               <FontAwesomeIcon icon={faEdit} />
                             </button>

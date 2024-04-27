@@ -65,8 +65,7 @@ function Guru() {
       }
     });
   };
-
-  // Fungsi untuk mengganti halaman
+  
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
@@ -160,28 +159,38 @@ function Guru() {
                         key={g.id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                       >
-                        <td className="py-2 px-4">{index + 1 + pagesVisited}</td>
-                        <td className="py-2 px-4">{g.nama_guru}</td>
-                        <td className="py-2 px-4">{g.nip}</td>
-                        <td className="py-2 px-4">{g.tempat_lahir}</td>
-                        <td className="py-2 px-4">{g.mapel}</td>
-                        <td className="py-2 px-4">{kelas.find((k) => k.id === g.kelasId)?.kelas}</td>
-                        <td className="py-2 px-4">
-                          <div className="flex gap-2">
-                            <Link to={`/EditGuru/${g.id}`}>
-                              <button
-                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                              >
-                                <FontAwesomeIcon icon={faEdit} />
-                              </button>
-                            </Link>
-                            <button
-                              onClick={() => handleDelete(g.id, g.nama_guru)}
-                              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
+                        <td className="px-4 py-2">{`${
+                          index + 1 + pageNumber * guruPerPage
+                        }.`}</td>
+                        <td className="px-4 py-2 text-center">
+                          {guru.nama_guru}
+                        </td>
+                        <td className="px-4 py-2 text-center">{guru.nip}</td>
+                        <td className="px-4 py-2 text-center">
+                          {guru.tempat_lahir}
+                        </td>
+                        <td className="px-4 py-2 text-center">{guru.mapel}</td>
+                        <td className="px-4 py-2 text-center">
+                          {guru.kelasId &&
+                            `${
+                              kelas.find((kelas) => kelas.id === guru.kelasId)
+                                ?.kelas
+                            }`}
+                        </td>
+                        <td className="px-4 py-2 text-center flex justify-center gap-2">
+                          <Link to={`/update-guru/${guru.id}`}>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white border border-blue-500 hover:border-blue-700 rounded-md px-3 py-1 mx-2">
+                              <FontAwesomeIcon icon={faEdit} />
                             </button>
-                          </div>
+                          </Link>
+                          <button
+                            onClick={() =>
+                              handleDelete(guru.id, guru.nama_guru)
+                            }
+                            className="bg-rose-500 hover:bg-rose-700 text-white border border-red-500 hover:border-red-700 rounded-md px-3 py-1"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
                         </td>
                       </tr>
                     ))
