@@ -39,7 +39,7 @@ function App() {
         <Route path='/tambahkbm' element={<TambahKBM />} exact />
         <Route path='/tambahpiketan' element={<TambahPiketan />} exact />
         <Route path='/updatesiswa' element={<UpdateSiswa />} exact />
-        <Route path='/updatekelas' element={<UpdataKelas />} exact />
+        <Route path='/updatekelas/:id' element={<UpdataKelas />} exact />
         <Route path='/updateguru' element={<UpdateGuru />} exact />
         <Route path='/pdf' element={<PDFpiket />} exact />
       </Routes>
