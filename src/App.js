@@ -17,6 +17,7 @@ import TambahKBM from './page/guru/guru/TambahKBM';
 import UpdateSiswa from './page/murid/siswa/UpdateSiswa';
 import UpdataKelas from './page/murid/kelas/UpdataKelas';
 import UpdateGuru from './page/murid/guru/UpdateGuru';
+import PDFpiket from './component/Pdf';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path='/updatesiswa' element={<UpdateSiswa />} exact />
         <Route path='/updatekelas' element={<UpdataKelas />} exact />
         <Route path='/updateguru' element={<UpdateGuru />} exact />
+        <Route path='/pdf' element={<PDFpiket />} exact />
       </Routes>
     </div>
   );
