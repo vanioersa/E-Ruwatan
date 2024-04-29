@@ -42,7 +42,7 @@ const TambahSiswa = () => {
     e.preventDefault();
     Swal.fire({
       title: "Apakah Anda yakin?",
-      text: "Data murid akan disimpan",
+      text: "Data siswa akan disimpan",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -55,7 +55,7 @@ const TambahSiswa = () => {
           await createSiswa({ ...siswa, kelasId: selectedKelas });
           Swal.fire({
             title: "Berhasil",
-            text: "Murid berhasil ditambahkan",
+            text: "Siswa berhasil ditambahkan",
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
@@ -71,7 +71,7 @@ const TambahSiswa = () => {
           });
         } catch (error) {
           console.error("Gagal menambahkan siswa: ", error);
-          let errorMessage = "Gagal menambahkan murid. Silakan coba lagi.";
+          let errorMessage = "Gagal menambahkan siswa. Silakan coba lagi.";
           if (
             error.response &&
             error.response.data &&
@@ -92,7 +92,7 @@ const TambahSiswa = () => {
   };
 
   const batal = () => {
-    window.location.href = "/siswa"
+    navigate(-1);
   }
 
   return (

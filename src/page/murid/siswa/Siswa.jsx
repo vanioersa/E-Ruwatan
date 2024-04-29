@@ -8,6 +8,7 @@ import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { CSVLink } from "react-csv";
+import * as xlsx from "xlsx";
 
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
@@ -72,12 +73,7 @@ function Siswa() {
       }
     });
   };
-
-  // Fungsi untuk mengganti halaman
-  const changePage = ({ selected }) => {
-    setPageNumber(selected);
-  };
-
+  
   // Filter data berdasarkan term pencarian
   const filteredSiswa = siswa.filter((s) => {
     const kelasNama = kelas.find((k) => k.id === s.kelasId)?.kelas;
@@ -85,16 +81,13 @@ function Siswa() {
       (s.nama_siswa && s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.tempat && s.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.alamat && s.alamat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-
-  // Jumlah halaman yang dibutuhkan untuk paginasi
-  const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
-
+  
   // Siapkan data untuk ekspor
-  const dataToExport = filteredSiswa.map((s, index) => ({
-    No: index + 1 + pagesVisited,
+  const dataToExport = filteredSiswa.map((s) => ({
     "Nama Siswa": s.nama_siswa,
     NISN: s.nisn,
     "Tempat Lahir": s.tempat,
@@ -104,13 +97,45 @@ function Siswa() {
 
   // Siapkan header untuk file CSV
   const headers = [
-    { label: "NO", key: "No" },
     { label: "NAMA SISWA", key: "Nama Siswa" },
     { label: "NISN", key: "NISN" },
     { label: "TEMPAT LAHIR", key: "Tempat Lahir" },
     { label: "KELAS", key: "Kelas" },
     { label: "ALAMAT", key: "Alamat" },
   ];
+
+  const exportToXlsx = () => {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+    
+    const colWidths = [
+      { wch: 15 },
+      { wch: 10 },
+      { wch: 15 },
+      { wch: 10 },
+      { wch: 20 },
+    ];
+  
+    worksheet["!cols"] = colWidths;
+    
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
+    const xlsxBuffer = xlsx.write(workbook, { bookType: "xlsx", type: "buffer" });
+    const blob = new Blob([xlsxBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "data_siswa.xlsx";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  
+    // Fungsi untuk mengganti halaman
+    const changePage = ({ selected }) => {
+      setPageNumber(selected);
+    };
+
+  // Jumlah halaman yang dibutuhkan untuk paginasi
+  const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -134,14 +159,12 @@ function Siswa() {
                   <FontAwesomeIcon icon={faPlus} /> Tambah Siswa
                 </button>
               </Link>
-              <CSVLink
-                data={dataToExport}
-                headers={headers}
-                filename="data_siswa.csv"
+              <button
+                onClick={exportToXlsx}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Siswa
-              </CSVLink>
+              </button>
             </div>
           </div>
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">

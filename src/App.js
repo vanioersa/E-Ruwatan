@@ -54,8 +54,8 @@ function App() {
             <Route path="/tambahguru" element={<TambahGuru />} />
             <Route path="/tambahkbm" element={<TambahKBM />} />
             <Route path="/tambahpiketan" element={<TambahPiketan />} />
-            <Route path="/updatesiswa" element={<UpdateSiswa />} />
-            <Route path="/updatekelas/:id" element={<UpdataKelas />} />
+            <Route path="/EditSiswa/:id" element={<UpdateSiswa />} />
+            <Route path="/EditKelas/:id" element={<UpdataKelas />} />
             <Route path="/updateguru" element={<UpdateGuru />} />
             <Route path="/pdf" element={<PDFpiket />} />
           </>
@@ -73,8 +73,8 @@ function App() {
             <Route path="/tambahguru" element={<Login />}/>
             <Route path="/tambahkbm" element={<Login />}/>
             <Route path="/tambahpiketan" element={<Login />}/>
-            <Route path="/updatesiswa" element={<Login />}/>
-            <Route path="/updatekelas/:id" element={<Login />}/>
+            <Route path="/EditSiswa/:id" element={<Login />}/>
+            <Route path="/EditKelas/:id" element={<Login />}/>
             <Route path="/updateguru" element={<Login />}/>
             <Route path="/pdf" element={<Login />}/>
           </>
