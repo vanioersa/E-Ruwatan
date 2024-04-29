@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import IconLoader from "./Loader";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
   // State untuk sidebar dan loading
@@ -55,6 +56,38 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  function logout() {
+    // Tampilkan SweetAlert2 konfirmasi sebelum logout
+    Swal.fire({
+      title: "Logout",
+      text: "Apakah Anda yakin ingin logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Hapus item dari local storage saat logout
+        localStorage.removeItem("token");
+        // Tampilkan pesan berhasil logout dengan timer
+        Swal.fire({
+          title: "Logout Berhasil",
+          text: "Anda telah berhasil logout.",
+          icon: "success",
+          timer: 2000, // Durasi timer dalam milidetik (2 detik)
+          showConfirmButton: false, // Sembunyikan tombol konfirmasi
+          willClose: () => {
+            // Redirect ke halaman login setelah timer selesai
+            window.location.href = "/";
+          },
+        });
+      }
+    });
+  }
+  
 
   return (
     <div>
@@ -129,12 +162,12 @@ const Sidebar = () => {
             </a>
           </li>
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
-            <a href="/" className="flex items-center">
+            <button onClick={()=> logout()} href="/" className="flex items-center">
               <FontAwesomeIcon icon={faRightToBracket} className="ml-3 mr-2" />
               <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
                 Keluar
               </span>
-            </a>
+            </button>
           </li>
         </ul>
       </div>

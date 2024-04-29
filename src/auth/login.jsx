@@ -58,6 +58,9 @@ function Logins() {
                     });
 
                     if (userData.role === "MURID") {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, [2000])
                         navigate("/dashboard_siswa");
                     } else if (userData.role === "GURU") {
                         navigate("/dashboard_guru");
@@ -74,7 +77,6 @@ function Logins() {
                 } else {
                     errorMessage = error.response?.data?.message || "Terjadi kesalahan";
                 }
-
                 Swal.fire({
                     icon: "error",
                     title: "Login Gagal",
