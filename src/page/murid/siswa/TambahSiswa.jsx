@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
-import { createSiswa } from "./api_siswa";
+import { createSiswa } from "../siswa/api_siswa";
 
 const TambahSiswa = () => {
   const [siswa, setSiswa] = useState({
@@ -59,7 +59,11 @@ const TambahSiswa = () => {
         } catch (error) {
           console.error("Failed to add Siswa: ", error);
           let errorMessage = "Gagal menambahkan siswa. Silakan coba lagi.";
-          if (error.response && error.response.data && error.response.data.message) {
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
             errorMessage = error.response.data.message;
           }
           Swal.fire({
@@ -72,7 +76,6 @@ const TambahSiswa = () => {
       }
     });
   };
-  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -134,17 +137,19 @@ const TambahSiswa = () => {
                 >
                   Kelas
                 </label>
-                <input
-                  type="text"
+                <select
                   id="kelas"
                   name="kelas"
                   value={siswa.kelas}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Nama Kelas"
                   required
-                  autoComplete="off"
-                />
+                >
+                  <option value="">Pilih Kelas</option>
+                  <option value="10">10 Tkj</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                </select>
               </div>
               <div className="relative">
                 <label
