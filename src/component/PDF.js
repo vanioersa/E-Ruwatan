@@ -10,14 +10,12 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { getAllSiswa } from "../page/murid/siswa/api_siswa";
-
-// Import font
 import PoppinsRegular from "../fonts/Poppins-Regular.ttf";
 
-// Register font
+// Register Poppins font
 Font.register({ family: "Poppins", src: PoppinsRegular });
 
-// Create styles
+// Create and register styles
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
@@ -44,27 +42,38 @@ const styles = StyleSheet.create({
     borderBottomColor: "black",
   },
   date: {
-    marginBottom: 10,
     fontSize: 11,
     textAlign: "right",
+    marginBottom: 10,
   },
   table: {
-    flexDirection: "row",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    alignItems: "center",
-    textAlign: "center",
+    flexDirection: "column",
+    marginTop: 10,
   },
   tableHeader: {
-    backgroundColor: "#b6895b",
+    backgroundColor: "#1e40af",
     color: "white",
-    fontWeight: "bold",
-    padding: 5,
+    fontWeight: "extrabold",
+    padding: 6,
+    flexDirection: "row",
+  },
+  cell2: {
+    padding: 6,
     flex: 1,
+    fontSize: 12,
+    fontWeight: "extrabold",
+    textAlign: "center", // Optional: Center align all texts in cells
   },
   cell: {
-    padding: 5,
+    padding: 6,
     flex: 1,
+    fontSize: 12,
+    fontWeight: "extrabold",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
+  },
+  lastCell: {
+    borderRightWidth: 0, // Ensure no right border for the last cell
   },
   smkText: {
     fontSize: 18,
@@ -73,16 +82,21 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
-    borderBottomColor: "black",
+    backgroundColor: "#f9fafb",
     borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
     alignItems: "center",
-    flexWrap: "wrap",
   },
   tableData: {
-    padding: 5,
-    flex: 1,
-    wordWrap: "break-word",
-    textAlign: "center",
+    flex: 1, // Ensuring flex is applied to maintain consistency in width
+    color: "#4b5563",
+    fontSize: 11,
+  },
+  oddRow: {
+    backgroundColor: "#ffffff",
+  },
+  evenRow: {
+    backgroundColor: "#f9fafb",
   },
 });
 
@@ -94,8 +108,10 @@ const PDFpiket = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const students = await getAllSiswa();
-        setData(students);
+        const response = await getAllSiswa();
+        setData(
+          response.map((student) => ({ ...student, nama: student.nama_siswa }))
+        );
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -131,36 +147,34 @@ const PDFpiket = () => {
             <Text style={styles.hr} />
             <Text style={styles.date}>Tanggal: {currentDate}</Text>
             <View style={styles.table}>
-              <Text
-                style={[styles.tableHeader, styles.cell, { textAlign: "left" }]}
-              >
-                No.
-              </Text>
-              <Text style={[styles.tableHeader, styles.cell]}>Nama</Text>
-              <Text style={[styles.tableHeader, styles.cell]}>Sakit</Text>
-              <Text style={[styles.tableHeader, styles.cell]}>Izin</Text>
-              <Text style={[styles.tableHeader, styles.cell]}>Alfa</Text>
-            </View>
-
-            {data.map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text
-                  style={[styles.cell, styles.tableData, { textAlign: "left" }]}
-                >
-                  {index + 1}.
-                </Text>
-                <Text style={[styles.cell, styles.tableData]}>{item.nama}</Text>
-                <Text style={[styles.cell, styles.tableData]}>
-                  {item.sakit ? "✓" : "-"}
-                </Text>
-                <Text style={[styles.cell, styles.tableData]}>
-                  {item.izin ? "✓" : "-"}
-                </Text>
-                <Text style={[styles.cell, styles.tableData]}>
-                  {item.alfa ? "✓" : "-"}
-                </Text>
+              <View style={styles.tableHeader}>
+                <Text style={styles.cell2}>No.</Text>
+                <Text style={styles.cell2}>Nama</Text>
+                <Text style={styles.cell2}>Sakit</Text>
+                <Text style={styles.cell2}>Izin</Text>
+                <Text style={[styles.cell2]}>Alfa</Text>
               </View>
-            ))}
+
+              {data.map((item, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.tableRow,
+                    index % 2 === 0 ? styles.evenRow : styles.oddRow,
+                  ]}
+                >
+                  <Text style={[styles.cell, styles.tableData]}>
+                    {index + 1}.
+                  </Text>
+                  <Text style={styles.cell}>{item.nama}</Text>
+                  <Text style={styles.cell}>{item.sakit ? "✓" : "-"}</Text>
+                  <Text style={styles.cell}>{item.izin ? "✓" : "-"}</Text>
+                  <Text style={[styles.cell, styles.lastCell]}>
+                    {item.alfa ? "✓" : "-"}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </Page>
       </Document>
