@@ -30,19 +30,16 @@ function App() {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
-      navigate("/");
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="App">
       <Routes>
-        {/* Rute ke halaman login jika pengguna belum login */}
         <Route path="/" element={<Login />} />
         <Route path="/register_siswa" element={<RegisterSiswa />} />
         <Route path="/register_guru" element={<RegisterGuru />} />
 
-        {/* Rute ke halaman lain */}
         {isLoggedIn ? (
           <>
             <Route path="/dashboard_siswa" element={<DashboardSiswa />} />
@@ -62,7 +59,26 @@ function App() {
             <Route path="/updateguru" element={<UpdateGuru />} />
             <Route path="/pdf" element={<PDFpiket />} />
           </>
-        ) : null}
+        ) : (
+          <>
+            <Route path="/dashboard_siswa" element={<Login />}/>
+            <Route path="/dashboard_guru" element={<Login />}/>
+            <Route path="/piketan_guru/" element={<Login />}/>
+            <Route path="/kbm_guru/" element={<Login />}/>
+            <Route path="/siswa" element={<Login />}/>
+            <Route path="/kelas" element={<Login />}/>
+            <Route path="/guru" element={<Login />}/>
+            <Route path="/tambahsiswa" element={<Login />}/>
+            <Route path="/tambahkelas" element={<Login />}/>
+            <Route path="/tambahguru" element={<Login />}/>
+            <Route path="/tambahkbm" element={<Login />}/>
+            <Route path="/tambahpiketan" element={<Login />}/>
+            <Route path="/updatesiswa" element={<Login />}/>
+            <Route path="/updatekelas/:id" element={<Login />}/>
+            <Route path="/updateguru" element={<Login />}/>
+            <Route path="/pdf" element={<Login />}/>
+          </>
+        )}
       </Routes>
     </div>
   );
