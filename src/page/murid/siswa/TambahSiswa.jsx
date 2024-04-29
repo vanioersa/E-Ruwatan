@@ -38,7 +38,7 @@ const TambahSiswa = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await createSiswa(siswa);
+          const response = await createSiswa(siswa);
           Swal.fire({
             title: "Berhasil",
             text: "Siswa berhasil ditambahkan",
@@ -48,6 +48,7 @@ const TambahSiswa = () => {
           }).then(() => {
             window.location.href = "/Siswa";
           });
+          // Resetting form state should be here if needed before redirection
           setSiswa({
             nama: "",
             nisn: "",
@@ -58,24 +59,20 @@ const TambahSiswa = () => {
         } catch (error) {
           console.error("Failed to add Siswa: ", error);
           let errorMessage = "Gagal menambahkan siswa. Silakan coba lagi.";
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
+          if (error.response && error.response.data && error.response.data.message) {
             errorMessage = error.response.data.message;
           }
           Swal.fire({
             title: "Gagal",
             text: errorMessage,
             icon: "error",
-            showConfirmButton: false,
-            timer: 2000,
+            showConfirmButton: true, // Changed to true to allow users to acknowledge the error
           });
         }
       }
     });
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
