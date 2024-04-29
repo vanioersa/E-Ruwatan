@@ -58,9 +58,6 @@ function Logins() {
                     });
 
                     if (userData.role === "MURID") {
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, [2000])
                         navigate("/dashboard_siswa");
                     } else if (userData.role === "GURU") {
                         navigate("/dashboard_guru");
