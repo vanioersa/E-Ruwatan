@@ -57,34 +57,36 @@ const Sidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const handleLogout = () => {
+  function logout() {
+    // Tampilkan SweetAlert2 konfirmasi sebelum logout
     Swal.fire({
-      title: "Apakah anda yakin ingin keluar?",
+      title: "Logout",
       text: "Anda harus login kembali apabila keluar dari aplikasi ini!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, keluar!",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Assuming you're handling session destruction or similar on redirection
-        window.location.href = "/";
-
-        // Set a delay to allow the page to load, then show the success alert
-        setTimeout(() => {
-          Swal.fire({
-            title: "Keluar Berhasil!",
-            text: "Anda berhasil keluar dari aplikasi.",
-            icon: "success",
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-          });
-        }, 500); // Adjust the delay as needed based on your application's behavior
+        // Hapus item dari local storage saat logout
+        localStorage.removeItem("token");
+        // Tampilkan pesan berhasil logout dengan timer
+        Swal.fire({
+          title: "Logout Berhasil",
+          text: "Anda telah berhasil logout.",
+          icon: "success",
+          timer: 2000, // Durasi timer dalam milidetik (2 detik)
+          showConfirmButton: false, // Sembunyikan tombol konfirmasi
+          willClose: () => {
+            // Redirect ke halaman login setelah timer selesai
+            window.location.href = "/";
+          },
+        });
       }
     });
-  };
+  }
 
   return (
     <div>
@@ -119,9 +121,8 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
@@ -175,7 +176,7 @@ const Sidebar = () => {
             </a>
           </li>
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
-            <button onClick={handleLogout} className="flex items-center w-full">
+            <button onClick={() => logout()} className="flex items-center w-full">
               <FontAwesomeIcon icon={faRightToBracket} className="ml-3 mr-2" />
               <span
                 style={{ fontFamily: "Segoe UI" }}
@@ -190,9 +191,8 @@ const Sidebar = () => {
 
       {/* Konten */}
       <div
-        className={`ml-0 md:ml-56 transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "md:ml-0" : "-md:ml-64"
-        }`}
+        className={`ml-0 md:ml-56 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"
+          }`}
       ></div>
     </div>
   );
