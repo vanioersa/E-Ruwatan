@@ -1,34 +1,48 @@
 import React, { useState } from "react";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
-import { createSiswa } from "../siswa/api_siswa";
+import { createSiswa } from "../";
 
 const TambahSiswa = () => {
-  const [siswa, setSiswa] = useState({
+  const [murid, setMurid] = useState({
     nama: "",
+    nik: "",
     nisn: "",
-    kelas: "",
-    tempatLahir: "",
+    lahir: "",
     alamat: "",
   });
+  const [kelasJurusan, setKelasJurusan] = useState([]);
+  const [selectedKelasJurusan, setSelectedKelasJurusan] = useState("");
+  const history = useHistory();
+
+  const fetchKelasJurusan = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/tugas_akhir/api/kelas/all"
+      );
+      setKelasJurusan(response.data);
+    } catch (error) {
+      console.error("Failed to fetch Kelas and Jurusan: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchKelasJurusan();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSiswa((prevSiswa) => ({
-      ...prevSiswa,
+    setMurid((prevMurid) => ({
+      ...prevMurid,
       [name]: value,
     }));
-  };
-
-  const batal = () => {
-    window.location.href = "/Siswa";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     Swal.fire({
       title: "Apakah Anda yakin?",
-      text: "Data siswa akan disimpan",
+      text: "Data murid akan disimpan",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -38,27 +52,26 @@ const TambahSiswa = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await createSiswa(siswa);
+          await createMurid({ ...murid, kelasId: selectedKelasJurusan });
           Swal.fire({
             title: "Berhasil",
-            text: "Siswa berhasil ditambahkan",
+            text: "Murid berhasil ditambahkan",
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {
-            window.location.href = "/Siswa";
+            history.goBack();
           });
-          // Resetting form state should be here if needed before redirection
-          setSiswa({
+          setMurid({
             nama: "",
+            nik: "",
             nisn: "",
-            kelas: "",
-            tempatLahir: "",
+            lahir: "",
             alamat: "",
           });
         } catch (error) {
-          console.error("Failed to add Siswa: ", error);
-          let errorMessage = "Gagal menambahkan siswa. Silakan coba lagi.";
+          console.error("Failed to add Murid: ", error);
+          let errorMessage = "Gagal menambahkan murid. Silakan coba lagi.";
           if (
             error.response &&
             error.response.data &&
@@ -70,7 +83,8 @@ const TambahSiswa = () => {
             title: "Gagal",
             text: errorMessage,
             icon: "error",
-            showConfirmButton: true, // Changed to true to allow users to acknowledge the error
+            showConfirmButton: false,
+            timer: 2000,
           });
         }
       }
@@ -146,7 +160,7 @@ const TambahSiswa = () => {
                   required
                 >
                   <option value="">Pilih Kelas</option>
-                  <option value="10">10 Tkj</option>
+                  <option value="10">10</option>
                   <option value="11">11</option>
                   <option value="12">12</option>
                 </select>

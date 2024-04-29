@@ -57,13 +57,6 @@ const styles = StyleSheet.create({
     padding: 6,
     flexDirection: "row",
   },
-  cell2: {
-    padding: 6,
-    flex: 1,
-    fontSize: 12,
-    fontWeight: "extrabold",
-    textAlign: "center", // Optional: Center align all texts in cells
-  },
   cell: {
     padding: 6,
     flex: 1,
@@ -71,7 +64,14 @@ const styles = StyleSheet.create({
     fontWeight: "extrabold",
     borderRightWidth: 1,
     borderRightColor: "#ccc",
-    // boxShadow: "1"
+  },
+  cell2: {
+    // For headers, mirroring `cell` styles
+    padding: 6,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: "extrabold",
+    textAlign: "center",
   },
   lastCell: {
     borderRightWidth: 0, // Ensure no right border for the last cell
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tableData: {
-    flex: 1, 
+    flex: 1,
     color: "#4b5563",
     fontSize: 11,
   },
@@ -135,7 +135,7 @@ const PDFpiket = () => {
 
   return (
     <PDFViewer style={{ width: "100%", height: "100vh" }}>
-      <Document>
+      <Document title={`E-Ruwatan ${currentDate}`}>
         <Page size="A4" style={styles.page}>
           <View style={styles.section}>
             <View style={styles.logoContainer}>
@@ -149,11 +149,22 @@ const PDFpiket = () => {
             <Text style={styles.date}>Tanggal: {currentDate}</Text>
             <View style={styles.table}>
               <View style={styles.tableHeader}>
-                <Text style={styles.cell2}>No.</Text>
+                <Text style={[styles.cell2, { maxWidth: "40px" }, { flex: 1 }]}>
+                  No.
+                </Text>
                 <Text style={styles.cell2}>Nama</Text>
-                <Text style={styles.cell2}>Sakit</Text>
-                <Text style={styles.cell2}>Izin</Text>
-                <Text style={[styles.cell2]}>Alfa</Text>
+                <Text style={[styles.cell2, { maxWidth: "50px" }, { flex: 1 }]}>
+                  Masuk
+                </Text>
+                <Text style={[styles.cell2, { maxWidth: "50px" }, { flex: 1 }]}>
+                  Sakit
+                </Text>
+                <Text style={[styles.cell2, { maxWidth: "50px" }, { flex: 1 }]}>
+                  Izin
+                </Text>
+                <Text style={[styles.cell2, { maxWidth: "50px" }, { flex: 1 }]}>
+                  Alfa
+                </Text>
               </View>
 
               {data.map((item, index) => (
@@ -164,14 +175,29 @@ const PDFpiket = () => {
                     index % 2 === 0 ? styles.evenRow : styles.oddRow,
                   ]}
                 >
-                  <Text style={[styles.cell, styles.tableData]}>
+                  <Text
+                    style={[
+                      styles.cell,
+                      styles.tableData,
+                      { maxWidth: "40px" },
+                    ]}
+                  >
                     {index + 1}.
                   </Text>
                   <Text style={styles.cell}>{item.nama}</Text>
-                  <Text style={styles.cell}>{item.sakit ? "✓" : "-"}</Text>
-                  <Text style={styles.cell}>{item.izin ? "✓" : "-"}</Text>
-                  <Text style={[styles.cell, styles.lastCell]}>
-                    {item.alfa ? "✓" : "-"}
+                  <Text style={[styles.cell, { maxWidth: "50px" }, { textAlign: "center" }]}>
+                    {item.masuk ? "X" : "-"}
+                  </Text>
+                  <Text style={[styles.cell, { maxWidth: "50px" }, { textAlign: "center" }]}>
+                    {item.sakit ? "X" : "-"}
+                  </Text>
+                  <Text style={[styles.cell, { maxWidth: "50px" }, { textAlign: "center" }]}>
+                    {item.izin ? "X" : "-"}
+                  </Text>
+                  <Text
+                    style={[styles.cell, styles.lastCell, { maxWidth: "50px" }, { textAlign: "center" }]}
+                  >
+                    {item.alfa ? "X" : "-"}
                   </Text>
                 </View>
               ))}
