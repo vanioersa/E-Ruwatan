@@ -166,7 +166,7 @@ const TambahSiswa = () => {
                   <option value="">Pilih Kelas dan Nama Kelas</option>
                     {kelas.map((kelas) => (
                       <option key={kelas.id} value={kelas.id}>
-                        {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                        {`${kelas.kelas}`}
                       </option>
                     ))}
                 </select>

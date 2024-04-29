@@ -187,7 +187,7 @@ const UpdateSiswa = () => {
                   <option value="">Pilih Kelas</option>
                   {kelasJurusan.map((kelas) => (
                     <option key={kelas.id} value={kelas.id}>
-                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                      {`${kelas.kelas}`}
                     </option>
                   ))}
                 </select>
