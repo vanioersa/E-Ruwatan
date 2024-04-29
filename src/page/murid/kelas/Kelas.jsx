@@ -13,10 +13,10 @@ import {
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { getAllKelas, deleteKelas } from "./api_kelas";
+import { importKelas, getAllKelas, deleteKelas } from "./api_kelas";
 import ReactPaginate from "react-paginate";
 import { CSVLink } from "react-csv";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 function Kelas() {
   const [kelas, setKelas] = useState([]);
@@ -25,6 +25,49 @@ function Kelas() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const kelasPerPage = 10;
   const pagesVisited = pageNumber * kelasPerPage;
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileSelect = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleImportData = () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      importKelas(formData)
+        .then((response) => {
+          Swal.fire({
+            title: "Berhasil",
+            text: "Data kelas berhasil diimport",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
+          });
+        })
+        .catch((error) => {
+          console.error("Error importing data:", error);
+          Swal.fire({
+            title: "Error",
+            text: "Gagal mengimpor data",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        });
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "Mohon pilih file untuk diimpor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  };
 
   // Fetch data for Kelas from the API
   useEffect(() => {
@@ -62,7 +105,13 @@ function Kelas() {
           });
         } catch (error) {
           console.error("Failed to delete Kelas: ", error);
-          Swal.fire("Gagal", `Gagal menghapus kelas ${kelasName}`, "error");
+          Swal.fire({
+            title: "Gagal",
+            text: `Gagal menghapus kelas ${kelasName}`,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000,
+          });
         }
       }
     });
@@ -85,14 +134,14 @@ function Kelas() {
   const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
 
   const headers = [
-    { label: "NO", key: "No", width: 1 },
+    // { label: "NO.", key: "No.", width: 1 },
     { label: "NAMA KELAS", key: "Nama Kelas", width: 10 },
     { label: "KELAS", key: "Kelas", width: 5 },
   ];
 
   // Prepare data for export
   const dataToExport = filteredKelas.map((k, index) => ({
-    No: index + 1 + pagesVisited + ".",
+    // No: index + 1 + pagesVisited + ".",
     "Nama Kelas": k.nama_kelas,
     Kelas: k.kelas,
   }));
@@ -106,56 +155,83 @@ function Kelas() {
 
   // Prepare options for Excel export
   const excelOptions = {
-    bookType: 'xlsx',
-    type: 'array',
+    bookType: "xlsx",
+    type: "array",
   };
 
   // Export data to Excel
   const handleExportExcel = () => {
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const columnWidths = [
-      { wpx: 25 },
-      { wpx: 70 },
-      { wpx: 45 },
-    ];
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data kelas yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
 
-    worksheet['!cols'] = columnWidths;
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data kelas?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const columnWidths = [{ wpx: 65 }, { wpx: 30 }];
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const excelBuffer = XLSX.write(workbook, excelOptions);
+        worksheet["!cols"] = columnWidths;
 
-    const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const excelUrl = URL.createObjectURL(excelData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        const excelBuffer = XLSX.write(workbook, excelOptions);
 
-    const link = document.createElement('a');
-    link.href = excelUrl;
-    link.download = 'data_kelas.xlsx';
-    link.click();
+        const excelData = new Blob([excelBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const excelUrl = URL.createObjectURL(excelData);
+
+        const link = document.createElement("a");
+        link.href = excelUrl;
+        link.download = "data_kelas.xlsx";
+        link.click();
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data kelas berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    });
   };
 
   const handleDownloadTemplate = () => {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
-      ["NO", "NAMA KELAS", "KELAS"],
-      [null, null, null] // Dummy row to set widths
+      ["NAMA KELAS", "KELAS"],
+      [null, null, null], // Dummy row to set widths
     ]);
   
     // Set column widths
-    const columnWidths = [
-      { wpx: 25 },
-      { wpx: 70 },
-      { wpx: 45 },
-    ];
-    
-    worksheet['!cols'] = columnWidths;
+    const columnWidths = [{ wpx: 70 }, { wpx: 40 }];
+  
+    worksheet["!cols"] = columnWidths;
   
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
   
     // Export workbook to XLSX file
-    const excelBuffer = XLSX.write(workbook, { type: "array", bookType: "xlsx" });
+    const excelBuffer = XLSX.write(workbook, {
+      type: "array",
+      bookType: "xlsx",
+    });
     const excelData = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     const excelUrl = URL.createObjectURL(excelData);
   
@@ -163,6 +239,16 @@ function Kelas() {
     link.href = excelUrl;
     link.download = "template_kelas.xlsx";
     link.click();
+  
+    Swal.fire({
+      title: "Berhasil",
+      text: "Template kelas berhasil diunduh",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+    }).then(() => {
+      window.location.reload();
+    });
   };
 
   return (
@@ -195,7 +281,7 @@ function Kelas() {
               </button>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <FontAwesomeIcon icon={faFileImport} /> Import Kelas
               </button>
@@ -290,49 +376,44 @@ function Kelas() {
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.12)",
             }}
           >
-            <h2 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "1rem" }}>Import Data Kelas</h2>
-            <input type="file" accept=".csv, .xlsx" />
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+            <h2
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: 600,
+                marginBottom: "1rem",
+              }}
+            >
+              Import Data Kelas
+            </h2>
+            <input
+              type="file"
+              accept=".csv, .xlsx"
+              onChange={handleFileSelect}
+            />
+            <div
+              style={{
+                display: "flex",
+                marginTop: "1rem",
+              }}
+            >
               <button
                 onClick={() => setIsModalOpen(false)}
-                style={{
-                  backgroundColor: "#718096",
-                  color: "#fff",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "0.375rem",
-                  outline: "none",
-                  border: "none",
-                  marginRight: "0.5rem",
-                }}
+                className="bg-red-500 hover:bg-red-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Close
               </button>
               <button
-                style={{
-                  backgroundColor: "#48bb78",
-                  color: "#fff",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "0.375rem",
-                  outline: "none",
-                  border: "none",
-                }}
+                onClick={handleImportData}
+                className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Import
+                Impor
               </button>
               <button
-  onClick={handleDownloadTemplate}
-  style={{
-    backgroundColor: "#48bb78",
-    color: "#fff",
-    padding: "0.5rem 1rem",
-    borderRadius: "0.375rem",
-    outline: "none",
-    border: "none",
-    marginLeft: "0.5rem",
-  }}
->
-  <FontAwesomeIcon icon={faDownload} /> Download Template
-</button>
+                onClick={handleDownloadTemplate}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <FontAwesomeIcon icon={faDownload} /> Download Template
+              </button>
             </div>
           </div>
         </div>
