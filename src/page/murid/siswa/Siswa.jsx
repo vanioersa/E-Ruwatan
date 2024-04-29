@@ -130,7 +130,7 @@ function Siswa() {
             />
             <div className="flex">
               <Link to="/TambahSiswa">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Siswa
                 </button>
               </Link>

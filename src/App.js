@@ -20,31 +20,40 @@ import UpdateGuru from './page/murid/guru/UpdateGuru';
 import PDFpiket from './component/PDF';
 
 function App() {
-  return (
-    <div className="App">
-      <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path='/register_siswa' element={<RegisterSiswa />} />
-        <Route path='/register_guru' element={<RegisterGuru />} />
-        <Route path='/dashboard_siswa/*' element={<DashboardSiswa />} exact />
-        <Route path='/dashboard_guru/*' element={<DashboardGuru />} exact />
-        <Route path='/piketan_guru/' element={<PiketanGuru />} exact />
-        <Route path='/kbm_guru/' element={<KBMGuru />} exact />
-        <Route path='/siswa' element={<Siswa />} exact />
-        <Route path='/kelas' element={<Kelas />} exact />
-        <Route path='/guru' element={<Guru />} exact />
-        <Route path='/tambahsiswa' element={<TambahSiswa />} exact />
-        <Route path='/tambahkelas' element={<TambahKelas />} exact />
-        <Route path='/tambahguru' element={<TambahGuru />} exact />
-        <Route path='/tambahkbm' element={<TambahKBM />} exact />
-        <Route path='/tambahpiketan' element={<TambahPiketan />} exact />
-        <Route path='/updatesiswa' element={<UpdateSiswa />} exact />
-        <Route path='/updatekelas/:id' element={<UpdataKelas />} exact />
-        <Route path='/updateguru' element={<UpdateGuru />} exact />
-        <Route path='/pdf' element={<PDFpiket />} exact />
-      </Routes>
-    </div>
-  );
+    const token = localStorage.getItem("token");
+
+    return (
+        <div className="App">
+            <Routes>
+                {/* Rute ke halaman login jika token null */}
+                {token === null ? (
+                    <Route path='/' element={<Login />} />
+                ) : (
+                    // Jika token tidak null, arahkan ke halaman lain
+                    <>
+                        <Route path='/register_siswa' element={<RegisterSiswa />} />
+                        <Route path='/register_guru' element={<RegisterGuru />} />
+                        <Route path="/dashboard_siswa" element={<DashboardSiswa />} />
+                        <Route path='/dashboard_guru' element={<DashboardGuru />} />
+                        <Route path='/piketan_guru/' element={<PiketanGuru />} />
+                        <Route path='/kbm_guru/' element={<KBMGuru />} />
+                        <Route path='/siswa' element={<Siswa />} />
+                        <Route path='/kelas' element={<Kelas />} />
+                        <Route path='/guru' element={<Guru />} />
+                        <Route path='/tambahsiswa' element={<TambahSiswa />} />
+                        <Route path='/tambahkelas' element={<TambahKelas />} />
+                        <Route path='/tambahguru' element={<TambahGuru />} />
+                        <Route path='/tambahkbm' element={<TambahKBM />} />
+                        <Route path='/tambahpiketan' element={<TambahPiketan />} />
+                        <Route path='/updatesiswa' element={<UpdateSiswa />} />
+                        <Route path='/updatekelas/:id' element={<UpdataKelas />} />
+                        <Route path='/updateguru' element={<UpdateGuru />} />
+                        <Route path='/pdf' element={<PDFpiket />} />
+                    </>
+                )}
+            </Routes>
+        </div>
+    );
 }
 
 export default App;
