@@ -56,7 +56,7 @@ function App() {
             <Route path="/tambahpiketan" element={<TambahPiketan />} />
             <Route path="/EditSiswa/:id" element={<UpdateSiswa />} />
             <Route path="/EditKelas/:id" element={<UpdataKelas />} />
-            <Route path="/updateguru" element={<UpdateGuru />} />
+            <Route path="/EditGuru/:id" element={<UpdateGuru />} />
             <Route path="/pdf" element={<PDFpiket />} />
           </>
         ) : (
@@ -75,7 +75,7 @@ function App() {
             <Route path="/tambahpiketan" element={<Login />}/>
             <Route path="/EditSiswa/:id" element={<Login />}/>
             <Route path="/EditKelas/:id" element={<Login />}/>
-            <Route path="/updateguru" element={<Login />}/>
+            <Route path="/EditGuru/:id" element={<Login />}/>
             <Route path="/pdf" element={<Login />}/>
           </>
         )}
