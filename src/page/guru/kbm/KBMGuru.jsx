@@ -1,73 +1,55 @@
-import React from 'react'
-import SidebarGuru from '../../../component/SidebarGuru'
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import React from "react";
+import SidebarGuru from "../../../component/SidebarGuru";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 function KBMGuru() {
-    return (
-        <div className='flex flex-col md:flex-row h-screen'>
-            <div className='w-full md:w-64'>
-                <SidebarGuru />
+  return (
+    <div className="flex flex-col md:flex-row h-screen">
+      <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
+        <SidebarGuru />
+      </div>
+      <div className="content-page flex-1 container p-8 overflow-y-auto">
+        <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+          <h1 className="text-3xl font-semibold text-gray-800">KBM Guru</h1>
+          <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <input
+              type="text"
+              placeholder="Cari KBM"
+              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
+            />
+            <div className="flex">
+              <Link to={`/tambahkbm`}>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <FontAwesomeIcon icon={faPlus} /> Tambah KBM
+                </button>
+              </Link>
             </div>
-            <div className='flex-1 container p-8 overflow-y-auto'>
-                <div className='my-20 border border-gray-200 bg-white p-5 rounded-xl shadow-lg'>
-                    <div className='bg-gray-700 shadow-sm rounded-lg p-4 flex justify-between items-center'>
-                        <h1 className='text-3xl text-white font-semibold'>
-                            KBM Guru
-                        </h1>
-                        <div className='flex items-center ml-auto'>
-                            <input
-                                type="text"
-                                placeholder='Cari KBM'
-                                className='rounded-lg shadow-xl px-3 py-3 bg-slate-100' />
-                        </div>
-                        <Link to={`/tambahkbm`}>
-                            <button className="ml-2 rounded-lg shadow-xl px-3 py-3 bg-slate-100">
-                                <FontAwesomeIcon
-                                    icon={faPlus}
-                                    className="h-5 w-5 text-blue-500"
-                                />
-                            </button>
-                        </Link>
-                    </div>
-                    <div className="overflow-x-auto rounded-lg border border-gray-200 mt-4">
-                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-s">
-                            <thead className="text-left">
-                                <tr>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        No
-                                    </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        Jam Masuk
-                                    </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        Jam Selesai
-                                    </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        Materi
-                                    </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        Keterangan
-                                    </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        Aksi
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+              <thead>
+                <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                  <th className="py-2 px-4 text-left">No</th>
+                  <th className="py-2 px-4 text-left">Jam Masuk</th>
+                  <th className="py-2 px-4 text-left">Jam Selesai</th>
+                  <th className="py-2 px-4 text-left">Materi</th>
+                  <th className="py-2 px-4 text-left">Keterangan</th>
+                  <th className="py-2 px-4 text-left">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
 
-export default KBMGuru
+export default KBMGuru;
