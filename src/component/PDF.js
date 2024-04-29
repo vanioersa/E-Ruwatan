@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontWeight: "extrabold",
     borderRightWidth: 1,
     borderRightColor: "#ccc",
+    // boxShadow: "1"
   },
   lastCell: {
     borderRightWidth: 0, // Ensure no right border for the last cell
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tableData: {
-    flex: 1, // Ensuring flex is applied to maintain consistency in width
+    flex: 1, 
     color: "#4b5563",
     fontSize: 11,
   },
