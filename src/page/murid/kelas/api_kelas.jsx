@@ -2,9 +2,24 @@ import axios from "axios";
 
 const apiUrl = "http://localhost:4001/kelas";
 
+export const importKelas = (formData) => {
+  return axios.post(`${apiUrl}/import`, formData)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const getAllKelas = async () => {
   try {
-    const response = await axios.get(`${apiUrl}/all`);
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${apiUrl}/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to fetch Kelas: ", error);
@@ -22,7 +37,7 @@ export const getKelasById = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Murid with id ${id}: `, error);
+    console.error(`Failed to fetch Kelas with id ${id}: `, error);
     throw error;
   }
 };
