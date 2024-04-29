@@ -217,14 +217,14 @@ function Kelas() {
       ["NAMA KELAS", "KELAS"],
       [null, null, null], // Dummy row to set widths
     ]);
-  
+
     // Set column widths
     const columnWidths = [{ wpx: 70 }, { wpx: 40 }];
-  
+
     worksheet["!cols"] = columnWidths;
-  
+
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  
+
     // Export workbook to XLSX file
     const excelBuffer = XLSX.write(workbook, {
       type: "array",
@@ -234,12 +234,12 @@ function Kelas() {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     const excelUrl = URL.createObjectURL(excelData);
-  
+
     const link = document.createElement("a");
     link.href = excelUrl;
     link.download = "template_kelas.xlsx";
     link.click();
-  
+
     Swal.fire({
       title: "Berhasil",
       text: "Template kelas berhasil diunduh",
@@ -253,7 +253,14 @@ function Kelas() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
+      <div
+        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${
+          isModalOpen ? "bg-gray-200" : ""
+        }`}
+        style={{
+          backgroundColor: isModalOpen ? "#F3F4F6" : "",
+        }}
+      >
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
@@ -365,15 +372,19 @@ function Kelas() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 10,
+            zIndex: 99,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
           <div
             style={{
               backgroundColor: "#fff",
               padding: "1.5rem",
+              width: "50%",
               borderRadius: "0.5rem",
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.12)",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <h2
@@ -386,34 +397,37 @@ function Kelas() {
               Import Data Kelas
             </h2>
             <input
+              style={{
+                border: "1px solid rgba(0, 0, 0, 0.5)",
+                padding: "5px",
+                width: "100%",
+                marginBottom: "1rem",
+              }}
               type="file"
               accept=".csv, .xlsx"
               onChange={handleFileSelect}
             />
-            <div
-              style={{
-                display: "flex",
-                marginTop: "1rem",
-              }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="bg-red-500 hover:bg-red-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Close
               </button>
-              <button
-                onClick={handleImportData}
-                className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Impor
-              </button>
-              <button
-                onClick={handleDownloadTemplate}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <FontAwesomeIcon icon={faDownload} /> Download Template
-              </button>
+              <div>
+                <button
+                  onClick={handleImportData}
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Impor
+                </button>
+                <button
+                  onClick={handleDownloadTemplate}
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Download Template
+                </button>
+              </div>
             </div>
           </div>
         </div>
