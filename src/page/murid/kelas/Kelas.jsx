@@ -15,7 +15,6 @@ import {
 import { Link } from "react-router-dom";
 import { importKelas, getAllKelas, deleteKelas } from "./api_kelas";
 import ReactPaginate from "react-paginate";
-import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 
 function Kelas() {
@@ -134,14 +133,12 @@ function Kelas() {
   const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
 
   const headers = [
-    // { label: "NO.", key: "No.", width: 1 },
-    { label: "NAMA KELAS", key: "Nama Kelas", width: 10 },
-    { label: "KELAS", key: "Kelas", width: 5 },
+    { label: "NAMA KELAS", key: "Nama Kelas" },
+    { label: "KELAS", key: "Kelas" },
   ];
 
   // Prepare data for export
-  const dataToExport = filteredKelas.map((k, index) => ({
-    // No: index + 1 + pagesVisited + ".",
+  const dataToExport = filteredKelas.map((k) => ({
     "Nama Kelas": k.nama_kelas,
     Kelas: k.kelas,
   }));
@@ -183,7 +180,7 @@ function Kelas() {
       if (result.isConfirmed) {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const columnWidths = [{ wpx: 65 }, { wpx: 30 }];
+        const columnWidths = [{ wch: 15 }, { wch: 10 }];
 
         worksheet["!cols"] = columnWidths;
 
@@ -219,7 +216,7 @@ function Kelas() {
     ]);
 
     // Set column widths
-    const columnWidths = [{ wpx: 70 }, { wpx: 40 }];
+    const columnWidths = [{ wch: 15 }, { wch: 10 }];
 
     worksheet["!cols"] = columnWidths;
 
