@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import IconLoader from "./Loader";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
   // State untuk sidebar dan loading
@@ -56,6 +57,35 @@ const Sidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Apakah anda yakin ingin keluar?",
+      text: "Anda harus login kembali apabila keluar dari aplikasi ini!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, keluar!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Assuming you're handling session destruction or similar on redirection
+        window.location.href = "/";
+
+        // Set a delay to allow the page to load, then show the success alert
+        setTimeout(() => {
+          Swal.fire({
+            title: "Keluar Berhasil!",
+            text: "Anda berhasil keluar dari aplikasi.",
+            icon: "success",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        }, 500); // Adjust the delay as needed based on your application's behavior
+      }
+    });
+  };
+
   return (
     <div>
       {loading && <IconLoader />}
@@ -89,17 +119,24 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
         <ul className="mt-6 text-xl mx-2 text-gray-600">
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
-            <button onClick={() => handleNavigation("/dashboard_siswa")} className="flex items-center">
+            <button
+              onClick={() => handleNavigation("/dashboard_siswa")}
+              className="flex items-center"
+            >
               <FontAwesomeIcon icon={faHome} className="mr-2" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-2 font-medium"
+              >
                 Dashboard
               </span>
             </button>
@@ -107,7 +144,10 @@ const Sidebar = () => {
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Siswa" className="flex items-center">
               <FontAwesomeIcon icon={faUser} className="mr-2" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-3 font-medium">
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-3 font-medium"
+              >
                 Siswa
               </span>
             </a>
@@ -115,7 +155,10 @@ const Sidebar = () => {
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Guru" className="flex items-center">
               <FontAwesomeIcon icon={faChalkboardTeacher} className="mr-2" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-1 font-medium">
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-1 font-medium"
+              >
                 Guru
               </span>
             </a>
@@ -123,28 +166,34 @@ const Sidebar = () => {
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer">
             <a href="/Kelas" className="flex items-center">
               <FontAwesomeIcon icon={faDoorOpen} className="mr-2" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-2 font-medium"
+              >
                 Kelas
               </span>
             </a>
           </li>
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0">
-            <a href="/" className="flex items-center">
+            <button onClick={handleLogout} className="flex items-center w-full">
               <FontAwesomeIcon icon={faRightToBracket} className="ml-3 mr-2" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-2 font-medium"
+              >
                 Keluar
               </span>
-            </a>
+            </button>
           </li>
         </ul>
       </div>
 
       {/* Konten */}
       <div
-        className={`ml-0 md:ml-56 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"
-          }`}
-      >
-      </div>
+        className={`ml-0 md:ml-56 transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "md:ml-0" : "-md:ml-64"
+        }`}
+      ></div>
     </div>
   );
 };
