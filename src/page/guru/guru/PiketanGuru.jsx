@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Axios from "axios";  // Import Axios if you choose to use it
 import SidebarGuru from "../../../component/SidebarGuru";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 function PiketanGuru() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [data, setData] = useState([]);
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Axios.get('http://localhost:4001/piketan/all'); // Change the URL to your actual API
+        setData(response.data); // Assuming the response has a data property which holds the array
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle error here, e.g., setting an error state
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once on mount
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredData = data.filter(item =>
+    item.kelas.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -18,6 +45,8 @@ function PiketanGuru() {
               type="text"
               placeholder="Cari Piketan"
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
+              value={searchTerm}
+              onChange={handleSearch}
             />
             <div className="flex">
               <Link to={`/tambahpiketan`}>
@@ -41,9 +70,17 @@ function PiketanGuru() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                </tr>
+                {filteredData.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td>{item.kelas}</td>
+                    <td>{item.tanggal}</td>
+                    <td>{item.izin}</td>
+                    <td>{item.sakit}</td>
+                    <td>{item.alfa}</td>
+                    <td>Actions here</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
