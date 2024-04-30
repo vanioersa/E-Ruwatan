@@ -89,7 +89,7 @@ const UpdataKelas = () => {
               <div className="relative">
                 <label
                   htmlFor="nama_kelas"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900 "
                 >
                   Nama Kelas
                 </label>
@@ -99,7 +99,7 @@ const UpdataKelas = () => {
                   name="nama_kelas"
                   value={kelas.nama_kelas}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   placeholder="Masukan Nama Kelas"
                   required
                   autoComplete="off"
@@ -108,7 +108,7 @@ const UpdataKelas = () => {
               <div className="relative">
                 <label
                   htmlFor="kelas"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Kelas
                 </label>
@@ -117,7 +117,7 @@ const UpdataKelas = () => {
                   name="kelas"
                   value={kelas.kelas}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -132,13 +132,13 @@ const UpdataKelas = () => {
               <button
                 type="button"
                 onClick={batal}
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-sm font-medium"
               >
                 Perbarui
               </button>
