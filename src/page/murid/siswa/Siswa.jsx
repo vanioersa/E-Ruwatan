@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Sidebar from "../../../component/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faEdit, faFileExport, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faTrash,
+  faEdit,
+  faFileExport,
+  faArrowLeft,
+  faArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import ReactPaginate from "react-paginate";
@@ -58,14 +65,13 @@ function Siswa() {
         try {
           await deleteSiswa(id);
           setSiswa((prevSiswa) => prevSiswa.filter((s) => s.id !== id));
-            Swal.fire({
-              title: "Berhasil",
-              text: `Data siswa ${namaSiswa} berhasil dihapus`,
-              icon: "success",
-              showConfirmButton: false,
-              timer: 2000
-            });
-          
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data siswa ${namaSiswa} berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          });
         } catch (error) {
           console.error("Gagal menghapus siswa: ", error);
           Swal.fire("Gagal", `Gagal menghapus siswa ${namaSiswa}`, "error");
@@ -73,19 +79,20 @@ function Siswa() {
       }
     });
   };
-  
+
   // Filter data berdasarkan term pencarian
   const filteredSiswa = siswa.filter((s) => {
     const kelasNama = kelas.find((k) => k.id === s.kelasId)?.kelas;
     return (
-      (s.nama_siswa && s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nama_siswa &&
+        s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.tempat && s.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.alamat && s.alamat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-  
+
   // Siapkan data untuk ekspor
   const dataToExport = filteredSiswa.map((s) => ({
     "Nama Siswa": s.nama_siswa,
@@ -107,7 +114,7 @@ function Siswa() {
   const exportToXlsx = () => {
     const workbook = xlsx.utils.book_new();
     const worksheet = xlsx.utils.json_to_sheet(dataToExport);
-    
+
     const colWidths = [
       { wch: 15 },
       { wch: 10 },
@@ -115,12 +122,17 @@ function Siswa() {
       { wch: 10 },
       { wch: 20 },
     ];
-  
+
     worksheet["!cols"] = colWidths;
-    
+
     xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
-    const xlsxBuffer = xlsx.write(workbook, { bookType: "xlsx", type: "buffer" });
-    const blob = new Blob([xlsxBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const xlsxBuffer = xlsx.write(workbook, {
+      bookType: "xlsx",
+      type: "buffer",
+    });
+    const blob = new Blob([xlsxBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -128,11 +140,11 @@ function Siswa() {
     link.click();
     URL.revokeObjectURL(url);
   };
-  
-    // Fungsi untuk mengganti halaman
-    const changePage = ({ selected }) => {
-      setPageNumber(selected);
-    };
+
+  // Fungsi untuk mengganti halaman
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   // Jumlah halaman yang dibutuhkan untuk paginasi
   const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
@@ -185,12 +197,19 @@ function Siswa() {
                   filteredSiswa
                     .slice(pagesVisited, pagesVisited + siswaPerPage)
                     .map((s, index) => (
-                      <tr key={s.id} className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out">
-                        <td className="py-2 px-4">{index + 1 + pagesVisited}</td>
+                      <tr
+                        key={s.id}
+                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                      >
+                        <td className="py-2 px-4">
+                          {index + 1 + pagesVisited}
+                        </td>
                         <td className="py-2 px-4">{s.nama_siswa}</td>
                         <td className="py-2 px-4">{s.nisn}</td>
                         <td className="py-2 px-4">{s.tempat}</td>
-                        <td className="py-2 px-4">{kelas.find((k) => k.id === s.kelasId)?.kelas}</td>
+                        <td className="py-2 px-4">
+                          {kelas.find((k) => k.id === s.kelasId)?.kelas}
+                        </td>
                         <td className="py-2 px-4">{s.alamat}</td>
                         <td className="py-2 px-4">
                           <div className="flex gap-2">
@@ -221,8 +240,8 @@ function Siswa() {
           </div>
           <div className="mt-4">
             <ReactPaginate
-              previousLabel={<FontAwesomeIcon icon={faArrowLeft}/>}
-              nextLabel={<FontAwesomeIcon icon={faArrowRight}/>}
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
+              nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
               pageCount={pageCount}
               onPageChange={changePage}
               containerClassName="pagination flex justify-center items-center gap-2"
