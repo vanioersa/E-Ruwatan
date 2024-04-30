@@ -87,7 +87,7 @@ const TambahKelas = () => {
               <div className="relative">
                 <label
                   htmlFor="nama_kelas"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Nama Kelas
                 </label>
@@ -97,7 +97,7 @@ const TambahKelas = () => {
                   name="nama_kelas"
                   value={kelas.nama_kelas}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nama Kelas"
                   required
                   autoComplete="off"
@@ -106,7 +106,7 @@ const TambahKelas = () => {
               <div className="relative">
                 <label
                   htmlFor="kelas"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Kelas
                 </label>
@@ -115,7 +115,7 @@ const TambahKelas = () => {
                   name="kelas"
                   value={kelas.kelas}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -135,7 +135,7 @@ const TambahKelas = () => {
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-700 py-3 text-sm sm:text-sm font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan
               </button>
