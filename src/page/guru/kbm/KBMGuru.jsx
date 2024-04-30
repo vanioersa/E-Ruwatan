@@ -2,16 +2,28 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faTrash,
+  faEdit,
+  faArrowLeft,
+  faArrowRight,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllKbms, deleteKbm } from "./api_kbm";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
+import { utils, write } from "xlsx";
+import * as xlsx from "xlsx";
 
 function KBMGuru() {
   const [kbmGuru, setKbmGuru] = useState([]);
   const [guru, setGuru] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
 
   // Ambil data KBM Guru dari API
   useEffect(() => {
@@ -65,7 +77,9 @@ function KBMGuru() {
       if (result.isConfirmed) {
         try {
           await deleteKbm(id);
-          setKbmGuru((prevKbmGuru) => prevKbmGuru.filter((kbm) => kbm.id !== id));
+          setKbmGuru((prevKbmGuru) =>
+            prevKbmGuru.filter((kbm) => kbm.id !== id)
+          );
           Swal.fire({
             title: "Berhasil",
             text: "Data KBM Guru berhasil dihapus",
@@ -87,11 +101,69 @@ function KBMGuru() {
     const kelasNama = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
     return (
       (namaGuru && namaGuru.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kbm.keterangan && kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase()))
+      (kelasNama &&
+        kelasNama.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kbm.materi &&
+        kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kbm.keterangan &&
+        kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
+
+  const pageCount = Math.ceil(filteredKBMGuru.length / itemsPerPage);
+  const changePage = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
+  const dataToExport = filteredKBMGuru.map((kbm) => ({
+    "nama guru": guru.find((g) => g.id === kbm.namaId)?.nama_guru,
+    Kelas: kelas.find((k) => k.id === kbm.kelasId)?.kelas || "",
+    "jam masuk": kbm.jam_masuk,
+    "jam pulang": kbm.jam_pulang,
+    "materi": kbm.materi,
+    "keterangan": kbm.keterangan,
+  }));
+
+  const headers = [
+    { label: "NAMA GURU", key: "Nama Guru" },
+    { label: "KELAS", key: "Kelas" },
+    { label: "JAM MASUK", key: "jam masuk" },
+    { label: "Jam PULANG", key: "jam pulang" },
+    { label: "MATERI", key: "Materi" },
+    { label: "KETERANGAN", key: "Keterangan" },
+  ];
+
+  const exportToXlsx = () => {
+
+    const workbook = utils.book_new();
+    const worksheet = utils.json_to_sheet(dataToExport);
+
+    const colWidths = [
+      { wch: 20 },
+      { wch: 10 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 30 },
+      { wch: 30 },
+    ];
+
+    worksheet["!cols"] = colWidths;
+
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Data KBM Guru");
+    const xlsxBuffer = xlsx.write(workbook, {
+      bookType: "xlsx",
+      type: "buffer",
+    });
+    const blob = new Blob([xlsxBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "data_kbm_guru.xlsx";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -115,6 +187,12 @@ function KBMGuru() {
                   <FontAwesomeIcon icon={faPlus} /> Tambah KBM
                 </button>
               </Link>
+              <button
+                onClick={exportToXlsx}
+                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <FontAwesomeIcon icon={faFileExport} /> Export Siswa
+              </button>
             </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
@@ -132,43 +210,69 @@ function KBMGuru() {
                 </tr>
               </thead>
               <tbody>
-                {filteredKBMGuru.map((kbm, index) => (
-                  <tr
-                    key={kbm.id}
-                    className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                  >
-                    <td className="py-2 px-4">{index + 1}</td>
-                    <td className="py-2 px-4">
-                      {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
-                    </td>
-                    <td className="py-2 px-4">
-                      {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
-                    </td>
-                    <td className="py-2 px-4">{kbm.jam_masuk}</td>
-                    <td className="py-2 px-4">{kbm.jam_pulang}</td>
-                    <td className="py-2 px-4">{kbm.materi}</td>
-                    <td className="py-2 px-4">{kbm.keterangan}</td>
-                    <td className="py-2 px-4">
-                      <div className="flex gap-2">
-                        <Link to={`/EditKBM/${kbm.id}`}>
-                          <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </button>
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteKBM(kbm.id)}
-                          className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                {filteredKBMGuru.length > 0
+                  ? filteredKBMGuru
+                      .slice(
+                        currentPage * itemsPerPage,
+                        (currentPage + 1) * itemsPerPage
+                      )
+                      .map((kbm, index) => (
+                        <tr
+                          key={kbm.id}
+                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          <td className="py-2 px-4">
+                            {currentPage * itemsPerPage + index + 1}
+                          </td>
+                          <td className="py-2 px-4">
+                            {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
+                          </td>
+                          <td className="py-2 px-4">
+                            {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
+                          </td>
+                          <td className="py-2 px-4">{kbm.jam_masuk}</td>
+                          <td className="py-2 px-4">{kbm.jam_pulang}</td>
+                          <td className="py-2 px-4">{kbm.materi}</td>
+                          <td className="py-2 px-4">{kbm.keterangan}</td>
+                          <td className="py-2 px-4">
+                            <div className="flex gap-2">
+                              <Link to={`/EditKBM/${kbm.id}`}>
+                                <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                              </Link>
+                              <button
+                                onClick={() => handleDeleteKBM(kbm.id)}
+                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                  : searchTerm && (
+                      <tr>
+                        <td colSpan="8" className="text-center py-2 px-4">
+                          Data Yang dicari tidak ditemukan
+                        </td>
+                      </tr>
+                    )}
               </tbody>
             </table>
+          </div>
+          <div className="mt-4">
+            <ReactPaginate
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
+              nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
+              pageCount={pageCount}
+              onPageChange={changePage}
+              containerClassName="pagination flex justify-center items-center gap-2"
+              previousLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              nextLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabledClassName="paginationDisabled"
+              activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
+            />
           </div>
         </div>
       </div>

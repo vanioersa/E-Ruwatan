@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
-import Axios from "axios";  // Import Axios if you choose to use it
+import Axios from "axios";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import ReactPaginate from "react-paginate";
 
 function PiketanGuru() {
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10; // Adjust number of items per page as needed
 
-  // Fetch data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Axios.get('http://localhost:4001/piketan/all'); // Change the URL to your actual API
-        setData(response.data); // Assuming the response has a data property which holds the array
+        const response = await Axios.get('http://localhost:4001/kelaspiketan');
+        setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Handle error here, e.g., setting an error state
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -31,6 +32,17 @@ function PiketanGuru() {
   const filteredData = data.filter(item =>
     item.kelas.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Calculate total pages
+  const pageCount = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Change page
+  const changePage = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
+  // Get current posts
+  const currentItems = filteredData.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -70,9 +82,9 @@ function PiketanGuru() {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item, index) => (
+                {currentItems.map((item, index) => (
                   <tr key={item.id}>
-                    <td>{index + 1}</td>
+                    <td>{currentPage * itemsPerPage + index + 1}</td>
                     <td>{item.kelas}</td>
                     <td>{item.tanggal}</td>
                     <td>{item.izin}</td>
@@ -83,6 +95,19 @@ function PiketanGuru() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="mt-4">
+            <ReactPaginate
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
+              nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
+              pageCount={pageCount}
+              onPageChange={changePage}
+              containerClassName="pagination flex justify-center items-center gap-2"
+              previousLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              nextLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabledClassName="paginationDisabled"
+              activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
+            />
           </div>
         </div>
       </div>
