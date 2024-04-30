@@ -111,7 +111,7 @@ const UpdateGuru = () => {
               <div className="relative">
                 <label
                   htmlFor="nama_guru"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Nama Guru
                 </label>
@@ -121,7 +121,7 @@ const UpdateGuru = () => {
                   name="nama_guru"
                   value={guru.nama_guru}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nama Guru"
                   required
                   autoComplete="off"
@@ -130,7 +130,7 @@ const UpdateGuru = () => {
               <div className="relative">
                 <label
                   htmlFor="nip"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   NIP
                 </label>
@@ -140,7 +140,7 @@ const UpdateGuru = () => {
                   name="nip"
                   value={guru.nip}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan NIP"
                   required
                   autoComplete="off"
@@ -152,7 +152,7 @@ const UpdateGuru = () => {
               <div className="relative">
                 <label
                   htmlFor="tempat_lahir"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Tempat Lahir
                 </label>
@@ -162,7 +162,7 @@ const UpdateGuru = () => {
                   name="tempat_lahir"
                   value={guru.tempat_lahir}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Tempat Lahir"
                   required
                   autoComplete="off"
@@ -171,7 +171,7 @@ const UpdateGuru = () => {
               <div className="relative">
                 <label
                   htmlFor="mapel"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Mapel
                 </label>
@@ -181,7 +181,7 @@ const UpdateGuru = () => {
                   name="mapel"
                   value={guru.mapel}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nama Mapel Yang Diampu"
                   required
                   autoComplete="off"
@@ -193,7 +193,7 @@ const UpdateGuru = () => {
               <div className="relative">
                 <label
                   htmlFor="kelasId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Kelas
                 </label>
@@ -202,7 +202,7 @@ const UpdateGuru = () => {
                   name="kelasId"
                   value={selectedKelas}
                   onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -218,13 +218,13 @@ const UpdateGuru = () => {
               <button
                 type="button"
                 onClick={batal}
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-xs font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-sm font-medium"
               >
                 Perbarui
               </button>
