@@ -91,7 +91,9 @@ const Sidebar = () => {
             {/* SVG icon omitted for brevity */}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
-          <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
+          <a href="/dashboard_siswa">
+            <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
+          </a>
         </div>
       </nav>
       <div className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
@@ -108,9 +110,8 @@ const Sidebar = () => {
           ].map((item) => (
             <li
               key={item.name}
-              className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer ${
-                isActive(item.path) ? "bg-gray-400 text-black" : ""
-              }`}
+              className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer ${isActive(item.path) ? "bg-gray-400 text-black" : ""
+                }`}
             >
               <a href={item.path} className="flex items-center">
                 <FontAwesomeIcon icon={item.icon} className="mr-2" />

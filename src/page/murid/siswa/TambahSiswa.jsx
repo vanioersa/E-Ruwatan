@@ -111,7 +111,7 @@ const TambahSiswa = () => {
               <div className="relative">
                 <label
                   htmlFor="nama_siswa"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Nama
                 </label>
@@ -121,7 +121,7 @@ const TambahSiswa = () => {
                   name="nama_siswa"
                   value={siswa.nama_siswa}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nama Siswa"
                   required
                   autoComplete="off"
@@ -130,7 +130,7 @@ const TambahSiswa = () => {
               <div className="relative">
                 <label
                   htmlFor="nisn"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   NISN
                 </label>
@@ -140,7 +140,7 @@ const TambahSiswa = () => {
                   name="nisn"
                   value={siswa.nisn}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan NISN"
                   required
                   autoComplete="off"
@@ -151,7 +151,7 @@ const TambahSiswa = () => {
               <div className="relative">
                 <label
                   htmlFor="kelasId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Kelas
                 </label>
@@ -160,12 +160,12 @@ const TambahSiswa = () => {
                   name="kelasId"
                   value={selectedKelas}
                   onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
                     {kelas.map((kelas) => (
-                      <option key={kelas.id} value={kelas.id}>
+                      <option className="text-sm" key={kelas.id} value={kelas.id}>
                         {`${kelas.kelas}`}
                       </option>
                     ))}
@@ -174,7 +174,7 @@ const TambahSiswa = () => {
               <div className="relative">
                 <label
                   htmlFor="tempat"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Tempat Lahir
                 </label>
@@ -184,7 +184,7 @@ const TambahSiswa = () => {
                   name="tempat"
                   value={siswa.tempat}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Tempat Lahir"
                   required
                   autoComplete="off"
@@ -194,7 +194,7 @@ const TambahSiswa = () => {
             <div className="relative">
               <label
                 htmlFor="alamat"
-                className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
               >
                 Alamat
               </label>
@@ -204,7 +204,7 @@ const TambahSiswa = () => {
                 name="alamat"
                 value={siswa.alamat}
                 onChange={handleChange}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 placeholder="Masukkan Alamat"
                 required
                 autoComplete="off"
@@ -220,7 +220,7 @@ const TambahSiswa = () => {
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-700 py-3 text-sm sm:text-sm font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan
               </button>
