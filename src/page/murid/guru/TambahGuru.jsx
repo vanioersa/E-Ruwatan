@@ -109,7 +109,7 @@ const TambahGuru = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label htmlFor="nama_guru" className="block mb-2 text-sm sm:text-xs font-medium text-gray-900">
+                <label htmlFor="nama_guru" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
                   Nama Guru
                 </label>
                 <input
@@ -117,14 +117,14 @@ const TambahGuru = () => {
                   name="nama_guru"
                   value={guru.nama_guru}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukan Nama Guru"
                   required
                   autoComplete="off"
                 />
               </div>
               <div className="relative">
-                <label htmlFor="nip" className="block mb-2 text-sm sm:text-xs font-medium text-gray-900">
+                <label htmlFor="nip" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
                   NIP
                 </label>
                 <input
@@ -132,7 +132,7 @@ const TambahGuru = () => {
                   name="nip"
                   value={guru.nip}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukan NIP"
                   required
                   autoComplete="off"
@@ -142,7 +142,7 @@ const TambahGuru = () => {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label htmlFor="tempat_lahir" className="block mb-2 text-sm sm:text-xs font-medium text-gray-900">
+                <label htmlFor="tempat_lahir" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
                   Tempat Lahir
                 </label>
                 <input
@@ -150,14 +150,14 @@ const TambahGuru = () => {
                   name="tempat_lahir"
                   value={guru.tempat_lahir}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Tempat Lahir"
                   required
                   autoComplete="off"
                 />
               </div>
               <div className="relative">
-                <label htmlFor="mapel" className="block mb-2 text-sm sm:text-xs font-medium text-gray-900">
+                <label htmlFor="mapel" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
                   Mapel
                 </label>
                 <input
@@ -165,7 +165,7 @@ const TambahGuru = () => {
                   name="mapel"
                   value={guru.mapel}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukan Nama Mapel Yang Diampu"
                   required
                   autoComplete="off"
@@ -174,19 +174,19 @@ const TambahGuru = () => {
             </div>
 
             <div className="relative">
-              <label htmlFor="kelasId" className="block mb-2 text-sm sm:text-xs font-medium text-gray-900">
+              <label htmlFor="kelasId" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
                 Kelas
               </label>
               <select
                 name="kelasId"
                 value={selectedKelas}
                   onChange={(e) => setSelectedKelas(e.target.value)}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 required
               >
                 <option value="">Pilih Kelas</option>
                 {kelas.map((kelas) => (
-                  <option key={kelas.id} value={kelas.id}>
+                  <option className="text-sm" key={kelas.id} value={kelas.id}>
                     {kelas.kelas}
                   </option>
                 ))}

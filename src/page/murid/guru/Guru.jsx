@@ -124,7 +124,7 @@ function Guru() {
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Cari guru..."
+              placeholder="Cari Guru..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
@@ -148,7 +148,7 @@ function Guru() {
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
-                <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
                   <th className="py-2 px-4 text-left">Nama Guru</th>
                   <th className="py-2 px-4 text-left">NIP</th>
@@ -158,7 +158,7 @@ function Guru() {
                   <th className="py-2 px-4 text-left">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-600 text-sm font-light">
+              <tbody className="text-gray-600 text-base font-normal">
                 {filteredGuru.length > 0 ? (
                   filteredGuru
                     .slice(pagesVisited, pagesVisited + guruPerPage)
