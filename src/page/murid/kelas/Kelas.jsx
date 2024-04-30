@@ -10,7 +10,6 @@ import {
   faArrowLeft,
   faArrowRight,
   faFileImport,
-  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { importKelas, getAllKelas, deleteKelas } from "./api_kelas";
@@ -251,9 +250,8 @@ function Kelas() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
-        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${
-          isModalOpen ? "bg-gray-200" : ""
-        }`}
+        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${isModalOpen ? "bg-gray-200" : ""
+          }`}
         style={{
           backgroundColor: isModalOpen ? "#F3F4F6" : "",
         }}
@@ -271,9 +269,9 @@ function Kelas() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex">
+            <div className="flex flex-wrap justify-center space-y-3">
               <Link to="/TambahKelas">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Kelas
                 </button>
               </Link>
@@ -359,70 +357,34 @@ function Kelas() {
       </div>
 
       {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 99,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#fff",
-              padding: "1.5rem",
-              width: "50%",
-              borderRadius: "0.5rem",
-              boxShadow: "0 5px 10px rgba(0, 0, 0, 0.12)",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 600,
-                marginBottom: "1rem",
-              }}
-            >
-              Import Data Kelas
-            </h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+            <h2 className="text-xl font-semibold mb-4">Import Data Kelas</h2>
             <input
-              style={{
-                border: "1px solid rgba(0, 0, 0, 0.5)",
-                padding: "5px",
-                width: "100%",
-                marginBottom: "1rem",
-              }}
+              className="border border-gray-400 p-2 w-full mb-4"
               type="file"
               accept=".csv, .xlsx"
               onChange={handleFileSelect}
             />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className="flex justify-between">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="bg-red-500 hover:bg-red-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
               >
-                Close
+                Tutup
               </button>
               <div>
                 <button
                   onClick={handleImportData}
-                  className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 mr-3 md:mr-2 rounded"
                 >
-                  Impor
+                  Import
                 </button>
                 <button
                   onClick={handleDownloadTemplate}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded"
                 >
-                  <FontAwesomeIcon icon={faDownload} /> Download Template
+                  Unduh Templat
                 </button>
               </div>
             </div>
