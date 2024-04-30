@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
   faDoorOpen,
   faHome,
   faChalkboardTeacher,
   faRightToBracket,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import IconLoader from "./Loader";
@@ -102,7 +102,7 @@ const Sidebar = () => {
           {/* Iterate through menu items */}
           {[
             { icon: faHome, name: "Dashboard", path: "/dashboard_siswa" },
-            { icon: faUser, name: "Siswa", path: "/Siswa" },
+            { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
             { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
             { icon: faDoorOpen, name: "Kelas", path: "/Kelas" }
           ].map((item) => (
