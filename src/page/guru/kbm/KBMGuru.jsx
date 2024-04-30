@@ -1,10 +1,98 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import SidebarGuru from "../../../component/SidebarGuru";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import { getAllKbms, deleteKbm } from "./api_kbm";
+import axios from "axios";
 
 function KBMGuru() {
+  const [kbmGuru, setKbmGuru] = useState([]);
+  const [guru, setGuru] = useState([]);
+  const [kelas, setKelas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Ambil data KBM Guru dari API
+  useEffect(() => {
+    const fetchKBMGuru = async () => {
+      try {
+        const data = await getAllKbms();
+        setKbmGuru(data);
+      } catch (error) {
+        console.error("Failed to fetch KBM Guru: ", error);
+      }
+    };
+    fetchKBMGuru();
+  }, []);
+
+  // Ambil data Guru dari API
+  useEffect(() => {
+    const fetchGuru = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/guru/all");
+        setGuru(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Guru: ", error);
+      }
+    };
+    fetchGuru();
+  }, []);
+
+  // Ambil data Kelas dari API
+  useEffect(() => {
+    const fetchKelas = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/kelas/all");
+        setKelas(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Kelas: ", error);
+      }
+    };
+    fetchKelas();
+  }, []);
+
+  // Fungsi untuk menghapus KBM Guru
+  const handleDeleteKBM = async (id) => {
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin menghapus data KBM Guru?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Tidak",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteKbm(id);
+          setKbmGuru((prevKbmGuru) => prevKbmGuru.filter((kbm) => kbm.id !== id));
+          Swal.fire({
+            title: "Berhasil",
+            text: "Data KBM Guru berhasil dihapus",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        } catch (error) {
+          console.error("Gagal menghapus KBM Guru: ", error);
+          Swal.fire("Gagal", "Gagal menghapus data KBM Guru", "error");
+        }
+      }
+    });
+  };
+
+  // Filter data berdasarkan term pencarian
+  const filteredKBMGuru = kbmGuru.filter((kbm) => {
+    const namaGuru = guru.find((g) => g.id === kbm.namaId)?.nama_guru;
+    const kelasNama = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
+    return (
+      (namaGuru && namaGuru.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kbm.keterangan && kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -17,6 +105,8 @@ function KBMGuru() {
             <input
               type="text"
               placeholder="Cari KBM"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
             <div className="flex">
@@ -32,6 +122,8 @@ function KBMGuru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
+                  <th className="py-2 px-4 text-left">Nama Guru</th>
+                  <th className="py-2 px-4 text-left">Kelas</th>
                   <th className="py-2 px-4 text-left">Jam Masuk</th>
                   <th className="py-2 px-4 text-left">Jam Selesai</th>
                   <th className="py-2 px-4 text-left">Materi</th>
@@ -40,9 +132,41 @@ function KBMGuru() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                </tr>
+                {filteredKBMGuru.map((kbm, index) => (
+                  <tr
+                    key={kbm.id}
+                    className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                  >
+                    <td className="py-2 px-4">{index + 1}</td>
+                    <td className="py-2 px-4">
+                      {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
+                    </td>
+                    <td className="py-2 px-4">
+                      {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
+                    </td>
+                    <td className="py-2 px-4">{kbm.jam_masuk}</td>
+                    <td className="py-2 px-4">{kbm.jam_pulang}</td>
+                    <td className="py-2 px-4">{kbm.materi}</td>
+                    <td className="py-2 px-4">{kbm.keterangan}</td>
+                    <td className="py-2 px-4">
+                      <div className="flex gap-2">
+                        <Link to={`/EditKBM/${kbm.id}`}>
+                          <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteKBM(kbm.id)}
+                          className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
