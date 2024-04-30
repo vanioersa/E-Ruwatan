@@ -19,6 +19,7 @@ import UpdateSiswa from "./page/murid/siswa/UpdateSiswa";
 import UpdataKelas from "./page/murid/kelas/UpdataKelas";
 import UpdateGuru from "./page/murid/guru/UpdateGuru";
 import PDFpiket from "./component/PDF";
+import UpdateKBM from "./page/guru/kbm/UpdateKBM";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,6 +58,7 @@ function App() {
             <Route path="/EditSiswa/:id" element={<UpdateSiswa />} />
             <Route path="/EditKelas/:id" element={<UpdataKelas />} />
             <Route path="/EditGuru/:id" element={<UpdateGuru />} />
+            <Route path="/EditKBM/:id" element={<UpdateKBM />} />
             <Route path="/pdf" element={<PDFpiket />} />
           </>
         ) : (

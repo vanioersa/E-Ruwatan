@@ -3,11 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faRightToBracket,
-  faBook,
   faUserGroup,
+  faChalkboardTeacher,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
-import IconLoader from "./Loader";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom"; // Import useLocation
 
@@ -34,7 +33,7 @@ function SidebarGuru() {
     setTimeout(() => {
       window.location.href = to;
       setLoading(false);
-    }, 3000);
+    }, 1000);
   };
 
   const toggleSidebar = () => {
@@ -43,20 +42,20 @@ function SidebarGuru() {
 
   function logout() {
     Swal.fire({
-      title: "Logout",
+      title: "Keluar",
       text: "Anda harus login kembali apabila keluar dari aplikasi ini!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Logout",
+      confirmButtonText: "Keluar",
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         Swal.fire({
-          title: "Logout Berhasil",
-          text: "Anda telah berhasil logout.",
+          title: "Berhasil Keluar",
+          text: "Anda telah berhasil keluar.",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -72,7 +71,7 @@ function SidebarGuru() {
 
   return (
     <div>
-      {loading && <IconLoader />}
+      {loading}
       <nav className="fixed top-0 z-50 w-full bg-gray-100 border-b border-gray-200 shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
@@ -90,9 +89,8 @@ function SidebarGuru() {
       </nav>
 
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border-r transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border-r transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
@@ -100,17 +98,16 @@ function SidebarGuru() {
         <ul className="mt-6 text-xl mx-2 text-gray-600">
           {[
             { name: "Dashboard", icon: faHome, path: "/dashboard_guru" },
-            { name: "KBM Guru", icon: faBook, path: "/kbm_guru" },
+            { name: "KBM Guru", icon: faChalkboardTeacher, path: "/kbm_guru" },
             { name: "Piketan", icon: faUserGroup, path: "/piketan_guru" },
           ].map((item, index) => (
             <li
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer 
-                       ${
-                         isActive(item.path)
-                           ? "bg-gray-400 text-black"
-                           : "hover:bg-gray-400 hover:text-black"
-                       }`}
+                      ${isActive(item.path)
+                  ? "bg-gray-400 text-black"
+                  : "hover:bg-gray-400 hover:text-black"
+                }`}
             >
               <button
                 onClick={() => handleNavigation(item.path)}
