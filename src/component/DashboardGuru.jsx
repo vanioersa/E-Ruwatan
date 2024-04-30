@@ -1,7 +1,7 @@
 import React from 'react';
 import SidebarGuru from './SidebarGuru';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faChalkboardTeacher, faUser } from '@fortawesome/free-solid-svg-icons';
 
 function Dashboard() {
     return (
@@ -13,7 +13,7 @@ function Dashboard() {
                         {/* Kartu pertama */}
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
                             <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 rounded-lg flex items-center justify-between">
-                                <FontAwesomeIcon icon={faBook} className="inline-block w-12 h-12 text-white mr-4" />
+                                <FontAwesomeIcon icon={faChalkboardTeacher} className="inline-block w-12 h-12 text-white mr-4" />
                                 <div>
                                     <h2 className="title-font font-medium text-3xl text-white">20</h2>
                                     <p className="leading-relaxed font-medium text-white">KBM Guru</p>

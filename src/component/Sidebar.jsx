@@ -9,7 +9,6 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
-import IconLoader from "./Loader";
 import Swal from "sweetalert2";
 
 const Sidebar = () => {
@@ -38,13 +37,10 @@ const Sidebar = () => {
 
   const handleNavigation = (to) => {
     setLoading(true);
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    delay(3000).then(() => {
+    setTimeout(() => {
       window.location.href = to;
-    }).finally(() => {
       setLoading(false);
-    });
+    }, 1000);
   };
 
   const toggleSidebar = () => {
@@ -53,20 +49,20 @@ const Sidebar = () => {
 
   function logout() {
     Swal.fire({
-      title: "Logout",
+      title: "Keluar",
       text: "Anda harus login kembali apabila keluar dari aplikasi ini!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Logout",
+      confirmButtonText: "Keluar",
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         Swal.fire({
-          title: "Logout Berhasil",
-          text: "Anda telah berhasil logout.",
+          title: "Berhasil Keluar",
+          text: "Anda telah berhasil keluar.",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -80,7 +76,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      {loading && <IconLoader />}
+      {loading}
       <nav className="fixed top-0 z-50 w-full bg-gray-100 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
@@ -107,18 +103,27 @@ const Sidebar = () => {
             { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
             { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
             { icon: faDoorOpen, name: "Kelas", path: "/Kelas" }
-          ].map((item) => (
+          ].map((item, index) => (
             <li
-              key={item.name}
-              className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer ${isActive(item.path) ? "bg-gray-400 text-black" : ""
+              key={index}
+              className={`py-2 px-3 my-2 rounded cursor-pointer 
+                      ${isActive(item.path)
+                  ? "bg-gray-400 text-black"
+                  : "hover:bg-gray-400 hover:text-black"
                 }`}
             >
-              <a href={item.path} className="flex items-center">
+              <button
+                onClick={() => handleNavigation(item.path)}
+                className="flex items-center w-full"
+              >
                 <FontAwesomeIcon icon={item.icon} className="mr-2" />
-                <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">
+                <span
+                  style={{ fontFamily: "Segoe UI" }}
+                  className="mx-2 font-medium"
+                >
                   {item.name}
                 </span>
-              </a>
+              </button>
             </li>
           ))}
           {/* Logout list item */}
