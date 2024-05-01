@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import { CSVLink } from "react-csv";
+// import { CSVLink } from "react-csv";
 import * as xlsx from "xlsx";
 
 function Siswa() {
@@ -103,13 +103,13 @@ function Siswa() {
   }));
 
   // Siapkan header untuk file CSV
-  const headers = [
-    { label: "NAMA SISWA", key: "Nama Siswa" },
-    { label: "NISN", key: "NISN" },
-    { label: "TEMPAT LAHIR", key: "Tempat Lahir" },
-    { label: "KELAS", key: "Kelas" },
-    { label: "ALAMAT", key: "Alamat" },
-  ];
+  // const headers = [
+  //   { label: "NAMA SISWA", key: "Nama Siswa" },
+  //   { label: "NISN", key: "NISN" },
+  //   { label: "TEMPAT LAHIR", key: "Tempat Lahir" },
+  //   { label: "KELAS", key: "Kelas" },
+  //   { label: "ALAMAT", key: "Alamat" },
+  // ];
 
   const exportToXlsx = () => {
     const workbook = xlsx.utils.book_new();

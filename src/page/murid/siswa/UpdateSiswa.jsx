@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../../component/Sidebar";
-import { createSiswa, getSiswaById, updateSiswa } from "./api_siswa";
+import { getSiswaById, updateSiswa } from "./api_siswa";
 
 const UpdateSiswa = () => {
   const { id } = useParams();

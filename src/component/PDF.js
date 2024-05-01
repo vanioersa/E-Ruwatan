@@ -49,7 +49,15 @@ const styles = StyleSheet.create({
     padding: 6,
     flexDirection: "row",
   },
-  cellSpecial: {
+  cellSiswa: {
+    padding: 6,
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "bold",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
+  },
+  cellKelas: {
     padding: 6,
     flex: 1,
     fontSize: 12,
@@ -214,11 +222,12 @@ const PDFpiket = () => {
                   <Text style={[ styles.cell, styles.tableData, { maxWidth: "40px" }, ]}>
                     {index + 1}.
                   </Text>
-                  <Text style={styles.cellSpecial}>{siswa.find((s) => s.id === item.siswaId)?.nama_siswa}</Text>
-                  <Text style={styles.cellSpecial}>{kelas.find((k) => k.id === item.kelasId)?.kelas +
+                  <Text style={styles.cellSiswa}>{siswa.find((s) => s.id === item.siswaId)?.nama_siswa}</Text>
+                  <Text style={styles.cellKelas}>{kelas.find((k) => k.id === item.kelasId)?.kelas +
                             " " +
                             kelas.find((k) => k.id === item.kelasId)
                               ?.nama_kelas}</Text>
+                              
                   <Text style={[styles.cell, { maxWidth: "50px" }, { textAlign: "center" }]}>
                   {getStatusColor(item.status) === "Masuk" ? " X " : " - "}
                   </Text>

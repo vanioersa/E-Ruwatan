@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 import { getAllKbms, deleteKbm } from "./api_kbm";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-import { utils, write } from "xlsx";
+import { utils } from "xlsx";
+// import { write } from "xlsx";
 import * as xlsx from "xlsx";
 
 function KBMGuru() {
@@ -124,14 +125,14 @@ function KBMGuru() {
     "keterangan": kbm.keterangan,
   }));
 
-  const headers = [
-    { label: "NAMA GURU", key: "Nama Guru" },
-    { label: "KELAS", key: "Kelas" },
-    { label: "JAM MASUK", key: "jam masuk" },
-    { label: "JAM PULANG", key: "jam pulang" },
-    { label: "MATERI", key: "Materi" },
-    { label: "KETERANGAN", key: "Keterangan" },
-  ];
+  // const headers = [
+  //   { label: "NAMA GURU", key: "Nama Guru" },
+  //   { label: "KELAS", key: "Kelas" },
+  //   { label: "JAM MASUK", key: "jam masuk" },
+  //   { label: "JAM PULANG", key: "jam pulang" },
+  //   { label: "MATERI", key: "Materi" },
+  //   { label: "KETERANGAN", key: "Keterangan" },
+  // ];
 
   const exportToXlsx = () => {
 
@@ -230,7 +231,7 @@ function KBMGuru() {
                         <td className="py-2 px-4">{kbm.jam_masuk}</td>
                         <td className="py-2 px-4">{kbm.jam_pulang}</td>
                         <td className="py-2 px-4">{kbm.materi}</td>
-                        <td className="py-2 px-4">{kbm.keterangan}</td>
+                        <td className="py-2 px-4" style={{maxWidth: "200px"}}>{kbm.keterangan ? (  <span>{kbm.keterangan}</span>) : (<span className="text-gray-400 italic">Keterangan belum ditambahkan</span>  )}   </td>
                         <td className="py-2 px-4">
                           <div className="flex gap-2">
                             <Link to={`/EditKBM/${kbm.id}`}>
