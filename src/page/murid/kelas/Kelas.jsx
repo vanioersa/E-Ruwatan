@@ -250,7 +250,7 @@ function Kelas() {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
-        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${isModalOpen ? "bg-gray-200" : ""
+        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${isModalOpen ? "bg-gray-100" : ""
           }`}
         style={{
           backgroundColor: isModalOpen ? "#F3F4F6" : "",
@@ -269,9 +269,9 @@ function Kelas() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex flex-wrap justify-center space-y-3">
+            <div className="flex">
               <Link to="/TambahKelas">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Kelas
                 </button>
               </Link>
@@ -281,12 +281,12 @@ function Kelas() {
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Kelas
               </button>
-              <button
+              {/* <button
                 onClick={() => setIsModalOpen(true)}
                 className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <FontAwesomeIcon icon={faFileImport} /> Import Kelas
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
