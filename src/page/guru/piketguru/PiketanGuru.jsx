@@ -10,8 +10,9 @@ import {
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
-import { getAllPiket, deletePiket } from "./api_piket";
-import Swal from "sweetalert2";
+// import { deletePiket } from "./api_piket";
+import { getAllPiket } from "./api_piket";
+// import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
 

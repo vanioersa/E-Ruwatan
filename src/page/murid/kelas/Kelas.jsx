@@ -9,7 +9,7 @@ import {
   faFileExport,
   faArrowLeft,
   faArrowRight,
-  faFileImport,
+  // faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { importKelas, getAllKelas, deleteKelas } from "./api_kelas";
@@ -131,10 +131,10 @@ function Kelas() {
   // Calculate the number of pages needed for pagination
   const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
 
-  const headers = [
-    { label: "NAMA KELAS", key: "Nama Kelas" },
-    { label: "KELAS", key: "Kelas" },
-  ];
+  // const headers = [
+  //   { label: "NAMA KELAS", key: "Nama Kelas" },
+  //   { label: "KELAS", key: "Kelas" },
+  // ];
 
   // Prepare data for export
   const dataToExport = filteredKelas.map((k) => ({
@@ -143,11 +143,11 @@ function Kelas() {
   }));
 
   // Prepare options for CSVLink
-  const csvOptions = {
-    headers: headers,
-    separator: ";",
-    filename: "data_kelas.csv",
-  };
+  // const csvOptions = {
+  //   headers: headers,
+  //   separator: ";",
+  //   filename: "data_kelas.csv",
+  // };
 
   // Prepare options for Excel export
   const excelOptions = {

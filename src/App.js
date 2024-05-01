@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./auth/login";
 import RegisterSiswa from "./auth/register_siswa";
@@ -23,7 +23,7 @@ import UpdateKBM from "./page/guru/kbm/UpdateKBM";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
