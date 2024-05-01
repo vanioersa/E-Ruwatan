@@ -231,7 +231,7 @@ function Siswa() {
                 ) : (
                   <tr>
                     <td colSpan="7" className="text-center py-4">
-                      Data siswa tidak ditemukan
+                      Tidak ada data siswa yang ditemukan
                     </td>
                   </tr>
                 )}

@@ -128,7 +128,7 @@ function KBMGuru() {
     { label: "NAMA GURU", key: "Nama Guru" },
     { label: "KELAS", key: "Kelas" },
     { label: "JAM MASUK", key: "jam masuk" },
-    { label: "Jam PULANG", key: "jam pulang" },
+    { label: "JAM PULANG", key: "jam pulang" },
     { label: "MATERI", key: "Materi" },
     { label: "KETERANGAN", key: "Keterangan" },
   ];
@@ -210,54 +210,51 @@ function KBMGuru() {
                 </tr>
               </thead>
               <tbody>
-                {filteredKBMGuru.length > 0
-                  ? filteredKBMGuru
-                      .slice(
-                        currentPage * itemsPerPage,
-                        (currentPage + 1) * itemsPerPage
-                      )
-                      .map((kbm, index) => (
-                        <tr
-                          key={kbm.id}
-                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                        >
-                          <td className="py-2 px-4">
-                            {currentPage * itemsPerPage + index + 1}
-                          </td>
-                          <td className="py-2 px-4">
-                            {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
-                          </td>
-                          <td className="py-2 px-4">
-                            {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
-                          </td>
-                          <td className="py-2 px-4">{kbm.jam_masuk}</td>
-                          <td className="py-2 px-4">{kbm.jam_pulang}</td>
-                          <td className="py-2 px-4">{kbm.materi}</td>
-                          <td className="py-2 px-4">{kbm.keterangan}</td>
-                          <td className="py-2 px-4">
-                            <div className="flex gap-2">
-                              <Link to={`/EditKBM/${kbm.id}`}>
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                                  <FontAwesomeIcon icon={faEdit} />
-                                </button>
-                              </Link>
-                              <button
-                                onClick={() => handleDeleteKBM(kbm.id)}
-                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
+                {filteredKBMGuru.length > 0 ? (
+                  filteredKBMGuru
+                    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+                    .map((kbm, index) => (
+                      <tr
+                        key={kbm.id}
+                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                      >
+                        <td className="py-2 px-4">
+                          {currentPage * itemsPerPage + index + 1}
+                        </td>
+                        <td className="py-2 px-4">
+                          {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
+                        </td>
+                        <td className="py-2 px-4">
+                          {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
+                        </td>
+                        <td className="py-2 px-4">{kbm.jam_masuk}</td>
+                        <td className="py-2 px-4">{kbm.jam_pulang}</td>
+                        <td className="py-2 px-4">{kbm.materi}</td>
+                        <td className="py-2 px-4">{kbm.keterangan}</td>
+                        <td className="py-2 px-4">
+                          <div className="flex gap-2">
+                            <Link to={`/EditKBM/${kbm.id}`}>
+                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                <FontAwesomeIcon icon={faEdit} />
                               </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                  : searchTerm && (
-                      <tr>
-                        <td colSpan="8" className="text-center py-2 px-4">
-                          Data Yang dicari tidak ditemukan
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteKBM(kbm.id)}
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    )}
+                    ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="text-center py-2 px-4">
+                      Tidak ada data kbm yang ditemukan
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
