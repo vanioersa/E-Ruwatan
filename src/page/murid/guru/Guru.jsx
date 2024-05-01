@@ -8,6 +8,7 @@ import { getAllGurus, deleteGuru } from "./api_guru";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
 
 function Guru() {
   const [guru, setGuru] = useState([]);
@@ -100,18 +101,66 @@ function Guru() {
     NIP: g.nip,
     "Tempat Lahir": g.tempat_lahir,
     Mapel: g.mapel,
-    Kelas: kelas.find((k) => k.id === g.kelasId)?.kelas || "",
+    Kelas: kelas.find((k) => k.id === g.kelasId)?.kelas,
   }));
 
-  // Siapkan header untuk file CSV
-  const headers = [
-    { label: "NO", key: "No" },
-    { label: "NAMA GURU", key: "Nama Guru" },
-    { label: "NIP", key: "NIP" },
-    { label: "TEMPAT LAHIR", key: "Tempat Lahir" },
-    { label: "MAPEL", key: "Mapel" },
-    { label: "KELAS", key: "Kelas" },
-  ];
+  // Prepare options for Excel export
+  const excelOptions = {
+    bookType: "xlsx",
+    type: "array",
+  };
+
+  // Export data to Excel
+  const handleExportExcel = () => {
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data guru yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data guru?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const columnWidths = [{ wch: 5 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }];
+
+        worksheet["!cols"] = columnWidths;
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        const excelBuffer = XLSX.write(workbook, excelOptions);
+
+        const excelData = new Blob([excelBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const excelUrl = URL.createObjectURL(excelData);
+
+        const link = document.createElement("a");
+        link.href = excelUrl;
+        link.download = "data_guru.xlsx";
+        link.click();
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data guru berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -135,14 +184,12 @@ function Guru() {
                   <FontAwesomeIcon icon={faPlus} /> Tambah Guru
                 </button>
               </Link>
-              <CSVLink
-                data={dataToExport}
-                headers={headers}
-                filename="data_guru.csv"
+              <button
+                onClick={handleExportExcel}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Guru
-              </CSVLink>
+              </button>
             </div>
           </div>
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">

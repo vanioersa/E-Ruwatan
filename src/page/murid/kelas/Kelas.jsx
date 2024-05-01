@@ -137,7 +137,8 @@ function Kelas() {
   // ];
 
   // Prepare data for export
-  const dataToExport = filteredKelas.map((k) => ({
+  const dataToExport = filteredKelas.map((k, index) => ({
+    No: index + 1 + pagesVisited,
     "Nama Kelas": k.nama_kelas,
     Kelas: k.kelas,
   }));
@@ -281,12 +282,6 @@ function Kelas() {
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Kelas
               </button>
-              {/* <button
-                onClick={() => setIsModalOpen(true)}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <FontAwesomeIcon icon={faFileImport} /> Import Kelas
-              </button> */}
             </div>
           </div>
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
