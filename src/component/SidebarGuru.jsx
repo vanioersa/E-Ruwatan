@@ -82,9 +82,11 @@ function SidebarGuru() {
             {/* Icon for sidebar toggle */}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
-          <span className="text-black text-3xl font-medium ml-2">
-            E-RUWATAN
-          </span>
+          <a href="/dashboard_guru">
+            <span className="text-black text-3xl font-medium ml-2">
+              E-RUWATAN
+            </span>
+          </a>
         </div>
       </nav>
 
