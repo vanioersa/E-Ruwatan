@@ -112,6 +112,26 @@ function Siswa() {
   // ];
 
   const exportToXlsx = () => {
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data siswa yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data siswa?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
     const workbook = xlsx.utils.book_new();
     const worksheet = xlsx.utils.json_to_sheet(dataToExport);
 
@@ -139,6 +159,16 @@ function Siswa() {
     link.download = "data_siswa.xlsx";
     link.click();
     URL.revokeObjectURL(url);
+
+  Swal.fire({
+          title: "Berhasil",
+          text: "Data siswa berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    });
   };
 
   // Fungsi untuk mengganti halaman
