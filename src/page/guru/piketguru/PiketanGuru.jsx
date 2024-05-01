@@ -213,9 +213,9 @@ function PiketanGuru() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="flex">
+            <div className="flex flex-wrap justify-center space-y-3">
               <Link to={`/tambahpiketan`}>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Piket
                 </button>
               </Link>
@@ -227,9 +227,9 @@ function PiketanGuru() {
               </button>
               <button
                 onClick={handleModalOpen}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <FontAwesomeIcon icon={faFileExport} /> Export Piket
+                <FontAwesomeIcon icon={faFileExport} /> Export PDF
               </button>
             </div>
           </div>
@@ -345,11 +345,11 @@ function PiketanGuru() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white w-96 p-6 rounded-lg">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
             <h2 className="text-2xl font-semibold mb-4">Filter Tanggal</h2>
             <select
-              className="p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
+              className="border border-gray-400 p-2 w-full mb-4"
               value={filteredDate}
               onChange={handleFilterDate}
             >
@@ -363,7 +363,7 @@ function PiketanGuru() {
             <div className="mt-4 flex justify-end">
               <button
                 onClick={handleModalClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Batal
               </button>

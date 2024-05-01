@@ -191,7 +191,7 @@ function KBMGuru() {
                 onClick={exportToXlsx}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <FontAwesomeIcon icon={faFileExport} /> Export Siswa
+                <FontAwesomeIcon icon={faFileExport} /> Export KBM
               </button>
             </div>
           </div>
