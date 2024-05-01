@@ -7,7 +7,7 @@ import {
   faArrowLeft,
   faArrowRight,
   faFileExport,
-  faTrash,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import { getAllPiket, deletePiket } from "./api_piket";
@@ -229,7 +229,7 @@ function PiketanGuru() {
                 onClick={handleModalOpen}
                 className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <FontAwesomeIcon icon={faFileExport} /> Export PDF
+                <FontAwesomeIcon icon={faUpload} /> Export PDF
               </button>
             </div>
           </div>
