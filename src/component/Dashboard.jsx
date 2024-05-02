@@ -56,7 +56,7 @@ function Dashboard() {
         <div className="container mx-auto py-24 sm:py-8 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama */}
-            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <div className="ring-1 shadow-lg bg-cyan-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faUserGroup}
@@ -73,7 +73,7 @@ function Dashboard() {
               </div>
             </div>
             {/* Kartu kedua */}
-            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faDoorOpen}
@@ -90,7 +90,7 @@ function Dashboard() {
               </div>
             </div>
             {/* Kartu ketiga */}
-            <div className="mb-4 p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faChalkboardTeacher}
@@ -105,6 +105,7 @@ function Dashboard() {
               </div>
             </div>
           </div>
+          
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
             <div className="w-full md:w-1/2 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
