@@ -7,6 +7,8 @@ import {
   faChalkboardTeacher,
   faRightToBracket,
   faUserGroup,
+  faBars,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
@@ -81,10 +83,14 @@ const Sidebar = () => {
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
-            className="text-black focus:outline-none md:hidden"
+            className="text-black focus:outline-none md:hidden mx-3"
             onClick={toggleSidebar}
           >
-            {/* SVG icon omitted for brevity */}
+           {sidebarOpen ? (
+              <FontAwesomeIcon icon={faTimes} size="lg" />
+            ) : (
+              <FontAwesomeIcon icon={faBars} size="lg" />
+            )}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_siswa">
