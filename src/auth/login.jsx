@@ -57,9 +57,9 @@ function Logins() {
             showConfirmButton: false,
           });
 
-          if (userData.role === "MURID") {
+          if (userData.role === "ADMIN") {
             setTimeout(() => {
-              navigate("/dashboard_siswa");
+              navigate("/dashboard_admin");
               window.location.reload();
             }, 2000);
           } else if (userData.role === "GURU") {
@@ -164,7 +164,7 @@ function Logins() {
               Masuk
             </button>
           </form>
-          <p className="mt-10 text-center text-sm text-gray-500">
+          {/* <p className="mt-10 text-center text-sm text-gray-500">
             Belum Punya Akun?
             <a
               href="/register_siswa"
@@ -172,7 +172,7 @@ function Logins() {
             >
               Register Siswa
             </a>
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

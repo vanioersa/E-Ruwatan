@@ -1,8 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./auth/login";
-import RegisterSiswa from "./auth/register_siswa";
-import RegisterGuru from "./auth/register_guru";
+import RegisterAdmin from "./auth/register_admin";
 import DashboardSiswa from "./component/Dashboard";
 import DashboardGuru from "./component/DashboardGuru";
 import Siswa from "./page/murid/siswa/Siswa";
@@ -20,6 +19,7 @@ import UpdataKelas from "./page/murid/kelas/UpdataKelas";
 import UpdateGuru from "./page/murid/guru/UpdateGuru";
 import PDFpiket from "./component/PDF";
 import UpdateKBM from "./page/guru/kbm/UpdateKBM";
+import Profile from "./page/guru/Profile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,12 +38,11 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/register_siswa" element={<RegisterSiswa />} />
-        <Route path="/register_guru" element={<RegisterGuru />} />
+        <Route path="/register_admin" element={<RegisterAdmin />} />
 
         {isLoggedIn ? (
           <>
-            <Route path="/dashboard_siswa" element={<DashboardSiswa />} />
+            <Route path="/dashboard_admin" element={<DashboardSiswa />} />
             <Route path="/dashboard_guru" element={<DashboardGuru />} />
             <Route path="/piketan_guru/" element={<PiketanGuru />} />
             <Route path="/kbm_guru/" element={<KBMGuru />} />
@@ -60,10 +59,11 @@ function App() {
             <Route path="/EditGuru/:id" element={<UpdateGuru />} />
             <Route path="/EditKBM/:id" element={<UpdateKBM />} />
             <Route path="/pdf" element={<PDFpiket />} />
+            <Route path="/profile_guru" element={<Profile />} />
           </>
         ) : (
           <>
-            <Route path="/dashboard_siswa" element={<Login />}/>
+            <Route path="/dashboard_admin" element={<Login />}/>
             <Route path="/dashboard_guru" element={<Login />}/>
             <Route path="/piketan_guru/" element={<Login />}/>
             <Route path="/kbm_guru/" element={<Login />}/>
@@ -79,6 +79,7 @@ function App() {
             <Route path="/EditKelas/:id" element={<Login />}/>
             <Route path="/EditGuru/:id" element={<Login />}/>
             <Route path="/pdf" element={<Login />}/>
+            <Route path="/profile_guru" element={<Login />} />
           </>
         )}
       </Routes>
