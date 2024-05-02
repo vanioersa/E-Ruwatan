@@ -105,8 +105,8 @@ function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="flex mt-4 space-x-8 justify-center">
-            <div style={{width: "40%"}} className="mt-4 overflow-x-auto rounded-lg border-gray-200">
+          <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
+            <div className="w-full md:w-1/2 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
@@ -132,10 +132,7 @@ function Dashboard() {
               </table>
             </div>
 
-            <div
-              style={{ width: "40%" }}
-              className="mt-4 overflow-x-auto rounded-lg border-gray-200"
-            >
+            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
