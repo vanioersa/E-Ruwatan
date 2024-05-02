@@ -19,7 +19,7 @@ import UpdataKelas from "./page/murid/kelas/UpdataKelas";
 import UpdateGuru from "./page/murid/guru/UpdateGuru";
 import PDFpiket from "./component/PDF";
 import UpdateKBM from "./page/guru/kbm/UpdateKBM";
-import Profile from "./page/guru/Profile";
+import Profile from "./page/guru/Profile/Profile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
