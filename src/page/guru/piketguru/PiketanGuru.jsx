@@ -36,6 +36,7 @@ function PiketanGuru() {
 
   const handleModalClose = () => {
     setShowModal(false);
+    window.location.reload()
   };
 
   const handleFilterPDF = () => {

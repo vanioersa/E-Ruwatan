@@ -147,7 +147,7 @@ function SidebarGuru() {
         </ul>
       </div>
       <div
-        className={`ml-0 md:ml-56 transition-transform duration-300 ease-in-out ${
+        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "md:ml-0" : "-md:ml-64"
         }`}
       />
