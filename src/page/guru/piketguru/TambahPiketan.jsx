@@ -87,6 +87,7 @@ const TambahPiketan = () => {
           }).then(() => {
             navigate(-1);
           });
+          // Reset state setelah submit
           setPiketan({
             kelasId: "",
             siswaId: "",
@@ -189,13 +190,12 @@ const TambahPiketan = () => {
                 <input
                   type="date"
                   name="tanggal"
-                  value={piketan.tanggal}
+                  defaultValue={new Date().toISOString().slice(0, 10)}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan Tanggal"
+                  placeholder="Masukkan Tanggal"
                   required
                   readOnly
-                  autoComplete="off"
                 />
               </div>
               <div className="relative">

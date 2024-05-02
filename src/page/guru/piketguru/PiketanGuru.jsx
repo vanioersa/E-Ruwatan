@@ -12,7 +12,7 @@ import {
 import ReactPaginate from "react-paginate";
 // import { deletePiket } from "./api_piket";
 import { getAllPiket } from "./api_piket";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
 
@@ -158,44 +158,71 @@ function PiketanGuru() {
     setCurrentPage(selected);
   };
 
+  const dataToExport = data.map((item) => ({
+    NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+    }`,
+    Tanggal: item.tanggal,
+    Status: item.status,
+  }));
+
   const exportToXlsx = () => {
-    if (!data) {
-      console.error("Data is undefined");
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data piket guru yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
-  
-    const dataToExport = data.map((item) => ({
-      "NamaSiswa": siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-      "Kelas": `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas}`,
-      "Tanggal": item.tanggal,
-      "Status": item.status,
-    }));
-  
-    const worksheet = xlsx.utils.json_to_sheet(dataToExport);
-  
-    // Mengatur lebar kolom
-    worksheet['!cols'] = [
-      { wch: 20 }, // Lebar kolom "NamaSiswa"
-      { wch: 15 }, // Lebar kolom "Kelas"
-      { wch: 15 }, // Lebar kolom "Tanggal"
-      { wch: 10 }, // Lebar kolom "Status"
-    ];
-  
-    // Membuat header kolom menjadi bold
-    const headerRange = "A1:D1";
-    worksheet[headerRange]?.forEach((cell) => {
-      if (cell) {
-        cell.s = {
-          font: {
-            bold: true,
-          },
-        };
+
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data piket guru?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+
+        // Mengatur lebar kolom
+        worksheet["!cols"] = [
+          { wch: 20 }, // Lebar kolom "NamaSiswa"
+          { wch: 15 }, // Lebar kolom "Kelas"
+          { wch: 15 }, // Lebar kolom "Tanggal"
+          { wch: 10 }, // Lebar kolom "Status"
+        ];
+
+        // Membuat header kolom menjadi bold
+        const headerRange = "A1:D1";
+        worksheet[headerRange]?.forEach((cell) => {
+          if (cell) {
+            cell.s = {
+              font: {
+                bold: true,
+              },
+            };
+          }
+        });
+
+        const workbook = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(workbook, worksheet, "Data Piket Guru");
+        xlsx.writeFile(workbook, "data_piket_guru.xlsx");
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data piket guru berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       }
     });
-  
-    const workbook = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(workbook, worksheet, "Data Piket Guru");
-    xlsx.writeFile(workbook, "data_piket_guru.xlsx");
   };
 
   return (
@@ -241,10 +268,30 @@ function PiketanGuru() {
                   <th className="py-2 px-4 text-left">No</th>
                   <th className="py-2 px-4 text-left">Kelas</th>
                   <th className="py-2 px-4 text-left">Tanggal</th>
-                  <th className="py-2 px-4 text-center" style={{maxWidth: "50px"}}>Masuk</th>
-                  <th className="py-2 px-4 text-center" style={{maxWidth: "50px"}}>Izin</th>
-                  <th className="py-2 px-4 text-center" style={{maxWidth: "50px"}}>Sakit</th>
-                  <th className="py-2 px-4 text-center" style={{maxWidth: "50px"}}>Alpha</th>
+                  <th
+                    className="py-2 px-4 text-center"
+                    style={{ maxWidth: "50px" }}
+                  >
+                    Masuk
+                  </th>
+                  <th
+                    className="py-2 px-4 text-center"
+                    style={{ maxWidth: "50px" }}
+                  >
+                    Izin
+                  </th>
+                  <th
+                    className="py-2 px-4 text-center"
+                    style={{ maxWidth: "50px" }}
+                  >
+                    Sakit
+                  </th>
+                  <th
+                    className="py-2 px-4 text-center"
+                    style={{ maxWidth: "50px" }}
+                  >
+                    Alpha
+                  </th>
                   {/* <th className="py-2 px-4 text-center">Aksi</th> */}
                 </tr>
               </thead>
@@ -298,10 +345,10 @@ function PiketanGuru() {
                           </td>
                           <td className="py-2 px-4">{kelasName}</td>
                           <td className="py-2 px-4">{tanggal}</td>
-                          <td className="py-2 px-4">{statusSummary.Masuk}</td>
-                          <td className="py-2 px-4">{statusSummary.Izin}</td>
-                          <td className="py-2 px-4">{statusSummary.Sakit}</td>
-                          <td className="py-2 px-4">{statusSummary.Alpha}</td>
+                          <td className="py-2 px-4 text-center">{statusSummary.Masuk}</td>
+                          <td className="py-2 px-4 text-center">{statusSummary.Izin}</td>
+                          <td className="py-2 px-4 text-center">{statusSummary.Sakit}</td>
+                          <td className="py-2 px-4 text-center">{statusSummary.Alpha}</td>
                           {/* <td className="py-2 px-4 item-center text-center">
                             <button
                               onClick={() =>
