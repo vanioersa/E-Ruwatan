@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import { getAllGurus, deleteGuru } from "./api_guru";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 
 function Guru() {
