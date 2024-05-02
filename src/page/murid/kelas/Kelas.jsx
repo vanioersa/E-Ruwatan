@@ -72,7 +72,7 @@ function Kelas() {
     const fetchKelas = async () => {
       try {
         const data = await getAllKelas();
-        setKelas(data);
+        setKelas(data.reverse());
       } catch (error) {
         console.error("Failed to fetch Kelas: ", error);
       }
@@ -289,9 +289,9 @@ function Kelas() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Nama Kelas</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Kelas</th>
                   <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Aksi</th>
+                  <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-base font-normal">
@@ -308,7 +308,7 @@ function Kelas() {
                         </td>
                         <td className="py-2 px-4">{k.nama_kelas}</td>
                         <td className="py-2 px-4">{k.kelas}</td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center">
                           <div className="flex gap-2">
                             <Link to={`/EditKelas/${k.id}`}>
                               <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">

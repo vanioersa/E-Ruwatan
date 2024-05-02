@@ -100,80 +100,71 @@ function Logins() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 mt-16">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div className="bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
-          <div className="text-center mb-8">
-            <img
-              className="mx-auto h-32 w-auto"
-              src={logobinus}
-              alt="Binus Logo"
-            />
+    <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
+      <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
+        <div className="text-center mb-8">
+          <img
+            className="mx-auto h-32 w-auto"
+            src={logobinus}
+            alt="Binus Logo"
+          />
+        </div>
+        <form className="space-y-4" onSubmit={handleLogin}>
+          <div>
+            <label
+              htmlFor="usernameOrEmail"
+              className="block text-base font-medium leading-6 text-gray-900"
+            >
+              Email atau Username
+            </label>
+            <div className="mt-1">
+              <input
+                id="usernameOrEmail"
+                type="text"
+                required
+                autoComplete="off"
+                className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600"
+                value={usernameOrEmail}
+                onChange={(e) => setUsernameOrEmail(e.target.value)}
+              />
+            </div>
           </div>
-          <form className="space-y-6" onSubmit={handleLogin}>
-            <div>
-              <label
-                htmlFor="usernameOrEmail"
-                className="block text-base font-medium leading-6 text-gray-900"
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-base font-medium text-gray-900"
+            >
+              Password
+            </label>
+            <div className="relative mt-1">
+              <input
+                id="password"
+                type={passwordType}
+                required
+                autoComplete="current-password"
+                className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600 pr-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
               >
-                Email atau Username
-              </label>
-              <div className="mt-2">
-                <input
-                  id="usernameOrEmail"
-                  type="text"
-                  required
-                  autoComplete="off"
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600"
-                  value={usernameOrEmail}
-                  onChange={(e) => setUsernameOrEmail(e.target.value)}
+                <FontAwesomeIcon
+                  icon={passwordType === "password" ? faEyeSlash : faEye}
                 />
-              </div>
+              </span>
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-base font-medium text-gray-900"
-              >
-                Password
-              </label>
-              <div className="relative mt-2">
-                <input
-                  id="password"
-                  type={passwordType}
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600 pr-10"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <span
-                  onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                >
-                  <FontAwesomeIcon
-                    icon={passwordType === "password" ? faEyeSlash : faEye}
-                  />
-                </span>
-              </div>
-            </div>
+          </div>
+          <div className="pt-3 pb-10">
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full py-2 justify-center rounded-md bg-sky-600 px-3 py-1.5 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Masuk
             </button>
-          </form>
-          {/* <p className="mt-10 text-center text-sm text-gray-500">
-            Belum Punya Akun?
-            <a
-              href="/register_siswa"
-              className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600"
-            >
-              Register Siswa
-            </a>
-          </p> */}
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

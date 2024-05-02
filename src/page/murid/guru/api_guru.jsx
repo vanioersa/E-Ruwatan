@@ -1,77 +1,27 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:4001/guru";
+const apiUrl = "http://localhost:4001"; // Ganti dengan URL backend Anda
 
-export const getAllGurus = async () => {
+export const getAllUsers = async () => {
   try {
-    const response = await axios.get(`${apiUrl}/all`);
+    const response = await axios.get(`${apiUrl}/users`);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch Gurus: ", error);
-    throw error;
+    throw new Error("Failed to fetch users");
   }
 };
 
-export const getGuruById = async (id, isPublic = false) => {
-  try {
-    let config = {};
-    if (!isPublic) {
-      const token = localStorage.getItem("token");
-      config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-    }
-    const response = await axios.get(`${apiUrl}/by-id/${id}`, config);
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to fetch Guru with id ${id}: `, error);
-    throw error;
-  }
-};
-
-export const createGuru = async (guruData) => {
+export const deleteUsers = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.post(`${apiUrl}/add`, guruData, {
+    const response = await axios.delete(`${apiUrl}/users/hapus/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Failed to create Guru: ", error);
-    throw error;
-  }
-};
-
-export const updateGuru = async (id, guruData) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.put(`${apiUrl}/ubah/${id}`, guruData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to update Guru with id ${id}: `, error);
-    throw error;
-  }
-};
-
-export const deleteGuru = async (id) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.delete(`${apiUrl}/hapus/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to delete Guru with id ${id}: `, error);
+    console.error(`Failed to delete Kelas with id ${id}: `, error);
     throw error;
   }
 };
