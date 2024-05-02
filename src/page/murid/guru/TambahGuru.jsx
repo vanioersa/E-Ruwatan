@@ -1,48 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "../../../component/Sidebar";
-import { createGuru } from "./api_guru";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+
+const apiUrl = "http://localhost:4001";
 
 const TambahGuru = () => {
-  const [guru, setGuru] = useState({
-    nama_guru: "",
-    nip: "",
-    tempat_lahir: "",
-    mapel: "",
-    kelasId: "",
-  });
-  const [kelas, setKelas] = useState([]);
-  const [selectedKelas, setSelectedKelas] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
 
-  const fetchKelas = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data);
-    } catch (error) {
-      console.error("Gagal mengambil data Kelas: ", error);
-    }
+  const togglePassword = () => {
+    setPasswordType(passwordType === "password" ? "text" : "password");
   };
 
-  useEffect(() => {
-    fetchKelas();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setGuru((prevGuru) => ({
-      ...prevGuru,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (!username.match(/^[A-Za-z\s]+$/)) {
+      Swal.fire({
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Username hanya boleh berisi huruf dan spasi",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (!username.charAt(0).match(/^[A-Z]$/)) {
+      Swal.fire({
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Huruf pertama username harus kapital",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (password.length < 8) {
+      Swal.fire({
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Password harus terdiri dari minimal 8 karakter",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (!password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])/)) {
+      Swal.fire({
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Password harus terdiri dari angka dan huruf",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     Swal.fire({
       title: "Apakah Anda yakin?",
-      text: "Data guru akan disimpan",
+      text: "Data kelas akan disimpan",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -52,40 +78,40 @@ const TambahGuru = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await createGuru({ ...guru, kelasId: selectedKelas });
-          Swal.fire({
-            title: "Berhasil",
-            text: "Guru berhasil ditambahkan",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            navigate(-1);
+          const response = await axios.post(`${apiUrl}/register`, {
+            username,
+            email,
+            password,
+            role: "GURU",
           });
-          setGuru({
-            nama_guru: "",
-            nip: "",
-            tempat_lahir: "",
-            mapel: "",
-            kelasId: "",
-          });
+
+          if (response.data) {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil",
+              text: "Guru berhasil ditambahkan",
+              timer: 2000,
+              showConfirmButton: false,
+            }).then(() => {
+              navigate(-1);
+            });
+          }
         } catch (error) {
-          console.error("Gagal menambahkan guru: ", error);
-          let errorMessage = "Gagal menambahkan guru. Silakan coba lagi.";
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
-            errorMessage = error.response.data.message;
+          let errorMessage = "Registrasi gagal! Silakan coba lagi.";
+          if (error.response?.status === 401) {
+            errorMessage = "Username atau email sudah digunakan.";
+          } else {
+            errorMessage =
+              error.response?.data?.message || "Terjadi kesalahan.";
           }
           Swal.fire({
-            title: "Gagal",
-            text: errorMessage,
             icon: "error",
-            showConfirmButton: false,
+            title: "Registrasi Gagal!",
+            text: errorMessage,
             timer: 2000,
+            showConfirmButton: false,
           });
+          console.error(error);
         }
       }
     });
@@ -106,17 +132,21 @@ const TambahGuru = () => {
           <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
             Tambah Guru
           </p>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleRegister}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label htmlFor="nama_guru" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="nama_guru"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
                   Nama Guru
                 </label>
                 <input
+                  id="username"
+                  name="username"
                   type="text"
-                  name="nama_guru"
-                  value={guru.nama_guru}
-                  onChange={handleChange}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukan Nama Guru"
                   required
@@ -124,16 +154,20 @@ const TambahGuru = () => {
                 />
               </div>
               <div className="relative">
-                <label htmlFor="nip" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
-                  NIP
+                <label
+                  htmlFor="nip"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Email
                 </label>
                 <input
-                  type="number"
-                  name="nip"
-                  value={guru.nip}
-                  onChange={handleChange}
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan NIP"
+                  placeholder="Masukan Email"
                   required
                   autoComplete="off"
                 />
@@ -142,56 +176,36 @@ const TambahGuru = () => {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label htmlFor="tempat_lahir" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
-                  Tempat Lahir
+                <label
+                  htmlFor="mapel"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Password
                 </label>
                 <input
-                  type="text"
-                  name="tempat_lahir"
-                  value={guru.tempat_lahir}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Tempat Lahir"
+                  id="password"
+                  name="password"
                   required
-                  autoComplete="off"
-                />
-              </div>
-              <div className="relative">
-                <label htmlFor="mapel" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
-                  Mapel
-                </label>
-                <input
-                  type="text"
-                  name="mapel"
-                  value={guru.mapel}
-                  onChange={handleChange}
+                  type={passwordType}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukan Nama Mapel Yang Diampu"
-                  required
                   autoComplete="off"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+                <span
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer top-7"
+                >
+                  {passwordType === "password" ? (
+                    <FontAwesomeIcon icon={faEyeSlash} />
+                  ) : (
+                    <FontAwesomeIcon icon={faEye} />
+                  )}
+                </span>
               </div>
             </div>
 
-            <div className="relative">
-              <label htmlFor="kelasId" className="block mb-2 text-sm sm:text-sm font-medium text-gray-900">
-                Kelas
-              </label>
-              <select
-                name="kelasId"
-                value={selectedKelas}
-                  onChange={(e) => setSelectedKelas(e.target.value)}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                required
-              >
-                <option value="">Pilih Kelas</option>
-                {kelas.map((kelas) => (
-                  <option className="text-sm" key={kelas.id} value={kelas.id}>
-                    {kelas.kelas}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div className="flex justify-between mt-6">
               <button
                 type="button"
@@ -202,7 +216,6 @@ const TambahGuru = () => {
               </button>
               <button
                 type="submit"
-                onClick={handleSubmit}
                 className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan

@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-// import { CSVLink } from "react-csv";
 import * as xlsx from "xlsx";
 
 function Siswa() {
@@ -82,14 +81,19 @@ function Siswa() {
 
   // Filter data berdasarkan term pencarian
   const filteredSiswa = siswa.filter((s) => {
-    const kelasNama = kelas.find((k) => k.id === s.kelasId)?.kelas;
+    const kelass = kelas.find((k) => k.id === s.kelasId)?.kelas;
+    const namaKelas = kelas.find((k) => k.id === s.kelasId)?.nama_kelas;
     return (
       (s.nama_siswa &&
         s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.tempat && s.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.alamat && s.alamat.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase()))
+      (kelass &&
+        namaKelas &&
+        `${kelass} - ${namaKelas}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()))
     );
   });
 
@@ -101,15 +105,6 @@ function Siswa() {
     Kelas: kelas.find((k) => k.id === s.kelasId)?.kelas || "",
     Alamat: s.alamat,
   }));
-
-  // Siapkan header untuk file CSV
-  // const headers = [
-  //   { label: "NAMA SISWA", key: "Nama Siswa" },
-  //   { label: "NISN", key: "NISN" },
-  //   { label: "TEMPAT LAHIR", key: "Tempat Lahir" },
-  //   { label: "KELAS", key: "Kelas" },
-  //   { label: "ALAMAT", key: "Alamat" },
-  // ];
 
   const exportToXlsx = () => {
     if (dataToExport.length === 0) {
@@ -132,35 +127,35 @@ function Siswa() {
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
-    const workbook = xlsx.utils.book_new();
-    const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+        const workbook = xlsx.utils.book_new();
+        const worksheet = xlsx.utils.json_to_sheet(dataToExport);
 
-    const colWidths = [
-      { wch: 15 },
-      { wch: 10 },
-      { wch: 15 },
-      { wch: 10 },
-      { wch: 20 },
-    ];
+        const colWidths = [
+          { wch: 15 },
+          { wch: 10 },
+          { wch: 15 },
+          { wch: 10 },
+          { wch: 20 },
+        ];
 
-    worksheet["!cols"] = colWidths;
+        worksheet["!cols"] = colWidths;
 
-    xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
-    const xlsxBuffer = xlsx.write(workbook, {
-      bookType: "xlsx",
-      type: "buffer",
-    });
-    const blob = new Blob([xlsxBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "data_siswa.xlsx";
-    link.click();
-    URL.revokeObjectURL(url);
+        xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
+        const xlsxBuffer = xlsx.write(workbook, {
+          bookType: "xlsx",
+          type: "buffer",
+        });
+        const blob = new Blob([xlsxBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "data_siswa.xlsx";
+        link.click();
+        URL.revokeObjectURL(url);
 
-  Swal.fire({
+        Swal.fire({
           title: "Berhasil",
           text: "Data siswa berhasil diekspor",
           icon: "success",
@@ -214,9 +209,13 @@ function Siswa() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Nama Siswa</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nama Siswa
+                  </th>
                   <th className="py-2 px-4 text-left">NISN</th>
-                  <th className="py-2 px-4 text-left">Tempat Lahir</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Tempat Lahir
+                  </th>
                   <th className="py-2 px-4 text-left">Kelas</th>
                   <th className="py-2 px-4 text-left">Alamat</th>
                   <th className="py-2 px-4 text-left">Aksi</th>
@@ -238,7 +237,8 @@ function Siswa() {
                         <td className="py-2 px-4">{s.nisn}</td>
                         <td className="py-2 px-4">{s.tempat}</td>
                         <td className="py-2 px-4">
-                          {kelas.find((k) => k.id === s.kelasId)?.kelas}
+                          {kelas.find((k) => k.id === s.kelasId)?.kelas} -{" "}
+                          {kelas.find((k) => k.id === s.kelasId)?.nama_kelas}
                         </td>
                         <td className="py-2 px-4">{s.alamat}</td>
                         <td className="py-2 px-4">

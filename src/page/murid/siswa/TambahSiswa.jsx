@@ -93,7 +93,7 @@ const TambahSiswa = () => {
 
   const batal = () => {
     navigate(-1);
-  }
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -164,11 +164,11 @@ const TambahSiswa = () => {
                   required
                 >
                   <option value="">Pilih Kelas</option>
-                    {kelas.map((kelas) => (
-                      <option className="text-sm" key={kelas.id} value={kelas.id}>
-                        {`${kelas.kelas}`}
-                      </option>
-                    ))}
+                  {kelas.map((kelas) => (
+                    <option className="text-sm" key={kelas.id} value={kelas.id}>
+                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="relative">

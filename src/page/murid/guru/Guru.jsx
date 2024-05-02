@@ -2,27 +2,32 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Sidebar from "../../../component/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash, faEdit, faFileExport, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faEdit,
+  faTrash,
+  faFileExport,
+  faArrowLeft,
+  faArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { getAllGurus, deleteGuru } from "./api_guru";
+import { getAllUsers, deleteUsers } from "./api_guru";
 import ReactPaginate from "react-paginate";
-import axios from "axios";
 import * as XLSX from "xlsx";
 
 function Guru() {
-  const [guru, setGuru] = useState([]);
-  const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const guruPerPage = 10;
   const pagesVisited = pageNumber * guruPerPage;
+  const [guru, setGuru] = useState([]);
 
-  // Ambil data guru dari API
   useEffect(() => {
     const fetchGuru = async () => {
       try {
-        const data = await getAllGurus();
-        setGuru(data);
+        const response = await getAllUsers();
+        const filteredGuru = response.filter((g) => g.role === "GURU");
+        setGuru(filteredGuru.reverse());
       } catch (error) {
         console.error("Failed to fetch Guru: ", error);
       }
@@ -30,24 +35,11 @@ function Guru() {
     fetchGuru();
   }, []);
 
-  // Ambil data kelas dari API
-  useEffect(() => {
-    const fetchKelas = async () => {
-      try {
-        const response = await axios.get("http://localhost:4001/kelas/all");
-        setKelas(response.data);
-      } catch (error) {
-        console.error("Failed to fetch Kelas: ", error);
-      }
-    };
-    fetchKelas();
-  }, []);
-
   // Fungsi untuk menghapus guru
-  const handleDelete = async (id, nama_guru) => {
+  const handleDelete = async (id, username) => {
     Swal.fire({
       title: "Konfirmasi",
-      text: `Anda yakin ingin menghapus data guru ${nama_guru}?`,
+      text: `Anda yakin ingin menghapus data guru ${username}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Ya",
@@ -55,23 +47,22 @@ function Guru() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await deleteGuru(id);
+          await deleteUsers(id);
           setGuru((prevGuru) => prevGuru.filter((g) => g.id !== id));
           Swal.fire({
             title: "Berhasil",
-            text: `Data guru ${nama_guru} berhasil dihapus`,
+            text: `Data guru ${username} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
             timer: 2000
           });
         } catch (error) {
           console.error("Gagal menghapus guru: ", error);
-          Swal.fire("Gagal", `Gagal menghapus guru ${nama_guru}`, "error");
+          Swal.fire("Gagal", `Gagal menghapus guru ${username}`, "error");
         }
       }
     });
   };
-
 
   // 2Fungsi untuk mengganti halaman
   const changePage = ({ selected }) => {
@@ -80,27 +71,20 @@ function Guru() {
 
   // Filter data berdasarkan term pencarian
   const filteredGuru = guru.filter((g) => {
-    const kelasNama = kelas.find((k) => k.id === g.kelasId)?.kelas;
-    return (
-      (g.nama_guru && g.nama_guru.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (g.nip && g.nip.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (g.tempat_lahir && g.tempat_lahir.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (g.mapel && g.mapel.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelasNama && kelasNama.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const usernameMatch = g.username && g.username.toLowerCase().includes(searchTerm.toLowerCase());
+    const emailMatch = typeof g.email === 'string' && g.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const roleMatch = typeof g.role === 'string' && g.role.toLowerCase().includes(searchTerm.toLowerCase());
+  
+    return usernameMatch || emailMatch || roleMatch;
   });
-
-  // Jumlah halaman yang dibutuhkan untuk paginasi
+  
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
-  // Siapkan data untuk ekspor
   const dataToExport = filteredGuru.map((g, index) => ({
     No: index + 1 + pagesVisited,
-    "Nama Guru": g.nama_guru,
-    NIP: g.nip,
-    "Tempat Lahir": g.tempat_lahir,
-    Mapel: g.mapel,
-    Kelas: kelas.find((k) => k.id === g.kelasId)?.kelas,
+    "Nama Guru": g.username,
+    Email: g.email,
+    Role: g.role,
   }));
 
   // Prepare options for Excel export
@@ -133,7 +117,7 @@ function Guru() {
       if (result.isConfirmed) {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const columnWidths = [{ wch: 5 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }];
+        const columnWidths = [{ wch: 5 }, { wch: 15 }, { wch: 25 }, { wch: 10 }];
 
         worksheet["!cols"] = columnWidths;
 
@@ -196,12 +180,10 @@ function Guru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Nama Guru</th>
-                  <th className="py-2 px-4 text-left">NIP</th>
-                  <th className="py-2 px-4 text-left">Tempat Lahir</th>
-                  <th className="py-2 px-4 text-left">Mapel</th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Aksi</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
+                  <th className="py-2 px-4 text-left">Email</th>
+                  <th className="py-2 px-4 text-left">Role</th>
+                  <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-base font-normal">
@@ -213,23 +195,21 @@ function Guru() {
                         key={g.id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                       >
-                        <td className="py-2 px-4">{index + 1 + pagesVisited}</td>
-                        <td className="py-2 px-4">{g.nama_guru}</td>
-                        <td className="py-2 px-4">{g.nip}</td>
-                        <td className="py-2 px-4">{g.tempat_lahir}</td>
-                        <td className="py-2 px-4">{g.mapel}</td>
-                        <td className="py-2 px-4">{kelas.find((k) => k.id === g.kelasId)?.kelas}</td>
                         <td className="py-2 px-4">
+                          {index + 1 + pagesVisited}
+                        </td>
+                        <td className="py-2 px-4">{g.username}</td>
+                        <td className="py-2 px-4">{g.email}</td>
+                        <td className="py-2 px-4">{g.role}</td>
+                        <td className="py-2 px-4 text-center">
                           <div className="flex gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
-                              <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                              >
+                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
-                            <button
-                              onClick={() => handleDelete(g.id, g.nama_guru)}
+                             <button
+                              onClick={() => handleDelete(g.id, g.username)}
                               className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
@@ -250,7 +230,7 @@ function Guru() {
           </div>
           <div className="mt-4">
             <ReactPaginate
-              previousLabel={<FontAwesomeIcon icon={faArrowLeft}/>}
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
               nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
               pageCount={pageCount}
               onPageChange={changePage}
