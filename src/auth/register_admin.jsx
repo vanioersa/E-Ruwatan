@@ -8,7 +8,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const apiUrl = "http://localhost:4001";
 
-function Register_guru() {
+function Register_Admin() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,24 +24,24 @@ function Register_guru() {
 
     if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
-          icon: "error",
-          title: "Registrasi Gagal",
-          text: "Username hanya boleh berisi huruf dan spasi",
-          timer: 2000,
-          showConfirmButton: false,
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Username hanya boleh berisi huruf dan spasi",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
-  }
-  if (!username.charAt(0).match(/^[A-Z]$/)) {
+    }
+    if (!username.charAt(0).match(/^[A-Z]$/)) {
       Swal.fire({
-          icon: "error",
-          title: "Registrasi Gagal",
-          text: "Huruf pertama username harus kapital",
-          timer: 2000,
-          showConfirmButton: false,
+        icon: "error",
+        title: "Registrasi Gagal",
+        text: "Huruf pertama username harus kapital",
+        timer: 2000,
+        showConfirmButton: false,
       });
       return;
-  }
+    }
     if (!validateEmail(email)) {
       Swal.fire({
         icon: "error",
@@ -78,13 +78,13 @@ function Register_guru() {
         username,
         email,
         password,
-        role: "GURU",
+        role: "ADMIN",
       });
       if (response.data) {
         Swal.fire({
           icon: "success",
           title: "Registrasi Berhasil!",
-          text: "Anda berhasil terdaftar sebagai guru.",
+          text: "Anda berhasil terdaftar sebagai siswa.",
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {
@@ -228,11 +228,9 @@ function Register_guru() {
             {/* Login link */}
             <p className="mt-10 text-center text-sm text-gray-500">
               Sudah Punya Akun?
-              <a href="/" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
+              <a
+                href="/" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
                 Masuk
-              </a>or
-              <a href="/register_siswa" className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600">
-                Register Siswa
               </a>
             </p>
           </div>
@@ -242,4 +240,4 @@ function Register_guru() {
   );
 }
 
-export default Register_guru;
+export default Register_Admin;

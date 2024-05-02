@@ -12,6 +12,15 @@ function Dashboard() {
   const [siswa, setSiswa] = useState([]);
   const [kelas, setkelas] = useState([]);
   const [guru, setGuru] = useState([]);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    // Simulate fetching the username from localStorage
+    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchSiswa = async () => {
@@ -52,8 +61,25 @@ function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
-      <section className="text-gray-800 body-font flex-1">
-        <div className="container mx-auto py-24 sm:py-8 px-4 sm:px-6 lg:px-8">
+      <section className="text-gray-800 body-font flex-1 mt-20">
+        {username && (
+          <div className="bg-white py-4 px-6">
+            <h1
+              className="text-gray-800 text-center relative p-3 bg-gray-100"
+              style={{
+                boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                borderRadius: "10px",
+              }}
+            >
+              Hi, <strong>{username}</strong>!{" "}
+              <span style={{ boxShadow: "none" }}>
+                Welcome to the dashboard Admin.
+              </span>
+            </h1>
+          </div>
+        )}
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama */}
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
@@ -105,7 +131,7 @@ function Dashboard() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
             <div className="w-full md:w-1/2 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
@@ -161,6 +187,13 @@ function Dashboard() {
           </div>
         </div>
       </section>
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .bg-gray-100 {
+            margin-bottom: 50px; /* Sesuaikan jarak sesuai kebutuhan */
+          }
+        }
+      `}</style>
     </div>
   );
 }
