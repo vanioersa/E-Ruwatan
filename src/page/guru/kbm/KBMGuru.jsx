@@ -121,8 +121,8 @@ function KBMGuru() {
     Kelas: kelas.find((k) => k.id === kbm.kelasId)?.kelas || "",
     "jam masuk": kbm.jam_masuk,
     "jam pulang": kbm.jam_pulang,
-    "materi": kbm.materi,
-    "keterangan": kbm.keterangan,
+    materi: kbm.materi,
+    keterangan: kbm.keterangan,
   }));
 
   // const headers = [
@@ -135,35 +135,64 @@ function KBMGuru() {
   // ];
 
   const exportToXlsx = () => {
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data kbm guru yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
 
-    const workbook = utils.book_new();
-    const worksheet = utils.json_to_sheet(dataToExport);
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data kbm guru?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const workbook = utils.book_new();
+        const worksheet = utils.json_to_sheet(dataToExport);
 
-    const colWidths = [
-      { wch: 20 },
-      { wch: 10 },
-      { wch: 12 },
-      { wch: 12 },
-      { wch: 30 },
-      { wch: 30 },
-    ];
+        const colWidths = [
+          { wch: 20 },
+          { wch: 10 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 20 },
+          { wch: 30 },
+        ];
 
-    worksheet["!cols"] = colWidths;
+        worksheet["!cols"] = colWidths;
 
-    xlsx.utils.book_append_sheet(workbook, worksheet, "Data KBM Guru");
-    const xlsxBuffer = xlsx.write(workbook, {
-      bookType: "xlsx",
-      type: "buffer",
+        xlsx.utils.book_append_sheet(workbook, worksheet, "Data KBM Guru");
+        const xlsxBuffer = xlsx.write(workbook, {
+          bookType: "xlsx",
+          type: "buffer",
+        });
+        const blob = new Blob([xlsxBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "data_kbm_guru.xlsx";
+        link.click();
+        URL.revokeObjectURL(url);
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data kbm guru berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
     });
-    const blob = new Blob([xlsxBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "data_kbm_guru.xlsx";
-    link.click();
-    URL.revokeObjectURL(url);
   };
 
   return (
@@ -213,7 +242,10 @@ function KBMGuru() {
               <tbody>
                 {filteredKBMGuru.length > 0 ? (
                   filteredKBMGuru
-                    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+                    .slice(
+                      currentPage * itemsPerPage,
+                      (currentPage + 1) * itemsPerPage
+                    )
                     .map((kbm, index) => (
                       <tr
                         key={kbm.id}
@@ -231,7 +263,15 @@ function KBMGuru() {
                         <td className="py-2 px-4">{kbm.jam_masuk}</td>
                         <td className="py-2 px-4">{kbm.jam_pulang}</td>
                         <td className="py-2 px-4">{kbm.materi}</td>
-                        <td className="py-2 px-4" style={{maxWidth: "200px"}}>{kbm.keterangan ? (  <span>{kbm.keterangan}</span>) : (<span className="text-gray-400 italic">Keterangan belum ditambahkan</span>  )}   </td>
+                        <td className="py-2 px-4" style={{ maxWidth: "200px" }}>
+                          {kbm.keterangan ? (
+                            <span>{kbm.keterangan}</span>
+                          ) : (
+                            <span className="text-gray-400 italic">
+                              Keterangan belum ditambahkan
+                            </span>
+                          )}{" "}
+                        </td>
                         <td className="py-2 px-4">
                           <div className="flex gap-2">
                             <Link to={`/EditKBM/${kbm.id}`}>
