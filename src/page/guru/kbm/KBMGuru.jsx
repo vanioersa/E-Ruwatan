@@ -161,9 +161,9 @@ function KBMGuru() {
         const colWidths = [
           { wch: 20 },
           { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
           { wch: 15 },
-          { wch: 15 },
-          { wch: 20 },
           { wch: 30 },
         ];
 
@@ -189,7 +189,7 @@ function KBMGuru() {
           text: "Data kbm guru berhasil diekspor",
           icon: "success",
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1000,
         });
       }
     });
