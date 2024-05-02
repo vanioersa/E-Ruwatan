@@ -91,8 +91,8 @@ function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="mt-4 overflow-x-auto rounded-lg shadow-lg border-gray-200">
+                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                       <th className="py-2 px-4 text-left">No</th>
@@ -135,8 +135,8 @@ function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="mt-4 overflow-x-auto rounded-lg shadow-lg border-gray-200">
+                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                       <th className="py-2 px-4 text-left">No</th>
