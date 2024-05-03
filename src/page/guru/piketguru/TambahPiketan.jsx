@@ -14,7 +14,7 @@ const TambahPiketan = () => {
   });
   const [kelas, setKelas] = useState([]);
   const [siswa, setSiswa] = useState([]);
-  const [selectedKelas, setSelectedKelas] = useState("");
+  const [selectedKelas, setSelectedKelas] = useState(null);
   const [selectedSiswa, setSelectedSiswa] = useState("");
   const navigate = useNavigate();
 
@@ -120,6 +120,12 @@ const TambahPiketan = () => {
     navigate(-1);
   };
 
+  const handleKelasChange = (e) => {
+    const kelasId = e.target.value;
+    const kelas = kelas.find((k) => k.id === kelasId);
+    setSelectedKelas(kelas || null);
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
@@ -142,9 +148,9 @@ const TambahPiketan = () => {
                 </label>
                 <select
                   name="kelasId"
-                  value={selectedKelas}
-                  onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500block w-full p-2.5"
+                  value={selectedKelas ? selectedKelas.id : ""}
+                  onChange={handleKelasChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -270,6 +276,46 @@ const TambahPiketan = () => {
               </button>
             </div>
           </form>
+          <div className="mt-8">
+            {siswa.length > 0 ? (
+              <div>
+                <h2 className="text-xl font-semibold mb-4">
+                  Daftar Siswa{" "}
+                  {selectedKelas
+                    ? `${selectedKelas.kelas} - ${selectedKelas.nama_kelas}`
+                    : ""}
+                </h2>
+                <table className="min-w-full leading-normal">
+                  <thead>
+                    <tr>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Nama Siswa
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        NIS
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {siswa.map((siswa) => (
+                      <tr key={siswa.id}>
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          {siswa.nama_siswa}
+                        </td>
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          {siswa.nis}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : selectedKelas ? (
+              <p>Tidak ada siswa di kelas ini.</p>
+            ) : (
+              <p>Silakan pilih kelas untuk melihat siswa.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

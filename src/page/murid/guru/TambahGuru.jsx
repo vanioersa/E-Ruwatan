@@ -68,7 +68,7 @@ const TambahGuru = () => {
 
     Swal.fire({
       title: "Apakah Anda yakin?",
-      text: "Data kelas akan disimpan",
+      text: "Data guru akan disimpan",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -188,7 +188,7 @@ const TambahGuru = () => {
                   required
                   type={passwordType}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan Nama Mapel Yang Diampu"
+                  placeholder="Masukan password"
                   autoComplete="off"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
