@@ -26,7 +26,7 @@ function Dashboard() {
     const fetchSiswa = async () => {
       try {
         const response = await axios.get("http://localhost:4001/siswa/all");
-        setSiswa(response.data);
+        setSiswa(response.data.reverse());
       } catch (error) {
         console.error("Failed to fetch siswa: ", error);
       }
@@ -50,7 +50,10 @@ function Dashboard() {
     const fetchGuru = async () => {
       try {
         const response = await axios.get("http://localhost:4001/users");
-        setGuru(response.data);
+        const filteredGuru = response.data.filter(
+          (item) => item.role === "GURU"
+        );
+        setGuru(filteredGuru.reverse());
       } catch (error) {
         console.error("Failed to fetch guru: ", error);
       }
@@ -88,7 +91,7 @@ function Dashboard() {
                 borderRadius: "10px",
               }}
             >
-              Hai, <strong>{username}</strong>!
+              Hai, <strong>{username}</strong>!{" "}
               <span style={{ boxShadow: "none" }}>
                 Selamat datang di dashboard Admin.
               </span>
@@ -100,7 +103,26 @@ function Dashboard() {
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama */}
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <div
+              <a
+                href="/guru"
+                className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
+              >
+                <FontAwesomeIcon
+                  icon={faChalkboardTeacher}
+                  className="inline-block w-12 h-12 text-white mr-4"
+                />
+                <div>
+                  <h2 className="title-font font-medium text-3xl text-white">
+                    {guru.length}
+                  </h2>
+                  <p className="leading-relaxed font-medium text-white">Guru</p>
+                </div>
+              </a>
+            </div>
+            {/* Kartu kedua */}
+            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
+              <a
+                href="/siswa"
                 className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
               >
                 <FontAwesomeIcon
@@ -115,11 +137,12 @@ function Dashboard() {
                     Siswa
                   </p>
                 </div>
-              </div>
+              </a>
             </div>
-            {/* Kartu kedua */}
+            {/* Kartu ketiga */}
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <div
+              <a
+                href="/kelas"
                 className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
               >
                 <FontAwesomeIcon
@@ -134,24 +157,7 @@ function Dashboard() {
                     Kelas
                   </p>
                 </div>
-              </div>
-            </div>
-            {/* Kartu ketiga */}
-            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <div
-                className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
-              >
-                <FontAwesomeIcon
-                  icon={faChalkboardTeacher}
-                  className="inline-block w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
-                    {guru.length}
-                  </h2>
-                  <p className="leading-relaxed font-medium text-white">Guru</p>
-                </div>
-              </div>
+              </a>
             </div>
           </div>
 

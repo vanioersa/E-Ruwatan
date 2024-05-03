@@ -34,7 +34,7 @@ const UpdateSiswa = () => {
   const fetchKelasJurusan = async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelasJurusan(response.data);
+      setKelasJurusan(response.data.reverse());
     } catch (error) {
       console.error("Failed to fetch Kelas and Jurusan: ", error);
     }
@@ -166,7 +166,7 @@ const UpdateSiswa = () => {
                   <option value="">Pilih Kelas</option>
                   {kelasJurusan.map((kelas) => (
                     <option className="text-sm" key={kelas.id} value={kelas.id}>
-                      {`${kelas.kelas}`}
+                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
                     </option>
                   ))}
                 </select>

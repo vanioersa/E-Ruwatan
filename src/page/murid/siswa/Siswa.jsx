@@ -29,7 +29,7 @@ function Siswa() {
     const fetchSiswa = async () => {
       try {
         const data = await getAllSiswa();
-        setSiswa(data);
+        setSiswa(data.reverse());
       } catch (error) {
         console.error("Failed to fetch Siswa: ", error);
       }
@@ -42,7 +42,7 @@ function Siswa() {
     const fetchKelas = async () => {
       try {
         const response = await axios.get("http://localhost:4001/kelas/all");
-        setKelas(response.data);
+        setKelas(response.data.reverse());
       } catch (error) {
         console.error("Failed to fetch Kelas: ", error);
       }
