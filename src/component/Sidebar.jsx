@@ -106,8 +106,8 @@ const Sidebar = () => {
           {/* Iterate through menu items */}
           {[
             { icon: faHome, name: "Dashboard", path: "/dashboard_siswa" },
-            { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
             { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
+            { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
             { icon: faDoorOpen, name: "Kelas", path: "/Kelas" }
           ].map((item, index) => (
             <li

@@ -103,7 +103,9 @@ function Register_Admin() {
     <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
       <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
         <div className="text-center mb-8">
-          <img className="mx-auto h-32 w-auto" src={logobinus} alt="binusa" />
+          <img className="mx-auto h-32 w-auto" 
+          src={logobinus} 
+          alt="binusa" />
         </div>
 
         <form className="space-y-4" onSubmit={handleRegister}>

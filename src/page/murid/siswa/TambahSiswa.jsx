@@ -20,7 +20,7 @@ const TambahSiswa = () => {
   const fetchKelas = async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data);
+      setKelas(response.data.reverse());
     } catch (error) {
       console.error("Gagal mengambil data Kelas: ", error);
     }

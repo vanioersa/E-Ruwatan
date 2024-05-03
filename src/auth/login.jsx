@@ -101,7 +101,7 @@ function Logins() {
 
   return (
     <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
-      <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
+      <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200 w-full">
         <div className="text-center mb-8">
           <img
             className="mx-auto h-32 w-auto"
@@ -123,7 +123,7 @@ function Logins() {
                 type="text"
                 required
                 autoComplete="off"
-                className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600"
+                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
               />
@@ -142,7 +142,7 @@ function Logins() {
                 type={passwordType}
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md border-0 py-1.5 pl-2 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-cyan-600 pr-10"
+                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
