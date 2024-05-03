@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   tableHeader: {
-    backgroundColor: "#455D7A",
+    backgroundColor: "#21273D",
     color: "white",
     fontWeight: "extrabold",
     padding: 6,

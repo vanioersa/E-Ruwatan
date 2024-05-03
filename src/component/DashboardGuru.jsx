@@ -2,13 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SidebarGuru from "./SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChalkboardTeacher, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faChalkboardTeacher, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 
 function Dashboard() {
   const [piket, setPiket] = useState([]);
   const [kbm, setKbm] = useState([]);
   const [guru, setGuru] = useState([]);
   const [kelas, setKelas] = useState([]);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    // Simulate fetching the username from localStorage
+    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPiket = async () => {
@@ -72,12 +81,28 @@ function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <SidebarGuru />
-      <section className="text-gray-800 body-font flex-1">
-        <div className="container mx-auto py-24 sm:py-8 px-4 sm:px-6 lg:px-8">
+      <section className="text-gray-800 body-font flex-1 mt-20">
+        {username && (
+          <div className="bg-white py-4 px-6">
+            <h1
+              className="text-gray-800 text-center relative p-3 bg-gray-100"
+              style={{
+                boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                borderRadius: "10px",
+              }}
+            >
+              Hai, <strong>{username}</strong>!{" "}
+              <span style={{ boxShadow: "none" }}>
+                Selamat datang di dashboard Guru.
+              </span>
+            </h1>
+          </div>
+        )}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:my-0">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama (KBM Guru) */}
-            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full">
-              <div className="ring-1 shadow-lg bg-sky-600 px-6 py-6 rounded-lg flex items-center justify-between  md:mt-16 md:my-12">
+            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
+              <div className="shadow-lg bg-cyan-600 px-6 py-6 rounded-lg flex items-center justify-between  md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faChalkboardTeacher}
                   className="inline-block w-12 h-12 text-white mr-4"
@@ -91,8 +116,8 @@ function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
+                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                       <th className="py-2 px-4 text-left">No</th>
@@ -120,10 +145,10 @@ function Dashboard() {
               </div>
             </div>
             {/* Kartu kedua (Piketan) */}
-            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full">
-              <div className="ring-1 shadow-lg bg-blue-600 px-6 py-6 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
+            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
+              <div className="shadow-lg bg-emerald-600 px-6 py-6 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
                 <FontAwesomeIcon
-                  icon={faUser}
+                  icon={faUserGroup}
                   className="inline-block w-12 h-12 text-white mr-4"
                 />
                 <div>
@@ -135,8 +160,8 @@ function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
+                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                       <th className="py-2 px-4 text-left">No</th>
