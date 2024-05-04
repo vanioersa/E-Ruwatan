@@ -7,8 +7,8 @@ import {
   faChalkboardTeacher,
   faRightToBracket,
   faUserGroup,
-  faBars,
-  faTimes,
+  faBarsStaggered,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
@@ -87,9 +87,9 @@ const Sidebar = () => {
             onClick={toggleSidebar}
           >
            {sidebarOpen ? (
-              <FontAwesomeIcon icon={faTimes} size="lg" />
+              <FontAwesomeIcon icon={faXmark} size="lg" />
             ) : (
-              <FontAwesomeIcon icon={faBars} size="lg" />
+              <FontAwesomeIcon icon={faBarsStaggered} size="lg" />
             )}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />

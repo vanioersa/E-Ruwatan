@@ -15,6 +15,7 @@ import { getAllPiket } from "./api_piket";
 import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
+import Modal from "react-bootstrap/Modal";
 
 function PiketanGuru() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +27,11 @@ function PiketanGuru() {
   const [showModal, setShowModal] = useState(false);
   const [filteredDate, setFilteredDate] = useState("");
   const [piketByDateAndClass, setPiketByDateAndClass] = useState({});
+
+  const [show1, setShow1] = useState(false);
+
+  const handleClose1 = () => setShow1(false);
+  const handleShow1 = () => setShow1(true);
 
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -86,7 +92,7 @@ function PiketanGuru() {
         const sortedDates = Array.from(dateSet).sort(
           (a, b) => new Date(b) - new Date(a)
         );
-        setDateOptions(sortedDates);
+        setDateOptions(sortedDates.reverse());
       } catch (error) {
         console.error("Failed to fetch Piketan Guru: ", error);
       }
@@ -226,6 +232,59 @@ function PiketanGuru() {
     });
   };
 
+  const download = async () => {
+    await Swal.fire({
+      title: "Apakah Anda Ingin Mendownload?",
+      text: "File berisi semua data Piket",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0b409c",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, download!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios({
+          url: `http://localhost:4001/data/api/excel/download/data`,
+          method: "GET",
+          responseType: "blob",
+        }).then((response) => {
+          setTimeout(() => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement("a");
+
+            fileLink.href = fileURL;
+            fileLink.setAttribute("download", "piket.xlsx");
+            document.body.appendChild(fileLink);
+
+            fileLink.click();
+          }, 2000);
+        });
+      }
+    });
+  };
+
+  
+  const [excelData, setExcelData] = useState("");
+
+  const importExcell = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("file", excelData);
+
+    await axios
+      .post(`http://localhost:4001/data/api/excel/upload/data`, formData)
+      .then(() => {
+        Swal.fire("Sukses!", " Berhasil Ditambahkan.", "success");
+      })
+      .catch((err) => {
+        console.log(err);
+        Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      });
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -249,11 +308,20 @@ function PiketanGuru() {
                 </button>
               </Link>
               <button
-                onClick={exportToXlsx}
+                onClick={download}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket
               </button>
+              <button
+                onClick={handleShow1}
+                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <FontAwesomeIcon icon={faFileExport} /> Import Piket
+              </button>
+              <div>
+            
+        </div>
               <button
                 onClick={handleModalOpen}
                 className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -263,7 +331,7 @@ function PiketanGuru() {
             </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-            <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200  table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
@@ -426,6 +494,44 @@ function PiketanGuru() {
           </div>
         </div>
       )}
+
+<Modal show={show1} onHide={handleClose1}>
+        <Modal.Header closeButton>
+          <Modal.Title>Import Guru Dari File Excel</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className="rounded-md text-center shadow-md py-3 border">
+          </div>
+          <form className="mt-4" onSubmit={importExcell}>
+            <div className="flex justify-center items-center mb-3">
+              <label className="text-sm font-medium text-black w-40">
+                Drop File.xlsx
+              </label>
+              <input
+                type="file"
+                required
+                accept=".xlsx"
+                className="w-[100%] text-sm rounded-lg text-[#1d2b3a] py-1.5 px-1 border-2 border-[#292929]"
+                onChange={(e) => setExcelData(e.target.files[0])}
+              />
+            </div>
+            <div className="flex gap-4 mt-4 ml-[9rem]">
+              <button
+                onClick={handleClose1}
+                className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+              >
+                Tambah
+              </button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
