@@ -93,7 +93,7 @@ const Sidebar = () => {
             )}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
-          <a href="/dashboard_siswa">
+          <a href="/dashboard_admin">
             <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
           </a>
         </div>
@@ -105,7 +105,7 @@ const Sidebar = () => {
         <ul className="mt-6 text-xl mx-2 text-gray-600">
           {/* Iterate through menu items */}
           {[
-            { icon: faHome, name: "Dashboard", path: "/dashboard_siswa" },
+            { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
             { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
             { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
             { icon: faDoorOpen, name: "Kelas", path: "/Kelas" }

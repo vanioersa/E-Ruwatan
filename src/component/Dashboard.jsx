@@ -73,6 +73,7 @@ function Dashboard() {
       "bg-orange-600",
       "bg-teal-600",
       "bg-gray-600",
+      "",
     ];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
@@ -105,7 +106,7 @@ function Dashboard() {
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <a
                 href="/guru"
-                className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
+                className={`shadow-lg bg-cyan-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
               >
                 <FontAwesomeIcon
                   icon={faChalkboardTeacher}
@@ -123,7 +124,7 @@ function Dashboard() {
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <a
                 href="/siswa"
-                className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
+                className={`shadow-lg bg-emerald-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
               >
                 <FontAwesomeIcon
                   icon={faUserGroup}
@@ -143,7 +144,7 @@ function Dashboard() {
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
               <a
                 href="/kelas"
-                className={`ring-1 shadow-lg ${getRandomColor()} px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
+                className={`shadow-lg bg-amber-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
               >
                 <FontAwesomeIcon
                   icon={faDoorOpen}
@@ -162,14 +163,14 @@ function Dashboard() {
           </div>
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
-            <div className="w-full md:w-1/2 overflow-x-auto rounded-lg border-gray-200">
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg border-gray-200">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left">Nama Siswa</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">Nama Siswa</th>
                     <th className="py-2 px-4 text-left">NISN</th>
-                    <th className="py-2 px-4 text-left">Tempat Lahir</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">Tempat Lahir</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -199,14 +200,14 @@ function Dashboard() {
               </table>
             </div>
 
-            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg border-gray-200">
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
+            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg shadow-lg border-gray-200">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left">Nama Guru</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
                     <th className="py-2 px-4 text-left">Email</th>
-                    <th className="py-2 px-4 text-left">Role</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">Jenis Kelamin</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -219,7 +220,7 @@ function Dashboard() {
                         <td className="py-2 px-4">{index + 1}</td>
                         <td className="py-2 px-4">{item.username}</td>
                         <td className="py-2 px-4">{item.email}</td>
-                        <td className="py-2 px-4">{item.role}</td>
+                        <td className="py-2 px-4">{item.gender}</td>
                       </tr>
                     ))
                   ) : (

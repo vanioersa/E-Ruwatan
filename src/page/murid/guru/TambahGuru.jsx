@@ -9,9 +9,17 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 const apiUrl = "http://localhost:4001";
 
 const TambahGuru = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    alamat: "",
+    gender: "",
+    telepon: "",
+    status_nikah: "",
+    image: null, // Gunakan null untuk menyimpan file gambar
+  });
+
   const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
 
@@ -19,52 +27,100 @@ const TambahGuru = () => {
     setPasswordType(passwordType === "password" ? "text" : "password");
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({
+      ...formData,
+      image: file,
+    });
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!username.match(/^[A-Za-z\s]+$/)) {
+    const { username, email, password, alamat, gender, telepon, status_nikah, image } =
+      formData;
+
+      if (!username.match(/^[A-Za-z\s]+$/)) {
+        Swal.fire({
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Username hanya boleh berisi huruf dan spasi",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+      if (!username.charAt(0).match(/^[A-Z]$/)) {
+        Swal.fire({
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Huruf pertama username harus kapital",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+      if (password.length < 8) {
+        Swal.fire({
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Password harus terdiri dari minimal 8 karakter",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+      if (!password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])/)) {
+        Swal.fire({
+          icon: "error",
+          title: "Registrasi Gagal",
+          text: "Password harus terdiri dari angka dan huruf",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+    // Validasi input di sini sebelum melakukan registrasi
+    if (
+      !username ||
+      !email ||
+      !password ||
+      !alamat ||
+      !gender ||
+      !telepon ||
+      !status_nikah ||
+      !image
+    ) {
       Swal.fire({
         icon: "error",
         title: "Registrasi Gagal",
-        text: "Username hanya boleh berisi huruf dan spasi",
+        text: "Semua kolom harus diisi",
         timer: 2000,
         showConfirmButton: false,
       });
       return;
     }
 
-    if (!username.charAt(0).match(/^[A-Z]$/)) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Huruf pertama username harus kapital",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    if (password.length < 8) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Password harus terdiri dari minimal 8 karakter",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    if (!password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])/)) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Password harus terdiri dari angka dan huruf",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
+    const formDataToSend = new FormData();
+    formDataToSend.append("username", username);
+    formDataToSend.append("email", email);
+    formDataToSend.append("password", password);
+    formDataToSend.append("alamat", alamat);
+    formDataToSend.append("gender", gender);
+    formDataToSend.append("telepon", telepon);
+    formDataToSend.append("status_nikah", status_nikah);
+    formDataToSend.append("role", "GURU");
+    formDataToSend.append("image", image); // Sisipkan file gambar ke FormData
 
     Swal.fire({
       title: "Apakah Anda yakin?",
@@ -78,11 +134,11 @@ const TambahGuru = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.post(`${apiUrl}/register`, {
-            username,
-            email,
-            password,
-            role: "GURU",
+          // Kirim FormData yang berisi gambar ke server
+          const response = await axios.post(`${apiUrl}/register`, formDataToSend, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
 
           if (response.data) {
@@ -136,26 +192,46 @@ const TambahGuru = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
-                  htmlFor="nama_guru"
+                  htmlFor="username"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Nama Guru
+                  Nama Pengguna (Username)
                 </label>
                 <input
                   id="username"
                   name="username"
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan Nama Guru"
-                  required
                   autoComplete="off"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Nama Pengguna"
+                  required
                 />
               </div>
               <div className="relative">
                 <label
-                  htmlFor="nip"
+                  htmlFor="image"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Foto
+                </label>
+                <input
+                  id="image"
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="email"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
                   Email
@@ -164,12 +240,32 @@ const TambahGuru = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan Email"
-                  required
                   autoComplete="off"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Email"
+                  required
+                />
+              </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="alamat"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Alamat
+                </label>
+                <input
+                  id="alamat"
+                  name="alamat"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.alamat}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Alamat"
+                  required
                 />
               </div>
             </div>
@@ -177,21 +273,21 @@ const TambahGuru = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
-                  htmlFor="mapel"
+                  htmlFor="password"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Password
+                  Kata Sandi (Password)
                 </label>
                 <input
                   id="password"
                   name="password"
-                  required
                   type={passwordType}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan password"
                   autoComplete="off"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Kata Sandi"
+                  required
                 />
                 <span
                   onClick={togglePassword}
@@ -203,6 +299,70 @@ const TambahGuru = () => {
                     <FontAwesomeIcon icon={faEye} />
                   )}
                 </span>
+              </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="telepon"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Telepon
+                </label>
+                <input
+                  id="telepon"
+                  name="telepon"
+                  type="number"
+                  autoComplete="off"
+                  value={formData.telepon}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Nomor Telepon"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="gender"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Jenis Kelamin
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Pilih Jenis Kelamin</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="status_nikah"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Status Nikah
+                </label>
+                <select
+                  id="status_nikah"
+                  name="status_nikah"
+                  value={formData.status_nikah}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Pilih Status Nikah</option>
+                  <option value="Belum Menikah">Belum Menikah</option>
+                  <option value="Menikah">Menikah</option>
+                  <option value="Cerai">Cerai</option>
+                </select>
               </div>
             </div>
 

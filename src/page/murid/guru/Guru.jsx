@@ -54,7 +54,7 @@ function Guru() {
             text: `Data guru ${username} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
-            timer: 2000
+            timer: 2000,
           });
         } catch (error) {
           console.error("Gagal menghapus guru: ", error);
@@ -71,20 +71,39 @@ function Guru() {
 
   // Filter data berdasarkan term pencarian
   const filteredGuru = guru.filter((g) => {
-    const usernameMatch = g.username && g.username.toLowerCase().includes(searchTerm.toLowerCase());
-    const emailMatch = typeof g.email === 'string' && g.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const roleMatch = typeof g.role === 'string' && g.role.toLowerCase().includes(searchTerm.toLowerCase());
-  
-    return usernameMatch || emailMatch || roleMatch;
+    const usernameMatch =
+      g.username && g.username.toLowerCase().includes(searchTerm.toLowerCase());
+    const emailMatch =
+      typeof g.email === "string" &&
+      g.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const genderMatch =
+      typeof g.gender === "string" &&
+      g.gender.toLowerCase().includes(searchTerm.toLowerCase());
+    const alamatMatch =
+      typeof g.alamat === "string" &&
+      g.alamat.toLowerCase().includes(searchTerm.toLowerCase());
+    const teleponMatch =
+      typeof g.telepon === "string" &&
+      g.telepon.toLowerCase().includes(searchTerm.toLowerCase());
+    const statusNikahMatch =
+      typeof g.status_nikah === "string" &&
+      g.status_nikah.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return (
+      usernameMatch || emailMatch || genderMatch || alamatMatch || teleponMatch || statusNikahMatch
+    );
   });
-  
+
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
   const dataToExport = filteredGuru.map((g, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Guru": g.username,
     Email: g.email,
-    Role: g.role,
+    "Jenis Kelamin": g.gender,
+    Alamat: g.alamat,
+    "Nomor Telfon": g.telepon,
+    "Status Pernikahan": g.status_nikah,
   }));
 
   // Prepare options for Excel export
@@ -117,9 +136,33 @@ function Guru() {
       if (result.isConfirmed) {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const columnWidths = [{ wch: 5 }, { wch: 15 }, { wch: 25 }, { wch: 10 }];
 
-        worksheet["!cols"] = columnWidths;
+        // Calculate column widths dynamically based on column headers and data content
+        const columnWidths = {};
+
+        // Get all column keys from the first row of dataToExport (assuming dataToExport is not empty)
+        const columnKeys =
+          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
+
+        // Initialize column widths based on column keys (headers)
+        columnKeys.forEach((key) => {
+          columnWidths[key] = key.length; // Start with header length
+        });
+
+        // Update column widths based on data content
+        dataToExport.forEach((data) => {
+          columnKeys.forEach((key) => {
+            const value = data[key] ? String(data[key]) : "";
+            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          });
+        });
+
+        // Convert column widths to Excel column specifications
+        const excelColumns = columnKeys.map((key) => ({
+          wch: columnWidths[key],
+        }));
+
+        worksheet["!cols"] = excelColumns;
 
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
         const excelBuffer = XLSX.write(workbook, excelOptions);
@@ -180,9 +223,20 @@ function Guru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nama Guru
+                  </th>
                   <th className="py-2 px-4 text-left">Email</th>
-                  <th className="py-2 px-4 text-left">Role</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Jenis Kelamin
+                  </th>
+                  <th className="py-2 px-4 text-left">Alamat</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nomor Telfon
+                  </th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Status Pernikahan
+                  </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -200,17 +254,20 @@ function Guru() {
                         </td>
                         <td className="py-2 px-4">{g.username}</td>
                         <td className="py-2 px-4">{g.email}</td>
-                        <td className="py-2 px-4">{g.role}</td>
-                        <td className="py-2 px-4 text-center">
-                          <div className="flex gap-2">
+                        <td className="py-2 px-4">{g.gender}</td>
+                        <td className="py-2 px-4">{g.alamat}</td>
+                        <td className="py-2 px-4">{g.telepon}</td>
+                        <td className="py-2 px-4">{g.status_nikah}</td>
+                        <td className="py-2 px-4">
+                          <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
-                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                              <button className="flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
-                             <button
+                            <button
                               onClick={() => handleDelete(g.id, g.username)}
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
