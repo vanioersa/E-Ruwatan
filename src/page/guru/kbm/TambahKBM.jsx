@@ -5,9 +5,10 @@ import axios from "axios";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { createKbm } from "./api_kbm";
 
-const TambahKBM = () => {
+const TambahKBM = ({ username }) => {
+  // Assuming `username` is passed as a prop
   const [kbm, setKbm] = useState({
-    namaId: "",
+    namaId: username,
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",
@@ -15,15 +16,12 @@ const TambahKBM = () => {
     materi: "",
   });
 
-  const [guru, setGuru] = useState([]);
-  const [selectedGuru, setSelectedGuru] = useState("");
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const currentTime = useState(getCurrentTime());
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchGuru();
     fetchKelas();
   }, []);
 
@@ -33,15 +31,6 @@ const TambahKBM = () => {
     const minute = now.getMinutes().toString().padStart(2, "0");
     return `${hour}:${minute}`;
   }
-
-  const fetchGuru = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/guru/all");
-      setGuru(response.data);
-    } catch (error) {
-      console.error("Gagal mengambil data Guru: ", error);
-    }
-  };
 
   const fetchKelas = async () => {
     try {
@@ -54,13 +43,13 @@ const TambahKBM = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "jam_masuk" || name === "jam_pulang") {
       if (value < currentTime) {
-        // Menampilkan pesan error jika waktu yang dimasukkan kurang dari waktu sekarang
         Swal.fire({
           title: "Gagal",
-          text: `Jam ${name === "jam_masuk" ? "masuk" : "pulang"} harus lebih besar dari waktu sekarang.`,
+          text: `Jam ${
+            name === "jam_masuk" ? "masuk" : "pulang"
+          } harus lebih besar dari waktu sekarang.`,
           icon: "error",
           showConfirmButton: false,
           timer: 2000,
@@ -77,13 +66,11 @@ const TambahKBM = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { jam_masuk, jam_pulang } = kbm;
 
     const startTime = new Date(`2000-01-01T${jam_masuk}`);
     const endTime = new Date(`2000-01-01T${jam_pulang}`);
 
-    // Memastikan jam pulang lebih besar dari jam masuk
     if (endTime <= startTime) {
       Swal.fire({
         title: "Gagal",
@@ -108,7 +95,7 @@ const TambahKBM = () => {
       if (result.isConfirmed) {
         try {
           await createKbm({
-            namaId: selectedGuru,
+            namaId: username, // Pass the username instead of selecting from dropdown
             kelasId: selectedKelas,
             jam_masuk: kbm.jam_masuk,
             jam_pulang: kbm.jam_pulang,
@@ -202,21 +189,14 @@ const TambahKBM = () => {
                 >
                   Guru
                 </label>
-                <select
+                <input
+                  type="text"
                   id="namaId"
                   name="namaId"
-                  value={selectedGuru}
-                  onChange={(e) => setSelectedGuru(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Pilih Guru</option>
-                  {guru.map((guru) => (
-                    <option key={guru.id} value={guru.id}>
-                      {guru.nama_guru}
-                    </option>
-                  ))}
-                </select>
+                  value={username}
+                  readOnly
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                />
               </div>
             </div>
 

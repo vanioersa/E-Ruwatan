@@ -40,3 +40,18 @@ export const deletePiket = async (id) => {
     throw error;
   }
 };
+
+export const updatePiket = async (id, piketData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.put(`${apiUrl}/update/${id}`, piketData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to update piket with id ${id}: `, error);
+    throw error;
+  }
+};

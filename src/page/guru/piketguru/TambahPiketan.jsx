@@ -16,7 +16,18 @@ const TambahPiketan = () => {
   const [siswa, setSiswa] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState(null);
   const [selectedSiswa, setSelectedSiswa] = useState("");
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const navigate = useNavigate();
+
+  const handleStudentCheckboxChange = (studentId) => {
+    setSelectedStudentIds((prev) => {
+      if (prev.includes(studentId)) {
+        return prev.filter((id) => id !== studentId);
+      } else {
+        return [...prev, studentId];
+      }
+    });
+  };
 
   const fetchKelas = async () => {
     try {
@@ -116,15 +127,20 @@ const TambahPiketan = () => {
     });
   };
 
+  const handleKelasChange = (e) => {
+    const kelasId = e.target.value;
+    const selected = kelas.find((k) => k.id === kelasId); // Use a different variable name
+    setSelectedKelas(selected || null);
+  };
+
   const batal = () => {
     navigate(-1);
   };
 
-  const handleKelasChange = (e) => {
-    const kelasId = e.target.value;
-    const kelas = kelas.find((k) => k.id === kelasId);
-    setSelectedKelas(kelas || null);
-  };
+  // Filter siswa berdasarkan kelas yang dipilih
+  const filteredSiswa = selectedKelas
+    ? siswa.filter((s) => s.kelasId === selectedKelas.id)
+    : [];
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -161,7 +177,27 @@ const TambahPiketan = () => {
                   ))}
                 </select>
               </div>
+
               <div className="relative">
+                <label
+                  htmlFor="tanggal"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
+                >
+                  Tanggal
+                </label>
+                <input
+                  type="date"
+                  name="tanggal"
+                  defaultValue={new Date().toISOString().slice(0, 10)}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Tanggal"
+                  required
+                  readOnly
+                />
+              </div>
+
+              {/* <div className="relative">
                 <label
                   htmlFor="siswaId"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
@@ -182,10 +218,10 @@ const TambahPiketan = () => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="tanggal"
@@ -258,7 +294,7 @@ const TambahPiketan = () => {
                 />
                 <label htmlFor="status-alpha">Alpha</label>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex justify-between mt-6">
               <button
@@ -277,41 +313,83 @@ const TambahPiketan = () => {
             </div>
           </form>
           <div className="mt-8">
-            {siswa.length > 0 ? (
-              <div>
-                <h2 className="text-xl font-semibold mb-4">
-                  Daftar Siswa{" "}
-                  {selectedKelas
-                    ? `${selectedKelas.kelas} - ${selectedKelas.nama_kelas}`
-                    : ""}
-                </h2>
-                <table className="min-w-full leading-normal">
-                  <thead>
-                    <tr>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Nama Siswa
-                      </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        NIS
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {siswa.map((siswa) => (
-                      <tr key={siswa.id}>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          {siswa.nama_siswa}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          {siswa.nis}
-                        </td>
+            {selectedKelas ? (
+              filteredSiswa.length > 0 ? (
+                <div>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Daftar Siswa{" "}
+                    {selectedKelas
+                      ? `${selectedKelas.kelas} - ${selectedKelas.nama_kelas}`
+                      : ""}
+                  </h2>
+                  <table className="min-w-full leading-normal">
+                    <thead>
+                      <tr>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Select
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Nama Siswa
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          NISN
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Kelas
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Alamat
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Masuk
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Ijin
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Sakit
+                        </th>
+                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          Alpha
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : selectedKelas ? (
-              <p>Tidak ada siswa di kelas ini.</p>
+                    </thead>
+                    <tbody>
+                      {filteredSiswa.map((siswa) => (
+                        <tr key={siswa.id}>
+                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <input
+                              type="checkbox"
+                              checked={selectedStudentIds.includes(siswa.id)}
+                              onChange={() =>
+                                handleStudentCheckboxChange(siswa.id)
+                              }
+                            />
+                          </td>
+                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            {siswa.nama_siswa}
+                          </td>
+                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            {siswa.nis}
+                          </td>
+                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            {kelas.find((k) => k.id === siswa.kelasId)?.kelas} -{" "}
+                            {
+                              kelas.find((k) => k.id === siswa.kelasId)
+                                ?.nama_kelas
+                            }
+                          </td>
+                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            {siswa.alamat}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>Tidak ada siswa di kelas ini.</p>
+              )
             ) : (
               <p>Silakan pilih kelas untuk melihat siswa.</p>
             )}
