@@ -180,9 +180,28 @@ function Kelas() {
       if (result.isConfirmed) {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const columnWidths = [{ wch: 15 }, { wch: 10 }];
 
-        worksheet["!cols"] = columnWidths;
+        const columnWidths = {};
+
+        const columnKeys =
+          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
+
+        columnKeys.forEach((key) => {
+          columnWidths[key] = key.length;
+        });
+
+        dataToExport.forEach((data) => {
+          columnKeys.forEach((key) => {
+            const value = data[key] ? String(data[key]) : "";
+            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          });
+        });
+
+        const excelColumns = columnKeys.map((key) => ({
+          wch: columnWidths[key],
+        }));
+
+        worksheet["!cols"] = excelColumns;
 
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
         const excelBuffer = XLSX.write(workbook, excelOptions);
