@@ -1,99 +1,7 @@
-// import React, { useState, useEffect } from "react";
-// import Swal from "sweetalert2";
-// import { useParams, useNavigate } from "react-router-dom";
-// import axios from "axios";
+// import React from "react";
 // import Sidebar from "../../../component/Sidebar";
-// import { updateGuru, getGuruById } from "./api_guru";
 
 // const UpdateGuru = () => {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-//   const [guru, setGuru] = useState({
-//     nama_guru: "",
-//     nip: "",
-//     tempat_lahir: "",
-//     mapel: "",
-//     kelasId: "",
-//   });
-//   const [kelas, setKelas] = useState([]);
-//   const [selectedKelas, setSelectedKelas] = useState("");
-
-//   useEffect(() => {
-//     const fetchGuruData = async () => {
-//       try {
-//         const guruData = await getGuruById(id);
-//         setGuru(guruData);
-//         setSelectedKelas(guruData.kelasId);
-//       } catch (error) {
-//         console.error("Failed to fetch guru data: ", error);
-//       }
-//     };
-//     fetchGuruData();
-//   }, [id]);
-
-//   const fetchKelas = async () => {
-//     try {
-//       const response = await axios.get("http://localhost:4001/kelas/all");
-//       setKelas(response.data);
-//     } catch (error) {
-//       console.error("Failed to fetch kelas data: ", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchKelas();
-//   }, []);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setGuru((prevGuru) => ({
-//       ...prevGuru,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     const initialGuruData = await getGuruById(id);
-
-//     const isDataChanged =
-//       initialGuruData.nama_guru !== guru.nama_guru ||
-//       initialGuruData.nip !== guru.nip ||
-//       initialGuruData.tempat_lahir !== guru.tempat_lahir ||
-//       initialGuruData.mapel !== guru.mapel ||
-//       initialGuruData.kelasId !== selectedKelas;
-
-//     if (!isDataChanged) {
-//       Swal.fire({
-//         icon: "error",
-//         title: "Gagal",
-//         text: "Minimal satu data harus diubah",
-//         showConfirmButton: false,
-//         timer: 2000,
-//       });
-//       return;
-//     }
-
-//     try {
-//       await updateGuru(id, guru);
-//       Swal.fire({
-//         icon: "success",
-//         title: "Berhasil",
-//         text: "Data guru berhasil diperbarui",
-//         showConfirmButton: false,
-//         timer: 2000,
-//       }).then(() => {
-//         navigate(-1);
-//       });
-//     } catch (error) {
-//       console.error("Failed to update guru data: ", error);
-//       Swal.fire("Gagal", "Gagal mengupdate data guru", "error");
-//     }
-//   };
-
-//   const batal = () => {
-//     navigate(-1);
-//   };
 
 //   return (
 //     <div className="flex flex-col md:flex-row h-screen">
@@ -106,21 +14,21 @@
 //           <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
 //             Update Guru
 //           </p>
-//           <form onSubmit={handleSubmit}>
+//           <form onSubmit={}>
 //             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
 //               <div className="relative">
 //                 <label
-//                   htmlFor="nama_guru"
+//                   htmlFor=""
 //                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
 //                 >
-//                   Nama Guru
+//                   Nama Pengguna (Username)
 //                 </label>
 //                 <input
 //                   type="text"
-//                   id="nama_guru"
-//                   name="nama_guru"
-//                   value={guru.nama_guru}
-//                   onChange={handleChange}
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
 //                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 //                   placeholder="Masukkan Nama Guru"
 //                   required
@@ -129,19 +37,101 @@
 //               </div>
 //               <div className="relative">
 //                 <label
-//                   htmlFor="nip"
+//                   htmlFor=""
 //                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
 //                 >
-//                   NIP
+//                   Email
+//                 </label>
+//                 <input
+//                   type="email"
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
+//                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+//                   placeholder="Masukkan "
+//                   required
+//                   autoComplete="off"
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+//               <div className="relative">
+//                 <label
+//                   htmlFor=""
+//                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+//                 >
+//                   Kata Sandi (Password)
+//                 </label>
+//                 <input
+//                   type="password"
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
+//                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+//                   placeholder="Masukkan"
+//                   required
+//                   autoComplete="off"
+//                 />
+//               </div>
+//               <div className="relative">
+//                 <label
+//                   htmlFor=""
+//                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+//                 >
+//                   Alamat
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
+//                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+//                   placeholder="Masukkan "
+//                   required
+//                   autoComplete="off"
+//                 />
+//               </div>
+//             </div>
+
+//             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+//               <div className="relative">
+//                 <label
+//                   htmlFor=""
+//                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+//                 >
+//                   Alamat
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
+//                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+//                   placeholder="Masukkan "
+//                   required
+//                   autoComplete="off"
+//                 />
+//               </div>
+//               <div className="relative">
+//                 <label
+//                   htmlFor=""
+//                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+//                 >
+//                   Nomor Telfon
 //                 </label>
 //                 <input
 //                   type="number"
-//                   id="nip"
-//                   name="nip"
-//                   value={guru.nip}
-//                   onChange={handleChange}
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
 //                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//                   placeholder="Masukkan NIP"
+//                   placeholder="Masukkan "
 //                   required
 //                   autoComplete="off"
 //                 />
@@ -151,69 +141,44 @@
 //             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
 //               <div className="relative">
 //                 <label
-//                   htmlFor="tempat_lahir"
+//                   htmlFor=""
 //                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
 //                 >
-//                   Tempat Lahir
+//                   Jenis Kelamin
 //                 </label>
 //                 <input
 //                   type="text"
-//                   id="tempat_lahir"
-//                   name="tempat_lahir"
-//                   value={guru.tempat_lahir}
-//                   onChange={handleChange}
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
 //                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//                   placeholder="Masukkan Tempat Lahir"
+//                   placeholder="Masukkan "
 //                   required
 //                   autoComplete="off"
 //                 />
 //               </div>
 //               <div className="relative">
 //                 <label
-//                   htmlFor="mapel"
+//                   htmlFor=""
 //                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
 //                 >
-//                   Mapel
+//                   Status Nikah
 //                 </label>
 //                 <input
-//                   type="text"
-//                   id="mapel"
-//                   name="mapel"
-//                   value={guru.mapel}
-//                   onChange={handleChange}
+//                   type="number"
+//                   id=""
+//                   name=""
+//                   value={}
+//                   onChange={}
 //                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//                   placeholder="Masukkan Nama Mapel Yang Diampu"
+//                   placeholder="Masukkan "
 //                   required
 //                   autoComplete="off"
 //                 />
 //               </div>
 //             </div>
 
-//             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-//               <div className="relative">
-//                 <label
-//                   htmlFor="kelasId"
-//                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-//                 >
-//                   Kelas
-//                 </label>
-//                 <select
-//                   id="kelasId"
-//                   name="kelasId"
-//                   value={selectedKelas}
-//                   onChange={(e) => setSelectedKelas(e.target.value)}
-//                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-//                   required
-//                 >
-//                   <option value="">Pilih Kelas</option>
-//                   {kelas.map((kelas) => (
-//                     <option key={kelas.id} value={kelas.id}>
-//                       {kelas.kelas}
-//                     </option>
-//                   ))}
-//                 </select>
-//               </div>
-//             </div>
 //             <div className="flex justify-between mt-6">
 //               <button
 //                 type="button"
