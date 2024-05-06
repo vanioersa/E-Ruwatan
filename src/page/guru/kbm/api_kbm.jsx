@@ -13,19 +13,19 @@ export const getAllKbms = async () => {
 };
 
 export const getKbmById = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${apiUrl}/by-id/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error(`Failed to fetch kbm with id ${id}: `, error);
-      throw error;
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${apiUrl}/by-id/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch kbm with id ${id}: `, error);
+    throw error;
+  }
+};
 
 export const createKbm = async (kbmData) => {
   try {
@@ -38,6 +38,7 @@ export const createKbm = async (kbmData) => {
     return response.data;
   } catch (error) {
     console.error("Failed to create KBM: ", error);
+    // It's usually a good practice to pass back error details to the caller, especially for HTTP requests.
     throw error;
   }
 };

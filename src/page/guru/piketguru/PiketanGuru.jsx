@@ -30,7 +30,7 @@ function PiketanGuru() {
 
   const handleUpdatePiket = (id) => {
     // Navigate to the edit page
-    window.location.href = `/piketan/EditPiketan/${id}`;
+    window.location.href = `/EditPiketan/${id}`;
   };
 
   const handledeletePiket = async (id) => {

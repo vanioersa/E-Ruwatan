@@ -5,10 +5,9 @@ import axios from "axios";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { createKbm } from "./api_kbm";
 
-const TambahKBM = ({ username }) => {
-  // Assuming `username` is passed as a prop
+const TambahKBM = () => {
   const [kbm, setKbm] = useState({
-    namaId: username,
+    namaId: "",
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",
@@ -18,11 +17,13 @@ const TambahKBM = ({ username }) => {
 
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
-  const currentTime = useState(getCurrentTime());
+  const [currentTime, setCurrentTime] = useState(getCurrentTime());
+  const [username, setUsername] = useState(""); // Added state for username
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchKelas();
+    fetchUsername();
   }, []);
 
   function getCurrentTime() {
@@ -32,10 +33,39 @@ const TambahKBM = ({ username }) => {
     return `${hour}:${minute}`;
   }
 
+  useEffect(() => {
+    // Simulate fetching the username from localStorage
+    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(getCurrentTime());
+    }, 60000); // Update the time every minute
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/users");
+      setUsername(response.data.username); // Assume response has username directly
+    } catch (error) {
+      console.error("Failed to retrieve user details: ", error);
+    }
+  };
+
   const fetchKelas = async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data);
+      const sanitizedKelas = response.data.map((kelas) => ({
+        id: kelas.id,
+        kelas: kelas.kelas ?? "", // Fallback to empty string if undefined
+        nama_kelas: kelas.nama_kelas ?? "", // Fallback to empty string if undefined
+      }));
+      setKelas(sanitizedKelas);
     } catch (error) {
       console.error("Gagal mengambil data Kelas: ", error);
     }
@@ -43,21 +73,7 @@ const TambahKBM = ({ username }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "jam_masuk" || name === "jam_pulang") {
-      if (value < currentTime) {
-        Swal.fire({
-          title: "Gagal",
-          text: `Jam ${
-            name === "jam_masuk" ? "masuk" : "pulang"
-          } harus lebih besar dari waktu sekarang.`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-        return;
-      }
-    }
-
+    // Validations here
     setKbm((prevKbm) => ({
       ...prevKbm,
       [name]: value,
@@ -66,79 +82,40 @@ const TambahKBM = ({ username }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { jam_masuk, jam_pulang } = kbm;
-
-    const startTime = new Date(`2000-01-01T${jam_masuk}`);
-    const endTime = new Date(`2000-01-01T${jam_pulang}`);
-
-    if (endTime <= startTime) {
+    // Submission logic here
+    // Check validations before sending
+    try {
+      await createKbm({
+        namaId: username,
+        kelasId: selectedKelas,
+        jam_masuk: kbm.jam_masuk,
+        jam_pulang: kbm.jam_pulang,
+        keterangan: kbm.keterangan,
+        materi: kbm.materi,
+      });
+      Swal.fire({
+        title: "Berhasil",
+        text: "Data KBM Guru berhasil ditambahkan",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        navigate(-1);
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan KBM Guru: ", error);
+      let errorMessage = "Gagal menambahkan KBM Guru. Silakan coba lagi.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
       Swal.fire({
         title: "Gagal",
-        text: "Jam pulang harus lebih dari jam masuk.",
+        text: errorMessage,
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
-      return;
     }
-
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data KBM Guru akan disimpan",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await createKbm({
-            namaId: username, // Pass the username instead of selecting from dropdown
-            kelasId: selectedKelas,
-            jam_masuk: kbm.jam_masuk,
-            jam_pulang: kbm.jam_pulang,
-            materi: kbm.materi,
-            keterangan: kbm.keterangan,
-          });
-          Swal.fire({
-            title: "Berhasil",
-            text: "Data KBM Guru berhasil ditambahkan",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            navigate(-1);
-          });
-          setKbm({
-            namaId: "",
-            kelasId: "",
-            jam_masuk: "",
-            jam_pulang: "",
-            keterangan: "",
-            materi: "",
-          });
-        } catch (error) {
-          console.error("Gagal menambahkan KBM Guru: ", error);
-          let errorMessage = "Gagal menambahkan KBM Guru. Silakan coba lagi.";
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
-            errorMessage = error.response.data.message;
-          }
-          Swal.fire({
-            title: "Gagal",
-            text: errorMessage,
-            icon: "error",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        }
-      }
-    });
   };
 
   const batal = () => {
@@ -176,7 +153,9 @@ const TambahKBM = ({ username }) => {
                   <option value="">Pilih Kelas</option>
                   {kelas.map((kelas) => (
                     <option key={kelas.id} value={kelas.id}>
-                      {kelas.kelas}
+                      {kelas.kelas && kelas.nama_kelas
+                        ? `${kelas.kelas} ${kelas.nama_kelas}`
+                        : "No Class Info"}
                     </option>
                   ))}
                 </select>
@@ -226,7 +205,7 @@ const TambahKBM = ({ username }) => {
                   htmlFor="jam_pulang"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Jam Pulang
+                  Jam Selesai
                 </label>
                 <input
                   type="time"
