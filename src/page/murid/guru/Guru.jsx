@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { getAllUsers, deleteUsers } from "./api_guru";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
+// import objact from "../../../asset/profil_guru"
 
 function Guru() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,7 +40,7 @@ function Guru() {
   const handleDelete = async (id, username) => {
     Swal.fire({
       title: "Konfirmasi",
-      text: `Anda yakin ingin menghapus data guru ${username}?`,
+      text: `Anda yakin ingin menghapus data ${username}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Ya",
@@ -90,7 +91,12 @@ function Guru() {
       g.status_nikah.toLowerCase().includes(searchTerm.toLowerCase());
 
     return (
-      usernameMatch || emailMatch || genderMatch || alamatMatch || teleponMatch || statusNikahMatch
+      usernameMatch ||
+      emailMatch ||
+      genderMatch ||
+      alamatMatch ||
+      teleponMatch ||
+      statusNikahMatch
     );
   });
 
@@ -227,14 +233,25 @@ function Guru() {
                     Nama Guru
                   </th>
                   <th className="py-2 px-4 text-left">Email</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th
+                    className="py-2 px-4 text-left whitespace-nowrap"
+                    style={{ width: "5px" }}
+                  >
                     Jenis Kelamin
                   </th>
-                  <th className="py-2 px-4 text-left">Alamat</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-left" style={{ width: "5px" }}>
+                    Alamat
+                  </th>
+                  <th
+                    className="py-2 px-4 text-left whitespace-nowrap"
+                    style={{ width: "5px" }}
+                  >
                     Nomor Telfon
                   </th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th
+                    className="py-2 px-4 text-left whitespace-nowrap"
+                    style={{ width: "5px" }}
+                  >
                     Status Pernikahan
                   </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
@@ -254,10 +271,67 @@ function Guru() {
                         </td>
                         <td className="py-2 px-4">{g.username}</td>
                         <td className="py-2 px-4">{g.email}</td>
-                        <td className="py-2 px-4">{g.gender}</td>
-                        <td className="py-2 px-4">{g.alamat}</td>
-                        <td className="py-2 px-4">{g.telepon}</td>
-                        <td className="py-2 px-4">{g.status_nikah}</td>
+                        <td className="py-2 px-4">
+                          {g.gender ? (
+                            <span>{g.gender}</span>
+                          ) : (
+                            <span
+                              className="text-gray-400 italic text-sm whitespace-nowrap"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Data kosong
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2 px-4">
+                          {g.alamat ? (
+                            <span>{g.alamat}</span>
+                          ) : (
+                            <span
+                              className="text-gray-400 italic text-sm whitespace-nowrap"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Data kosong
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2 px-4">
+                          {g.telepon ? (
+                            <span>{g.telepon}</span>
+                          ) : (
+                            <span
+                              className="text-gray-400 italic text-sm whitespace-nowrap"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Data kosong
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2 px-4">
+                          {g.status_nikah ? (
+                            <span>{g.status_nikah}</span>
+                          ) : (
+                            <span
+                              className="text-gray-400 italic text-sm whitespace-nowrap"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Data kosong
+                            </span>
+                          )}
+                        </td>
+
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>

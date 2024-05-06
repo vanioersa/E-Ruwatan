@@ -61,24 +61,6 @@ function Dashboard() {
     fetchGuru();
   }, []);
 
-  function getRandomColor() {
-    const colors = [
-      "bg-red-600",
-      "bg-blue-600",
-      "bg-yellow-600",
-      "bg-green-600",
-      "bg-purple-600",
-      "bg-pink-600",
-      "bg-indigo-600",
-      "bg-orange-600",
-      "bg-teal-600",
-      "bg-gray-600",
-      "",
-    ];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  }
-
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
@@ -163,14 +145,55 @@ function Dashboard() {
           </div>
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
+            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg shadow-lg border-gray-200">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                    <th className="py-2 px-4 text-left">No</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">
+                      Nama Guru
+                    </th>
+                    <th className="py-2 px-4 text-left">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {guru.length > 0 ? (
+                    guru.slice(0, 5).map((item, index) => (
+                      <tr
+                        key={item.id}
+                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                      >
+                        <td className="py-2 px-4">{index + 1}</td>
+                        <td className="py-2 px-4">{item.username}</td>
+                        <td className="py-2 px-4">{item.email}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="py-4 px-6 text-center text-gray-500 border-b border-gray-200"
+                      >
+                        Maaf, data guru tidak ditemukan.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
             <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">Nama Siswa</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">
+                      Nama Siswa
+                    </th>
                     <th className="py-2 px-4 text-left">NISN</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">Tempat Lahir</th>
+                    <th className="py-2 px-4 text-left whitespace-nowrap">
+                      Tempat Lahir
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -193,43 +216,6 @@ function Dashboard() {
                         className="py-4 px-6 text-center text-gray-500 border-b border-gray-200"
                       >
                         Maaf, data siswa tidak ditemukan.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg shadow-lg border-gray-200">
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                    <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
-                    <th className="py-2 px-4 text-left">Email</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">Jenis Kelamin</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {guru.length > 0 ? (
-                    guru.slice(0, 5).map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">{item.username}</td>
-                        <td className="py-2 px-4">{item.email}</td>
-                        <td className="py-2 px-4">{item.gender}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-4 px-6 text-center text-gray-500 border-b border-gray-200"
-                      >
-                        Maaf, data guru tidak ditemukan.
                       </td>
                     </tr>
                   )}
