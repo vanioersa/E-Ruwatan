@@ -15,7 +15,6 @@ import { getAllPiket } from "./api_piket";
 import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
-import Modal from "react-bootstrap/Modal";
 
 function PiketanGuru() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -167,9 +166,8 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-    }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+      }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -178,7 +176,7 @@ function PiketanGuru() {
     if (dataToExport.length === 0) {
       Swal.fire({
         title: "Gagal",
-        text: "Tidak ada data piket guru yang diekspor",
+        text: "Tidak ada data piketan guru yang diekspor",
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
@@ -195,30 +193,37 @@ function PiketanGuru() {
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
+        // Konversi data piketan guru ke lembar kerja Excel
         const worksheet = xlsx.utils.json_to_sheet(dataToExport);
 
         // Mengatur lebar kolom
         worksheet["!cols"] = [
-          { wch: 20 }, // Lebar kolom "NamaSiswa"
+          { wch: 20 }, // Lebar kolom "Nama Siswa"
           { wch: 15 }, // Lebar kolom "Kelas"
           { wch: 15 }, // Lebar kolom "Tanggal"
           { wch: 10 }, // Lebar kolom "Status"
         ];
 
         // Membuat header kolom menjadi bold
-        const headerRange = "A1:D1";
-        worksheet[headerRange]?.forEach((cell) => {
-          if (cell) {
-            cell.s = {
-              font: {
-                bold: true,
-              },
-            };
+        const headerRange = xlsx.utils.decode_range("A1:D1");
+        for (let row = headerRange.s.r; row <= headerRange.e.r; row++) {
+          for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+            const cellAddress = xlsx.utils.encode_cell({ r: row, c: col });
+            if (worksheet[cellAddress]) {
+              worksheet[cellAddress].s = {
+                font: {
+                  bold: true,
+                },
+              };
+            }
           }
-        });
+        }
 
+        // Membuat workbook dan menambahkan worksheet
         const workbook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workbook, worksheet, "Data Piket Guru");
+
+        // Simpan workbook ke file Excel
         xlsx.writeFile(workbook, "data_piket_guru.xlsx");
 
         Swal.fire({
@@ -232,57 +237,53 @@ function PiketanGuru() {
     });
   };
 
-  const download = async () => {
-    await Swal.fire({
-      title: "Apakah Anda Ingin Mendownload?",
-      text: "File berisi semua data Piket",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#0b409c",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, download!",
-      cancelButtonText: "Batal",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios({
-          url: `http://localhost:4001/data/api/excel/download/data`,
-          method: "GET",
-          responseType: "blob",
-        }).then((response) => {
-          setTimeout(() => {
-            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            var fileLink = document.createElement("a");
-
-            fileLink.href = fileURL;
-            fileLink.setAttribute("download", "piket.xlsx");
-            document.body.appendChild(fileLink);
-
-            fileLink.click();
-          }, 2000);
-        });
-      }
-    });
-  };
-
-  
-  const [excelData, setExcelData] = useState("");
-
+  const [excelData, setExcelData] = useState(null);
   const importExcell = async (e) => {
     e.preventDefault();
-
+    if (!excelData) {
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
+      return;
+    }
     const formData = new FormData();
-
     formData.append("file", excelData);
+  };
 
-    await axios
-      .post(`http://localhost:4001/data/api/excel/upload/data`, formData)
-      .then(() => {
-        Swal.fire("Sukses!", " Berhasil Ditambahkan.", "success");
-      })
-      .catch((err) => {
-        console.log(err);
-        Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
-      });
+  const handleDownloadTemplate = () => {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.aoa_to_sheet([
+      ["STATUS", "TANGGAL", "KELAS", "SISWA"],
+      [null, null, null, null], // Dummy row to set widths
+    ]);
+
+    // Set column widths
+    const columnWidths = [{ wch: 15 }, { wch: 10 }];
+    worksheet["!cols"] = columnWidths;
+    xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Export workbook to xlsx file
+    const excelBuffer = xlsx.write(workbook, {
+      type: "array",
+      bookType: "xlsx",
+    });
+    const excelData = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const excelUrl = URL.createObjectURL(excelData);
+
+    const link = document.createElement("a");
+    link.href = excelUrl;
+    link.download = "template_piketan.xlsx";
+    link.click();
+
+    Swal.fire({
+      title: "Berhasil",
+      text: "Template piketan berhasil diunduh",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+    }).then(() => {
+      window.location.reload();
+    });
   };
 
   return (
@@ -308,7 +309,7 @@ function PiketanGuru() {
                 </button>
               </Link>
               <button
-                onClick={download}
+                onClick={exportToXlsx}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket
@@ -320,8 +321,8 @@ function PiketanGuru() {
                 <FontAwesomeIcon icon={faFileExport} /> Import Piket
               </button>
               <div>
-            
-        </div>
+
+              </div>
               <button
                 onClick={handleModalOpen}
                 className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -361,7 +362,6 @@ function PiketanGuru() {
                   >
                     Alpha
                   </th>
-                  {/* <th className="py-2 px-4 text-center">Aksi</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -418,16 +418,6 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">{statusSummary.Izin}</td>
                           <td className="py-2 px-4 text-center">{statusSummary.Sakit}</td>
                           <td className="py-2 px-4 text-center">{statusSummary.Alpha}</td>
-                          {/* <td className="py-2 px-4 item-center text-center">
-                            <button
-                              onClick={() =>
-                                handleDeletePiket(filteredPiketData[0].id)
-                              } // Assuming filteredPiketData only has one item for delete
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                          </td> */}
                         </tr>
                       );
                     } else {
@@ -495,43 +485,40 @@ function PiketanGuru() {
         </div>
       )}
 
-<Modal show={show1} onHide={handleClose1}>
-        <Modal.Header closeButton>
-          <Modal.Title>Import Guru Dari File Excel</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <div className="rounded-md text-center shadow-md py-3 border">
-          </div>
-          <form className="mt-4" onSubmit={importExcell}>
-            <div className="flex justify-center items-center mb-3">
-              <label className="text-sm font-medium text-black w-40">
-                Drop File.xlsx
-              </label>
+      {show1 && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+            <h2 className="text-2xl font-semibold mb-4">Impor Data</h2>
+            <div className="mb-4">
               <input
                 type="file"
-                required
-                accept=".xlsx"
-                className="w-[100%] text-sm rounded-lg text-[#1d2b3a] py-1.5 px-1 border-2 border-[#292929]"
-                onChange={(e) => setExcelData(e.target.files[0])}
+                onChange={setExcelData}
+                className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="flex gap-4 mt-4 ml-[9rem]">
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={handleDownloadTemplate}
+                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Unduh Template
+              </button>
+              <button
+                onClick={importExcell}
+                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Impor
+              </button>
               <button
                 onClick={handleClose1}
-                className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 Batal
               </button>
-              <button
-                type="submit"
-                className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
-              >
-                Tambah
-              </button>
             </div>
-          </form>
-        </Modal.Body>
-      </Modal>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
