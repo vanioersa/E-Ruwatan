@@ -10,7 +10,7 @@ import {
   faArrowRight,
   faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getAllKbms, deleteKbm } from "./api_kbm";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
@@ -24,6 +24,7 @@ function KBMGuru() {
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const location = useLocation();
   const itemsPerPage = 10;
 
   // Ambil data KBM Guru dari API
@@ -37,7 +38,7 @@ function KBMGuru() {
       }
     };
     fetchKBMGuru();
-  }, []);
+  }, [location.pathname]);
 
   // Ambil data Guru dari API
   useEffect(() => {

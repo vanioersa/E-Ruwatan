@@ -5,13 +5,19 @@ import axios from "axios";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { getKbmById, updateKbm } from "./api_kbm";
 
-const UpdateKBM = () => {
-  // Ambil ID KBM dari URL menggunakan useParams
-  const { id } = useParams();
+// Contoh sederhana useAuth hook
+// import { useAuth } from "../../../contexts/AuthContext"; // Import your auth context
 
-  // Definisikan state untuk data KBM, Guru, dan Kelas
+const UpdateKBM = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+
+  // const { user } = useAuth(); // Dapatkan user dari Auth context
+  const user = { username: "" }; // Asumsi sementara user
+
   const [kbm, setKbm] = useState({
-    namaId: "",
+    namaId: user.username,
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",
@@ -19,11 +25,16 @@ const UpdateKBM = () => {
     materi: "",
   });
 
-  const [guru, setGuru] = useState([]);
   const [kelas, setKelas] = useState([]);
-  const [selectedGuru, setSelectedGuru] = useState("");
-  const [selectedKelas, setSelectedKelas] = useState("");
-  const currentTime = useState(getCurrentTime());
+  const [currentTime, setCurrentTime] = useState(getCurrentTime());
+
+  useEffect(() => {
+    // Simulate fetching the username from localStorage
+    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   function getCurrentTime() {
     const now = new Date();
@@ -32,18 +43,31 @@ const UpdateKBM = () => {
     return `${hour}:${minute}`;
   }
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchKelas();
 
-  const fetchGuru = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/guru/all");
-      setGuru(response.data);
-    } catch (error) {
-      console.error("Gagal mengambil data Guru: ", error);
-    }
-  };
+    const timer = setInterval(() => {
+      setCurrentTime(getCurrentTime());
+    }, 60000); // Update current time every minute
 
-  // Fungsi untuk mengambil data kelas
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchKbmData = async () => {
+      try {
+        const kbmData = await getKbmById(id);
+        setKbm({
+          ...kbmData,
+          namaId: user.username, // Set namaId ke username guru yang login
+        });
+      } catch (error) {
+        console.error("Gagal mengambil data KBM: ", error);
+      }
+    };
+    fetchKbmData();
+  }, [id]);
+
   const fetchKelas = async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
@@ -53,61 +77,23 @@ const UpdateKBM = () => {
     }
   };
 
-  // Fungsi untuk mengambil data KBM berdasarkan ID
-  useEffect(() => {
-    const fetchKbmData = async () => {
-      try {
-        const kbmData = await getKbmById(id);
-        setKbm(kbmData);
-        setSelectedGuru(kbmData.namaId);
-        setSelectedKelas(kbmData.kelasId);
-      } catch (error) {
-        console.error("Gagal mengambil data KBM: ", error);
-      }
-    };
-    fetchKbmData();
-  }, [id]);
-
-  // Gunakan useEffect untuk mengambil data guru dan kelas saat pertama kali dimuat
-  useEffect(() => {
-    fetchGuru();
-    fetchKelas();
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "jam_masuk" || name === "jam_pulang") {
-      if (value < currentTime) {
-        // Menampilkan pesan error jika waktu yang dimasukkan kurang dari waktu sekarang
-        Swal.fire({
-          title: "Gagal",
-          text: `Jam ${name === "jam_masuk" ? "masuk" : "pulang"} harus lebih besar dari waktu sekarang.`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-        return;
-      }
-    }
-
     setKbm((prevKbm) => ({
       ...prevKbm,
       [name]: value,
     }));
   };
 
-  // Fungsi untuk memperbarui data KBM
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { jam_masuk, jam_pulang } = kbm;
 
-    const startTime = new Date(`2000-01-01T${jam_masuk}`);
-    const endTime = new Date(`2000-01-01T${jam_pulang}`);
-
-    // Memastikan jam pulang lebih besar dari jam masuk
-    if (endTime <= startTime) {
+    if (
+      new Date(`2000-01-01T${jam_masuk}`) >=
+      new Date(`2000-01-01T${jam_pulang}`)
+    ) {
       Swal.fire({
         title: "Gagal",
         text: "Jam pulang harus lebih dari jam masuk.",
@@ -117,36 +103,9 @@ const UpdateKBM = () => {
       });
       return;
     }
-    const initialKbmData = await getKbmById(id);
-
-    const isDataChanged =
-      initialKbmData.namaId !== kbm.namaId ||
-      initialKbmData.kelasId !== selectedKelas ||
-      initialKbmData.jam_masuk !== kbm.jam_masuk ||
-      initialKbmData.jam_pulang !== kbm.jam_pulang ||
-      initialKbmData.materi !== kbm.materi ||
-      initialKbmData.keterangan !== kbm.keterangan;
-
-    if (!isDataChanged) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal",
-        text: "Minimal satu data harus diubah",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
 
     try {
-      await updateKbm(id, {
-        namaId: selectedGuru,
-        kelasId: selectedKelas,
-        jam_masuk: kbm.jam_masuk,
-        jam_pulang: kbm.jam_pulang,
-        materi: kbm.materi,
-        keterangan: kbm.keterangan,
-      });
+      await updateKbm(id, kbm);
       Swal.fire({
         icon: "success",
         title: "Berhasil",
@@ -172,6 +131,7 @@ const UpdateKBM = () => {
     navigate(-1);
   };
 
+  // Asumsi bahwa username guru disimpan dalam user.username
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
@@ -185,6 +145,24 @@ const UpdateKBM = () => {
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              {/* Tampilkan nama guru yang sedang login dan tidak dapat diubah */}
+              <div className="relative">
+                <label
+                  htmlFor="namaId"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
+                  Guru
+                </label>
+                <input
+                  type="text"
+                  id="namaId"
+                  name="namaId"
+                  value={username}
+                  readOnly
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                />
+              </div>
+              {/* Selector untuk kelas */}
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -195,45 +173,21 @@ const UpdateKBM = () => {
                 <select
                   id="kelasId"
                   name="kelasId"
-                  value={selectedKelas}
-                  onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
+                  value={kbm.kelasId}
+                  onChange={(e) => handleChange(e)}
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 >
                   <option value="">Pilih Kelas</option>
                   {kelas.map((kelas) => (
                     <option key={kelas.id} value={kelas.id}>
-                      {kelas.kelas}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="namaId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Guru
-                </label>
-                <select
-                  id="namaId"
-                  name="namaId"
-                  value={selectedGuru}
-                  onChange={(e) => setSelectedGuru(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Pilih Guru</option>
-                  {guru.map((guru) => (
-                    <option key={guru.id} value={guru.id}>
-                      {guru.nama_guru}
+                      {kelas.kelas} {kelas.nama_kelas}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            {/* Form input untuk jam masuk dan pulang */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
               <div className="relative">
                 <label
                   htmlFor="jam_masuk"
@@ -246,12 +200,8 @@ const UpdateKBM = () => {
                   id="jam_masuk"
                   name="jam_masuk"
                   value={kbm.jam_masuk}
-                  onChange={handleChange}
-                  min={currentTime}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Jam Masuk"
-                  required
-                  autoComplete="off"
+                  onChange={(e) => handleChange(e)}
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
               <div className="relative">
@@ -266,69 +216,23 @@ const UpdateKBM = () => {
                   id="jam_pulang"
                   name="jam_pulang"
                   value={kbm.jam_pulang}
-                  onChange={handleChange}
-                  min={currentTime}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Jam Pulang"
-                  required
-                  autoComplete="off"
+                  onChange={(e) => handleChange(e)}
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
             </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-                <label
-                  htmlFor="materi"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Materi
-                </label>
-                <input
-                  type="text"
-                  name="materi"
-                  id="materi"
-                  value={kbm.materi}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Materi"
-                  required
-                  autoComplete="off"
-                />
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="keterangan"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Keterangan
-                </label>
-                <input
-                  type="text"
-                  name="keterangan"
-                  id="keterangan"
-                  value={kbm.keterangan}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Keterangan"
-                //   required
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-between mt-6">
+            {/* Button untuk submit dan batal */}
+            <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
                 onClick={batal}
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
+                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-white rounded-lg transition duration-300"
               >
                 Batal
               </button>
-
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300"
               >
                 Simpan
               </button>

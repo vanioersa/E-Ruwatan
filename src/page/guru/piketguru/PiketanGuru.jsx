@@ -8,10 +8,11 @@ import {
   faArrowRight,
   faFileExport,
   faUpload,
+  faTrash,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
-// import { deletePiket } from "./api_piket";
-import { getAllPiket } from "./api_piket";
+import { deletePiket, getAllPiket } from "./api_piket";
 import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
@@ -27,10 +28,21 @@ function PiketanGuru() {
   const [filteredDate, setFilteredDate] = useState("");
   const [piketByDateAndClass, setPiketByDateAndClass] = useState({});
 
-  const [show1, setShow1] = useState(false);
+  const handleUpdatePiket = (id) => {
+    // Navigate to the edit page
+    window.location.href = `/EditPiketan/${id}`;
+  };
 
-  const handleClose1 = () => setShow1(false);
-  const handleShow1 = () => setShow1(true);
+  const handledeletePiket = async (id) => {
+    try {
+      // Call the delete function from your services/api
+      await deletePiket(id);
+      // Refresh the list or remove the item from the state
+      console.log("Piket berhasil dihapus!!");
+    } catch (error) {
+      console.error("delete error:", error);
+    }
+  };
 
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -41,7 +53,7 @@ function PiketanGuru() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    window.location.reload()
+    window.location.reload();
   };
 
   const handleFilterPDF = () => {
@@ -91,7 +103,7 @@ function PiketanGuru() {
         const sortedDates = Array.from(dateSet).sort(
           (a, b) => new Date(b) - new Date(a)
         );
-        setDateOptions(sortedDates.reverse());
+        setDateOptions(sortedDates);
       } catch (error) {
         console.error("Failed to fetch Piketan Guru: ", error);
       }
@@ -166,8 +178,9 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-      }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+    }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -176,7 +189,7 @@ function PiketanGuru() {
     if (dataToExport.length === 0) {
       Swal.fire({
         title: "Gagal",
-        text: "Tidak ada data piketan guru yang diekspor",
+        text: "Tidak ada data piket guru yang diekspor",
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
@@ -193,37 +206,30 @@ function PiketanGuru() {
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Konversi data piketan guru ke lembar kerja Excel
         const worksheet = xlsx.utils.json_to_sheet(dataToExport);
 
         // Mengatur lebar kolom
         worksheet["!cols"] = [
-          { wch: 20 }, // Lebar kolom "Nama Siswa"
+          { wch: 20 }, // Lebar kolom "NamaSiswa"
           { wch: 15 }, // Lebar kolom "Kelas"
           { wch: 15 }, // Lebar kolom "Tanggal"
           { wch: 10 }, // Lebar kolom "Status"
         ];
 
         // Membuat header kolom menjadi bold
-        const headerRange = xlsx.utils.decode_range("A1:D1");
-        for (let row = headerRange.s.r; row <= headerRange.e.r; row++) {
-          for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
-            const cellAddress = xlsx.utils.encode_cell({ r: row, c: col });
-            if (worksheet[cellAddress]) {
-              worksheet[cellAddress].s = {
-                font: {
-                  bold: true,
-                },
-              };
-            }
+        const headerRange = "A1:D1";
+        worksheet[headerRange]?.forEach((cell) => {
+          if (cell) {
+            cell.s = {
+              font: {
+                bold: true,
+              },
+            };
           }
-        }
+        });
 
-        // Membuat workbook dan menambahkan worksheet
         const workbook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workbook, worksheet, "Data Piket Guru");
-
-        // Simpan workbook ke file Excel
         xlsx.writeFile(workbook, "data_piket_guru.xlsx");
 
         Swal.fire({
@@ -234,55 +240,6 @@ function PiketanGuru() {
           timer: 2000,
         });
       }
-    });
-  };
-
-  const [excelData, setExcelData] = useState(null);
-  const importExcell = async (e) => {
-    e.preventDefault();
-    if (!excelData) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", excelData);
-  };
-
-  const handleDownloadTemplate = () => {
-    const workbook = xlsx.utils.book_new();
-    const worksheet = xlsx.utils.aoa_to_sheet([
-      ["STATUS", "TANGGAL", "KELAS", "SISWA"],
-      [null, null, null, null], // Dummy row to set widths
-    ]);
-
-    // Set column widths
-    const columnWidths = [{ wch: 15 }, { wch: 10 }];
-    worksheet["!cols"] = columnWidths;
-    xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    // Export workbook to xlsx file
-    const excelBuffer = xlsx.write(workbook, {
-      type: "array",
-      bookType: "xlsx",
-    });
-    const excelData = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const excelUrl = URL.createObjectURL(excelData);
-
-    const link = document.createElement("a");
-    link.href = excelUrl;
-    link.download = "template_piketan.xlsx";
-    link.click();
-
-    Swal.fire({
-      title: "Berhasil",
-      text: "Template piketan berhasil diunduh",
-      icon: "success",
-      showConfirmButton: false,
-      timer: 2000,
-    }).then(() => {
-      window.location.reload();
     });
   };
 
@@ -315,15 +272,6 @@ function PiketanGuru() {
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket
               </button>
               <button
-                onClick={handleShow1}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <FontAwesomeIcon icon={faFileExport} /> Import Piket
-              </button>
-              <div>
-
-              </div>
-              <button
                 onClick={handleModalOpen}
                 className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
@@ -332,7 +280,7 @@ function PiketanGuru() {
             </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
-            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200  table-fixed rounded-xl shadow-lg">
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
@@ -362,6 +310,12 @@ function PiketanGuru() {
                   >
                     Alpha
                   </th>
+                  <th
+                    className="py-2 px-4 text-center"
+                    style={{ maxWidth: "50px" }}
+                  >
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -388,7 +342,7 @@ function PiketanGuru() {
                       (item) => {
                         const kelasNama = kelasData ? kelasData.kelas : "";
                         const namaKelas = kelasData ? kelasData.nama_kelas : "";
-                        const tanggalItem = item.tanggal.toLowerCase(); // Konversi tanggal ke lowercase
+                        const tanggalItem = item.tanggal.toLowerCase(); // Convert date to lowercase
                         const searchTermLower = searchTerm.toLowerCase();
 
                         return (
@@ -397,12 +351,11 @@ function PiketanGuru() {
                             tanggalItem.includes(searchTermLower)) &&
                           item.status
                             .toLowerCase()
-                            .includes(filteredDate.toLowerCase()) // Filter berdasarkan tanggal
+                            .includes(filteredDate.toLowerCase()) // Filter by date
                         );
                       }
                     );
 
-                    // Display the row if filtered data is not empty
                     if (filteredPiketData.length > 0) {
                       return (
                         <tr
@@ -414,10 +367,36 @@ function PiketanGuru() {
                           </td>
                           <td className="py-2 px-4">{kelasName}</td>
                           <td className="py-2 px-4">{tanggal}</td>
-                          <td className="py-2 px-4 text-center">{statusSummary.Masuk}</td>
-                          <td className="py-2 px-4 text-center">{statusSummary.Izin}</td>
-                          <td className="py-2 px-4 text-center">{statusSummary.Sakit}</td>
-                          <td className="py-2 px-4 text-center">{statusSummary.Alpha}</td>
+                          <td className="py-2 px-4 text-center">
+                            {statusSummary.Masuk}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusSummary.Izin}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusSummary.Sakit}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusSummary.Alpha}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            <button
+                              onClick={() =>
+                                handleUpdatePiket(filteredPiketData[0].id)
+                              }
+                              className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            >
+                              <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handledeletePiket(filteredPiketData[0].id)
+                              }
+                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </td>
                         </tr>
                       );
                     } else {
@@ -427,7 +406,10 @@ function PiketanGuru() {
                 {Object.keys(piketByDateAndClass).length === 0 &&
                   searchTerm.length === 0 && (
                     <tr>
-                      <td colSpan="8" className="px-4 text-center py-4 text-gray-500">
+                      <td
+                        colSpan="8"
+                        className="px-4 text-center py-4 text-gray-500"
+                      >
                         Tidak ada data piketan yang ditemukan
                       </td>
                     </tr>
@@ -479,41 +461,6 @@ function PiketanGuru() {
                 className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
               >
                 Filter
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {show1 && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
-            <h2 className="text-2xl font-semibold mb-4">Impor Data</h2>
-            <div className="mb-4">
-              <input
-                type="file"
-                onChange={setExcelData}
-                className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={handleDownloadTemplate}
-                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Unduh Template
-              </button>
-              <button
-                onClick={importExcell}
-                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                Impor
-              </button>
-              <button
-                onClick={handleClose1}
-                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                Batal
               </button>
             </div>
           </div>
