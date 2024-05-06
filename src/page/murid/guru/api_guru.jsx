@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:4001"; // Ganti dengan URL backend Anda
+const apiUrl = "http://localhost:4001";
 
 export const getAllUsers = async () => {
   try {
