@@ -143,19 +143,15 @@ function Guru() {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
 
-        // Calculate column widths dynamically based on column headers and data content
         const columnWidths = {};
 
-        // Get all column keys from the first row of dataToExport (assuming dataToExport is not empty)
         const columnKeys =
           dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
 
-        // Initialize column widths based on column keys (headers)
         columnKeys.forEach((key) => {
-          columnWidths[key] = key.length; // Start with header length
+          columnWidths[key] = key.length;
         });
 
-        // Update column widths based on data content
         dataToExport.forEach((data) => {
           columnKeys.forEach((key) => {
             const value = data[key] ? String(data[key]) : "";
@@ -163,7 +159,6 @@ function Guru() {
           });
         });
 
-        // Convert column widths to Excel column specifications
         const excelColumns = columnKeys.map((key) => ({
           wch: columnWidths[key],
         }));

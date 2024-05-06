@@ -5,6 +5,8 @@ import {
   faChalkboardTeacher,
   faDoorOpen,
   faUserGroup,
+  faCircleArrowRight,
+  faRightLong,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
@@ -13,6 +15,19 @@ function Dashboard() {
   const [kelas, setkelas] = useState([]);
   const [guru, setGuru] = useState([]);
   const [username, setUsername] = useState("");
+  const [hoverStates, setHoverStates] = useState([false, false, false]); // Array to track hover state for each card
+
+  const handleMouseEnter = (index) => {
+    const updatedHoverStates = [...hoverStates];
+    updatedHoverStates[index] = true;
+    setHoverStates(updatedHoverStates);
+  };
+
+  const handleMouseLeave = (index) => {
+    const updatedHoverStates = [...hoverStates];
+    updatedHoverStates[index] = false;
+    setHoverStates(updatedHoverStates);
+  };
 
   useEffect(() => {
     // Simulate fetching the username from localStorage
@@ -84,63 +99,120 @@ function Dashboard() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
-            {/* Kartu pertama */}
-            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <a
-                href="/guru"
-                className={`shadow-lg bg-cyan-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
-              >
-                <FontAwesomeIcon
-                  icon={faChalkboardTeacher}
-                  className="inline-block w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
-                    {guru.length}
-                  </h2>
-                  <p className="leading-relaxed font-medium text-white">Guru</p>
+             {/* Kartu pertama */}
+             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
+              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faChalkboardTeacher}
+                    className="w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {guru.length}
+                    </h2>
+                    <p className="text-lg text-white">Guru</p>
+                  </div>
                 </div>
-              </a>
+                <hr className="border-white" />
+                <a
+                  style={{ cursor: "default" }}
+                  href="/guru"
+                  onMouseEnter={() => handleMouseEnter(0)}
+                  onMouseLeave={() => handleMouseLeave(0)}
+                >
+                  <div className="py-2 text-center font-medium">
+                    <div
+                      className={`text-white ${
+                        hoverStates[0] ? "hover:text-cyan-800" : ""
+                      }`}
+                    >
+                      Klik di sini{" "}
+                      <FontAwesomeIcon
+                        icon={hoverStates[0] ? faRightLong : faCircleArrowRight}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
+
             {/* Kartu kedua */}
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <a
-                href="/siswa"
-                className={`shadow-lg bg-emerald-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
-              >
-                <FontAwesomeIcon
-                  icon={faUserGroup}
-                  className="inline-block w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
-                    {siswa.length}
-                  </h2>
-                  <p className="leading-relaxed font-medium text-white">
-                    Siswa
-                  </p>
+              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faUserGroup}
+                    className="inline-block w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {siswa.length}
+                    </h2>
+                    <p className="text-lg text-white">Siswa</p>
+                  </div>
                 </div>
-              </a>
+                <hr className="border-white" />
+                <a
+                  style={{ cursor: "default" }}
+                  href="/siswa"
+                  onMouseEnter={() => handleMouseEnter(1)}
+                  onMouseLeave={() => handleMouseLeave(1)}
+                >
+                  <div className="py-2 text-center font-medium">
+                    <div
+                      className={`text-white ${
+                        hoverStates[1] ? "hover:text-cyan-800" : ""
+                      }`}
+                    >
+                      Klik di sini{" "}
+                      <FontAwesomeIcon
+                        icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
+
             {/* Kartu ketiga */}
             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
-              <a
-                href="/kelas"
-                className={`shadow-lg bg-amber-600 px-6 py-6 mx-5 rounded-lg flex items-center justify-between md:mt-16 md:my-12`}
+              <div
+                className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
               >
-                <FontAwesomeIcon
-                  icon={faDoorOpen}
-                  className="inline-block w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
-                    {kelas.length}
-                  </h2>
-                  <p className="leading-relaxed font-medium text-white">
-                    Kelas
-                  </p>
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faDoorOpen}
+                    className="inline-block w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {kelas.length}
+                    </h2>
+                    <p className="text-lg text-white">Kelas</p>
+                  </div>
                 </div>
-              </a>
+                <hr className="border-white" />
+                <a
+                  style={{ cursor: "default" }}
+                  href="/kelas"
+                  onMouseEnter={() => handleMouseEnter(2)}
+                  onMouseLeave={() => handleMouseLeave(2)}
+                >
+                  <div className="py-2 text-center font-medium">
+                    <div
+                      className={`text-white ${
+                        hoverStates[2] ? "hover:text-cyan-800" : ""
+                      }`}
+                    >
+                      Klik di sini{" "}
+                      <FontAwesomeIcon
+                        icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
 

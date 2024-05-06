@@ -98,7 +98,8 @@ function Siswa() {
   });
 
   // Siapkan data untuk ekspor
-  const dataToExport = filteredSiswa.map((s) => ({
+  const dataToExport = filteredSiswa.map((s, index) => ({
+    No: index + 1 + pagesVisited,
     "Nama Siswa": s.nama_siswa,
     NISN: s.nisn,
     "Tempat Lahir": s.tempat,
@@ -130,15 +131,27 @@ function Siswa() {
         const workbook = xlsx.utils.book_new();
         const worksheet = xlsx.utils.json_to_sheet(dataToExport);
 
-        const colWidths = [
-          { wch: 15 },
-          { wch: 10 },
-          { wch: 15 },
-          { wch: 10 },
-          { wch: 20 },
-        ];
+        const columnWidths = {};
 
-        worksheet["!cols"] = colWidths;
+        const columnKeys =
+          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
+
+        columnKeys.forEach((key) => {
+          columnWidths[key] = key.length;
+        });
+
+        dataToExport.forEach((data) => {
+          columnKeys.forEach((key) => {
+            const value = data[key] ? String(data[key]) : "";
+            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          });
+        });
+
+        const excelColumns = columnKeys.map((key) => ({
+          wch: columnWidths[key],
+        }));
+
+        worksheet["!cols"] = excelColumns;
 
         xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
         const xlsxBuffer = xlsx.write(workbook, {
