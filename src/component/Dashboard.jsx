@@ -100,7 +100,7 @@ function Dashboard() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
              {/* Kartu pertama */}
-             <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
+             <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
@@ -138,7 +138,7 @@ function Dashboard() {
             </div>
 
             {/* Kartu kedua */}
-            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
@@ -176,7 +176,7 @@ function Dashboard() {
             </div>
 
             {/* Kartu ketiga */}
-            <div className="mb-4 p-1 md:w-1/3 sm:w-1/2 w-full">
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
               <div
                 className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
               >
@@ -218,6 +218,7 @@ function Dashboard() {
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
             <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg shadow-lg border-gray-200">
+              <h1 className="my-2 text-lg font-bold">Tabel Guru</h1>
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
