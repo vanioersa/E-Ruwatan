@@ -8,6 +8,8 @@ import {
   faArrowRight,
   faFileExport,
   faUpload,
+  faTrash,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import { deletePiket, getAllPiket } from "./api_piket";
@@ -28,7 +30,7 @@ function PiketanGuru() {
 
   const handleUpdatePiket = (id) => {
     // Navigate to the edit page
-    window.location.href = (`/piketan/EditPiketan/${id}`);
+    window.location.href = `/piketan/EditPiketan/${id}`;
   };
 
   const handledeletePiket = async (id) => {
@@ -36,11 +38,11 @@ function PiketanGuru() {
       // Call the delete function from your services/api
       await deletePiket(id);
       // Refresh the list or remove the item from the state
-      console.log('Piket berhasil dihapus!!');
+      console.log("Piket berhasil dihapus!!");
     } catch (error) {
-      console.error('delete error:', error);
+      console.error("delete error:", error);
     }
-  };  
+  };
 
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -384,7 +386,7 @@ function PiketanGuru() {
                               }
                               className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
                             >
-                              Update
+                              <FontAwesomeIcon icon={faEdit} />
                             </button>
                             <button
                               onClick={() =>
@@ -392,7 +394,7 @@ function PiketanGuru() {
                               }
                               className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
                             >
-                              Delete
+                              <FontAwesomeIcon icon={faTrash} />
                             </button>
                           </td>
                         </tr>
