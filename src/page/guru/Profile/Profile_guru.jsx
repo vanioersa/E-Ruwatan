@@ -3,46 +3,26 @@ import SidebarGuru from "../../../component/SidebarGuru";
 
 function Profile_guru() {
   const [editMode, setEditMode] = useState(false);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [profilePic, setProfilePic] = useState('https://images.unsplash.com/photo-1477118476589-bff2c5c4cfbb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=200&q=200');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [profilePic, setProfilePic] = useState("https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png");
   const apiUrl = "http://localhost:4001/user";
-  const authToken = localStorage.getItem('authToken');
+  const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     fetch(`${apiUrl}/profile`, {
       headers: {
-        'Authorization': `Bearer ${authToken}`
-      }
+        Authorization: `Bearer ${authToken}`,
+      },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setUsername(data.username);
         setEmail(data.email);
         setProfilePic(data.profilePic || profilePic);
       })
-      .catch(err => console.error("Error fetching user data:", err));
+      .catch((err) => console.error("Error fetching user data:", err));
   }, [authToken, apiUrl, profilePic]);
-
-  const handleSave = () => {
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('email', email);
-
-    fetch(`${apiUrl}/update`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${authToken}`
-      },
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-      setEditMode(false);
-    })
-    .catch(error => console.error('Error updating user:', error));
-  };
 
   const handleProfilePicChange = (event) => {
     const file = event.target.files[0];
@@ -75,16 +55,26 @@ function Profile_guru() {
                 />
               </div>
               <div className="text-center mt-4">
-                <p><strong>Name:</strong> {username}</p>
-                <p><strong>Email:</strong> {email}</p>
+                <p>
+                  <strong>Name:</strong> {username}
+                </p>
+                <p>
+                  <strong>Email:</strong> {email}
+                </p>
               </div>
             </div>
 
             <div className="md:flex-1 p-8 bg-white lg:ml-4 shadow-md">
               <div className="rounded shadow p-6">
-                <h1 className="text-xl font-semibold"><strong>Edit Data Profile</strong></h1> <br />
+                <h1 className="text-xl font-semibold">
+                  <strong>Edit Data Profile</strong>
+                </h1>{" "}
+                <br />
                 <div className="pb-6">
-                  <label htmlFor="username" className="font-semibold text-gray-700 block pb-1">
+                  <label
+                    htmlFor="username"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
                     Name
                   </label>
                   <input
@@ -97,7 +87,10 @@ function Profile_guru() {
                   />
                 </div>
                 <div className="pb-4">
-                  <label htmlFor="email" className="font-semibold text-gray-700 block pb-1">
+                  <label
+                    htmlFor="email"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
                     Email
                   </label>
                   <input
@@ -110,7 +103,10 @@ function Profile_guru() {
                   />
                 </div>
                 <div className="pb-4">
-                  <label htmlFor="profilePic" className="font-semibold text-gray-700 block pb-1">
+                  <label
+                    htmlFor="profilePic"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
                     Profile Picture
                   </label>
                   <input
