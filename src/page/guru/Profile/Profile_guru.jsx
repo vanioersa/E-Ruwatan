@@ -8,18 +8,19 @@ function ProfileGuru() {
   const [profilePic, setProfilePic] = useState(
     'https://images.unsplash.com/photo-1477118476589-bff2c5c4cfbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=200'
   );
+
   const apiUrl = "http://localhost:4001/user";
-  const authToken = localStorage.getItem('authToken');
+  const authToken = localStorage.getItem("authToken");
 
   // Fetch user data
   useEffect(() => {
     fetch(`${apiUrl}/profile`, {
       headers: {
-        'Authorization': `Bearer ${authToken}`
-      }
+        Authorization: `Bearer ${authToken}`,
+      },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setUsername(data.username);
         setEmail(data.email);
         if (data.profilePic) {
@@ -101,7 +102,7 @@ function ProfileGuru() {
                 {editMode ? "Simpan" : "Ubah"}
               </button>
             </div>
-
+            
             {editMode && (
               <div className="p-6">
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
