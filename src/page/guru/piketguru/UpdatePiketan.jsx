@@ -90,7 +90,7 @@ const UpdatePiketan = () => {
                   <option value="">Pilih Kelas</option>
                   {kelas.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.kelas} {item.nama_kelas}
+                      {item.kelas} - {item.nama_kelas}
                     </option>
                   ))}
                 </select>
