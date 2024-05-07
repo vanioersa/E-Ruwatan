@@ -142,9 +142,8 @@ function Dashboard() {
                     href="/kbm_guru"
                     onMouseEnter={() => handleMouseEnter(0)}
                     onMouseLeave={() => handleMouseLeave(0)}
-                    className={`text-white ${
-                      hoverStates[0] ? "hover:text-cyan-800" : ""
-                    }`}
+                    className={`text-white ${hoverStates[0] ? "hover:text-cyan-800" : ""
+                      }`}
                   >
                     Klik di sini{" "}
                     <FontAwesomeIcon
@@ -154,7 +153,20 @@ function Dashboard() {
                 </div>
               </div>
 
+              {/* Tabel */}
+              <div className="bg-white py-2 mb-2">
+                <h1
+                  className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
+                  style={{
+                    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Tabel KBM
+                </h1>
+              </div>
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
+
                 <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
@@ -217,9 +229,8 @@ function Dashboard() {
                     href="/piketan_guru"
                     onMouseEnter={() => handleMouseEnter(1)}
                     onMouseLeave={() => handleMouseLeave(1)}
-                    className={`text-white ${
-                      hoverStates[1] ? "hover:text-cyan-800" : ""
-                    }`}
+                    className={`text-white ${hoverStates[1] ? "hover:text-cyan-800" : ""
+                      }`}
                   >
                     Klik di sini{" "}
                     <FontAwesomeIcon
@@ -227,6 +238,19 @@ function Dashboard() {
                     />
                   </a>
                 </div>
+              </div>
+
+              {/* Tabel */}
+              <div className="bg-white py-2 mb-2">
+                <h1
+                  className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
+                  style={{
+                    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Tabel Piketan
+                </h1>
               </div>
 
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
