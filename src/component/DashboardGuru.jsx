@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SidebarGuru from "./SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChalkboardTeacher, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleRight, faChalkboardTeacher, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 
 function Dashboard() {
   const [piket, setPiket] = useState([]);
@@ -102,18 +102,25 @@ function Dashboard() {
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama (KBM Guru) */}
             <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
-              <div className="shadow-lg bg-cyan-600 px-6 py-6 rounded-lg flex items-center justify-between  md:mt-16 md:my-12">
+              <div className="shadow-lg rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faChalkboardTeacher}
-                  className="inline-block w-12 h-12 text-white mr-4"
+                  className="w-12 h-12 text-white mr-4"
                 />
                 <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
+                  <h2 className="font-medium text-3xl text-white">
                     {kbm.length}
                   </h2>
-                  <p className="leading-relaxed font-medium text-white">
+                  <p className="text-lg font-medium text-white">
                     KBM Guru
                   </p>
+                  <hr className="border-white" />
+                  <div className="py-2 text-center font-medium">
+                    <a href="http://">
+                      Klik di sini{""}
+                      <FontAwesomeIcon className="pl-1" icon={faArrowCircleRight} />
+                    </a>
+                  </div>
                 </div>
               </div>
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
@@ -146,18 +153,25 @@ function Dashboard() {
             </div>
             {/* Kartu kedua (Piketan) */}
             <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
-              <div className="shadow-lg bg-emerald-600 px-6 py-6 rounded-lg flex items-center justify-between md:mt-16 md:my-12">
+            <div className="shadow-lg rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
                 <FontAwesomeIcon
                   icon={faUserGroup}
-                  className="inline-block w-12 h-12 text-white mr-4"
+                  className="w-12 h-12 text-white mr-4"
                 />
                 <div>
-                  <h2 className="title-font font-medium text-3xl text-white">
+                  <h2 className="font-medium text-3xl text-white">
                     {piket.length}
                   </h2>
                   <p className="leading-relaxed font-medium text-white">
                     Piketan
                   </p>
+                  <hr className="border-white" />
+                  <div className="py-2 text-center font-medium">
+                    <a href="http://">
+                      Klik di sini{""}
+                      <FontAwesomeIcon className="pl-1" icon={faArrowCircleRight} />
+                    </a>
+                  </div>
                 </div>
               </div>
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
