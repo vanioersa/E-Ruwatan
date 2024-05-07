@@ -9,6 +9,7 @@ import {
   faUserGroup,
   faBarsStaggered,
   faXmark,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
@@ -97,6 +98,12 @@ const Sidebar = () => {
             <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
           </a>
         </div>
+        <a href="/Profile_admin" className="flex items-center">
+          <FontAwesomeIcon icon={faUser} size="lg" className="mr-2" />
+          <span className="text-black text-lg font-medium hidden md:flex">
+            Profil
+          </span>
+        </a>
       </nav>
       <div className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="bg-blue-800 text-white px-4 py-3">

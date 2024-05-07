@@ -19,7 +19,7 @@ import UpdataKelas from "./page/murid/kelas/UpdataKelas";
 import UpdateGuru from "./page/murid/guru/UpdateGuru";
 import PDFpiket from "./component/PDF";
 import UpdateKBM from "./page/guru/kbm/UpdateKBM";
-import Profile from "./page/guru/Profile/Profile";
+import ProfileGuru from "./page/guru/Profile/Profile_guru";
 import UpdatePiketan from "./page/guru/piketguru/UpdatePiketan";
 
 function App() {
@@ -61,7 +61,7 @@ function App() {
             <Route path="/EditKBM/:id" element={<UpdateKBM />} />
             <Route path="/EditPiketan/:id" element={<UpdatePiketan />} />
             <Route path="/pdf" element={<PDFpiket />} />
-            <Route path="/profile_guru" element={<Profile />} />
+            <Route path="/profile_guru" element={<ProfileGuru />} />
           </>
         ) : (
           <>
