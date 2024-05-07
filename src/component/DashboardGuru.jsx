@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SidebarGuru from "./SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowCircleRight, faChalkboardTeacher, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowCircleRight,
+  faChalkboardTeacher,
+  faUserGroup,
+  faRightLong,
+  faCircleArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Dashboard() {
   const [piket, setPiket] = useState([]);
@@ -10,6 +16,19 @@ function Dashboard() {
   const [guru, setGuru] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
+  const [hoverStates, setHoverStates] = useState([false, false, false]); // Array to track hover state for each card
+
+  const handleMouseEnter = (index) => {
+    const updatedHoverStates = [...hoverStates];
+    updatedHoverStates[index] = true;
+    setHoverStates(updatedHoverStates);
+  };
+
+  const handleMouseLeave = (index) => {
+    const updatedHoverStates = [...hoverStates];
+    updatedHoverStates[index] = false;
+    setHoverStates(updatedHoverStates);
+  };
 
   useEffect(() => {
     // Simulate fetching the username from localStorage
@@ -98,31 +117,43 @@ function Dashboard() {
             </h1>
           </div>
         )}
+
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:my-0">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama (KBM Guru) */}
-            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
-              <div className="shadow-lg rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
-                <FontAwesomeIcon
-                  icon={faChalkboardTeacher}
-                  className="w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="font-medium text-3xl text-white">
-                    {kbm.length}
-                  </h2>
-                  <p className="text-lg font-medium text-white">
-                    KBM Guru
-                  </p>
-                  <hr className="border-white" />
-                  <div className="py-2 text-center font-medium">
-                    <a href="http://">
-                      Klik di sini{""}
-                      <FontAwesomeIcon className="pl-1" icon={faArrowCircleRight} />
-                    </a>
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/2">
+              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faChalkboardTeacher}
+                    className="w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {kbm.length}
+                    </h2>
+                    <p className="text-lg text-white">KBM Guru</p>
                   </div>
                 </div>
+                <hr className="border-white" />
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/kbm_guru"
+                    onMouseEnter={() => handleMouseEnter(0)}
+                    onMouseLeave={() => handleMouseLeave(0)}
+                    className={`text-white ${
+                      hoverStates[0] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[0] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
               </div>
+
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
                 <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
@@ -134,46 +165,70 @@ function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {kbm.slice(0, 5).map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">
-                          {guru.find((g) => g.id === item.namaId)?.nama_guru}
+                    {kbm.length > 0 ? (
+                      kbm.slice(0, 5).map((item, index) => (
+                        <tr
+                          key={item.id}
+                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                        >
+                          <td className="py-2 px-4">{index + 1}</td>
+                          <td className="py-2 px-4">
+                            {guru.find((g) => g.id === item.namaId)
+                              ?.nama_guru || "Nama Guru Tidak Diketahui"}
+                          </td>
+                          <td className="py-2 px-4">{item.jam_masuk}</td>
+                          <td className="py-2 px-4">{item.jam_pulang}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="text-gray-700 text-center py-4"
+                        >
+                          Maaf, data KBM Guru tidak ditemukan.
                         </td>
-                        <td className="py-2 px-4">{item.jam_masuk}</td>
-                        <td className="py-2 px-4">{item.jam_pulang}</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
+
             {/* Kartu kedua (Piketan) */}
-            <div className="mb-4 p-4 md:w-1/2 sm:w-1/2 w-full py-2">
-            <div className="shadow-lg rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
-                <FontAwesomeIcon
-                  icon={faUserGroup}
-                  className="w-12 h-12 text-white mr-4"
-                />
-                <div>
-                  <h2 className="font-medium text-3xl text-white">
-                    {piket.length}
-                  </h2>
-                  <p className="leading-relaxed font-medium text-white">
-                    Piketan
-                  </p>
-                  <hr className="border-white" />
-                  <div className="py-2 text-center font-medium">
-                    <a href="http://">
-                      Klik di sini{""}
-                      <FontAwesomeIcon className="pl-1" icon={faArrowCircleRight} />
-                    </a>
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/2">
+              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faUserGroup}
+                    className="inline-block w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {piket.length}
+                    </h2>
+                    <p className="text-lg text-white">Piketan</p>
                   </div>
                 </div>
+                <hr className="border-white" />
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/piketan_guru"
+                    onMouseEnter={() => handleMouseEnter(1)}
+                    onMouseLeave={() => handleMouseLeave(1)}
+                    className={`text-white ${
+                      hoverStates[1] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
               </div>
+
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
                 <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
@@ -185,19 +240,30 @@ function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {piket.slice(0, 5).map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">
-                          {getNamaKelas(item.kelasId)}
+                    {piket.length > 0 ? (
+                      piket.slice(0, 5).map((item, index) => (
+                        <tr
+                          key={item.id}
+                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                        >
+                          <td className="py-2 px-4">{index + 1}</td>
+                          <td className="py-2 px-4">
+                            {getNamaKelas(item.kelasId)}
+                          </td>
+                          <td className="py-2 px-4">{item.tanggal}</td>
+                          <td className="py-2 px-4">{item.status}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="text-gray-700 text-center py-4"
+                        >
+                          Maaf, data Piketan tidak ditemukan.
                         </td>
-                        <td className="py-2 px-4">{item.tanggal}</td>
-                        <td className="py-2 px-4">{item.status}</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

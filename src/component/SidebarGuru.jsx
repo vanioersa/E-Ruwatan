@@ -7,6 +7,7 @@ import {
   faChalkboardTeacher,
   faBarsStaggered,
   faXmark,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
@@ -94,6 +95,12 @@ function SidebarGuru() {
             </span>
           </a>
         </div>
+        <a href="/Profile_guru" className="flex items-center">
+          <FontAwesomeIcon icon={faUser} size="lg" className="mr-2" />
+          <span className="text-black text-lg font-medium hidden md:flex">
+            Profil
+          </span>
+        </a>
       </nav>
 
       <div

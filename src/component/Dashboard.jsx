@@ -83,7 +83,7 @@ function Dashboard() {
         {username && (
           <div className="bg-white py-4 px-6">
             <h1
-              className="text-gray-800 text-center relative p-3 bg-gray-100"
+              className="text-gray-800 text-center relative text-lg p-3 bg-gray-100"
               style={{
                 boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
                 borderRadius: "10px",
@@ -99,8 +99,8 @@ function Dashboard() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
-             {/* Kartu pertama */}
-             <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+            {/* Kartu pertama */}
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
@@ -115,25 +115,22 @@ function Dashboard() {
                   </div>
                 </div>
                 <hr className="border-white" />
-                <a
-                  style={{ cursor: "default" }}
-                  href="/guru"
-                  onMouseEnter={() => handleMouseEnter(0)}
-                  onMouseLeave={() => handleMouseLeave(0)}
-                >
-                  <div className="py-2 text-center font-medium">
-                    <div
-                      className={`text-white ${
-                        hoverStates[0] ? "hover:text-cyan-800" : ""
-                      }`}
-                    >
-                      Klik di sini{" "}
-                      <FontAwesomeIcon
-                        icon={hoverStates[0] ? faRightLong : faCircleArrowRight}
-                      />
-                    </div>
-                  </div>
-                </a>
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/guru"
+                    onMouseEnter={() => handleMouseEnter(0)}
+                    onMouseLeave={() => handleMouseLeave(0)}
+                    className={`text-white ${
+                      hoverStates[0] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[0] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -153,25 +150,22 @@ function Dashboard() {
                   </div>
                 </div>
                 <hr className="border-white" />
-                <a
-                  style={{ cursor: "default" }}
-                  href="/siswa"
-                  onMouseEnter={() => handleMouseEnter(1)}
-                  onMouseLeave={() => handleMouseLeave(1)}
-                >
-                  <div className="py-2 text-center font-medium">
-                    <div
-                      className={`text-white ${
-                        hoverStates[1] ? "hover:text-cyan-800" : ""
-                      }`}
-                    >
-                      Klik di sini{" "}
-                      <FontAwesomeIcon
-                        icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
-                      />
-                    </div>
-                  </div>
-                </a>
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/siswa"
+                    onMouseEnter={() => handleMouseEnter(1)}
+                    onMouseLeave={() => handleMouseLeave(1)}
+                    className={`text-white ${
+                      hoverStates[1] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -193,14 +187,12 @@ function Dashboard() {
                   </div>
                 </div>
                 <hr className="border-white" />
-                <a
-                  style={{ cursor: "default" }}
-                  href="/kelas"
-                  onMouseEnter={() => handleMouseEnter(2)}
-                  onMouseLeave={() => handleMouseLeave(2)}
-                >
                   <div className="py-2 text-center font-medium">
-                    <div
+                    <a
+                      style={{ cursor: "default" }}
+                      href="/kelas"
+                      onMouseEnter={() => handleMouseEnter(2)}
+                      onMouseLeave={() => handleMouseLeave(2)}
                       className={`text-white ${
                         hoverStates[2] ? "hover:text-cyan-800" : ""
                       }`}
@@ -209,91 +201,105 @@ function Dashboard() {
                       <FontAwesomeIcon
                         icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
                       />
-                    </div>
+                    </a>
                   </div>
-                </a>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
-            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg shadow-lg border-gray-200">
-              <h1 className="my-2 text-lg font-bold">Tabel Guru</h1>
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                    <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">
-                      Nama Guru
-                    </th>
-                    <th className="py-2 px-4 text-left">Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {guru.length > 0 ? (
-                    guru.slice(0, 5).map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">{item.username}</td>
-                        <td className="py-2 px-4">{item.email}</td>
+            {/* Tabel Guru */}
+            <div className="w-full md:w-1/2 mb-5">
+              <div className="bg-white py-2 mb-2">
+                <h1
+                  className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
+                  style={{
+                    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Tabel Guru
+                </h1>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
+                {guru.length > 0 ? (
+                  <table className="w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr className="bg-gray-200 text-gray-900 text-sm">
+                        <th className="py-2 px-4 text-left">No.</th>
+                        <th className="py-2 px-4 text-center">Nama Guru</th>
+                        <th className="py-2 px-4 text-center">Email</th>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-4 px-6 text-center text-gray-500 border-b border-gray-200"
-                      >
-                        Maaf, data guru tidak ditemukan.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {guru.slice(0, 5).map((item, index) => (
+                        <tr
+                          key={item.id}
+                          className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
+                        >
+                          <td className="py-2 px-4">{index + 1}</td>
+                          <td className="py-2 px-4 text-center">
+                            {item.username}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {item.email}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="py-4 px-6 text-center text-gray-500">
+                    Maaf, data guru tidak ditemukan.
+                  </p>
+                )}
+              </div>
             </div>
 
-            <div className="w-full md:w-1/2 mt-4 md:mt-0 overflow-x-auto rounded-lg border-gray-200">
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                    <th className="py-2 px-4 text-left">No</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">
-                      Nama Siswa
-                    </th>
-                    <th className="py-2 px-4 text-left">NISN</th>
-                    <th className="py-2 px-4 text-left whitespace-nowrap">
-                      Tempat Lahir
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {siswa.length > 0 ? (
-                    siswa.slice(0, 5).map((item, index) => (
-                      <tr
-                        key={item.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">{index + 1}</td>
-                        <td className="py-2 px-4">{item.nama_siswa}</td>
-                        <td className="py-2 px-4">{item.nisn}</td>
-                        <td className="py-2 px-4">{item.tempat}</td>
+            {/* Tabel Siswa */}
+            <div className="w-full md:w-1/2 mb-5">
+              <div className="bg-white py-2 mb-2">
+                <h1
+                  className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
+                  style={{
+                    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Tabel Siswa
+                </h1>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
+                {siswa.length > 0 ? (
+                  <table className="w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr className="bg-gray-200 text-gray-900 text-sm">
+                        <th className="py-2 px-4 text-left">No.</th>
+                        <th className="py-2 px-4 text-left">Nama Siswa</th>
+                        <th className="py-2 px-4 text-left">NISN</th>
+                        <th className="py-2 px-4 text-left">Tempat Lahir</th>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-4 px-6 text-center text-gray-500 border-b border-gray-200"
-                      >
-                        Maaf, data siswa tidak ditemukan.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {siswa.slice(0, 5).map((item, index) => (
+                        <tr
+                          key={item.id}
+                          className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
+                        >
+                          <td className="py-2 px-4">{index + 1}</td>
+                          <td className="py-2 px-4">{item.nama_siswa}</td>
+                          <td className="py-2 px-4">{item.nisn}</td>
+                          <td className="py-2 px-4">{item.tempat}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="py-4 px-6 text-center text-gray-500">
+                    Maaf, data siswa tidak ditemukan.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
