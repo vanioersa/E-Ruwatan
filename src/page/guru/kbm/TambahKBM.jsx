@@ -49,9 +49,9 @@ const TambahKBM = () => {
   }, []);
 
   const fetchUsername = async () => {
-    try {
+    try { 
       const response = await axios.get("http://localhost:4001/users");
-      setUsername(response.data.username); // Assume response has username directly
+      setUsername(response.data.username);
     } catch (error) {
       console.error("Failed to retrieve user details: ", error);
     }
@@ -73,7 +73,6 @@ const TambahKBM = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Validations here
     setKbm((prevKbm) => ({
       ...prevKbm,
       [name]: value,
@@ -82,17 +81,18 @@ const TambahKBM = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Submission logic here
-    // Check validations before sending
+
+    const kbmData = {
+      namaId: username,
+      kelasId: selectedKelas,
+      jam_masuk: kbm.jam_masuk,
+      jam_pulang: kbm.jam_pulang,
+      keterangan: kbm.keterangan,
+      materi: kbm.materi,
+    };
+
     try {
-      await createKbm({
-        namaId: username,
-        kelasId: selectedKelas,
-        jam_masuk: kbm.jam_masuk,
-        jam_pulang: kbm.jam_pulang,
-        keterangan: kbm.keterangan,
-        materi: kbm.materi,
-      });
+      await createKbm(kbmData);
       Swal.fire({
         title: "Berhasil",
         text: "Data KBM Guru berhasil ditambahkan",
@@ -100,12 +100,16 @@ const TambahKBM = () => {
         showConfirmButton: false,
         timer: 2000,
       }).then(() => {
-        navigate(-1);
+        navigate(-1); // Assuming you want to navigate back to a previous page
       });
     } catch (error) {
       console.error("Gagal menambahkan KBM Guru: ", error);
       let errorMessage = "Gagal menambahkan KBM Guru. Silakan coba lagi.";
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         errorMessage = error.response.data.message;
       }
       Swal.fire({
@@ -154,7 +158,7 @@ const TambahKBM = () => {
                   {kelas.map((kelas) => (
                     <option key={kelas.id} value={kelas.id}>
                       {kelas.kelas && kelas.nama_kelas
-                        ? `${kelas.kelas} ${kelas.nama_kelas}`
+                        ? `${kelas.kelas} - ${kelas.nama_kelas}`
                         : "No Class Info"}
                     </option>
                   ))}
@@ -232,7 +236,6 @@ const TambahKBM = () => {
                 </label>
                 <input
                   type="text"
-                  id="materi"
                   name="materi"
                   value={kbm.materi}
                   onChange={handleChange}
