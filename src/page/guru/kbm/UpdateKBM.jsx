@@ -57,34 +57,107 @@ const UpdateKBM = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "jam_masuk" || name === "jam_pulang") {
+      const currentTime = getCurrentTime();
+      const enteredTime = value;
+
+      // Membandingkan waktu yang dimasukkan dengan waktu saat ini
+      if (enteredTime < currentTime) {
+        // Menampilkan pesan kesalahan atau menangani masukan waktu yang tidak valid
+        // Contoh menampilkan pesan kesalahan menggunakan Swal:
+        Swal.fire({
+          title: "Waktu Tidak Valid",
+          text: "Waktu yang dimasukkan tidak valid. Harap masukkan waktu yang valid.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+      }
+
+      // Memeriksa apakah "jam_masuk" dan "jam_pulang" memiliki nilai yang valid
+      if (
+        name === "jam_pulang" &&
+        kbm.jam_masuk &&
+        kbm.jam_masuk !== "" &&
+        enteredTime < addMinutes(kbm.jam_masuk, 30)
+      ) {
+        Swal.fire({
+          title: "Waktu Tidak Valid",
+          text: "'jam_pulang' harus setidaknya 30 menit setelah 'jam_masuk'.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+      }
+    }
+
     setKbm((prevKbm) => ({
       ...prevKbm,
       [name]: value,
     }));
   };
 
+  const addMinutes = (time, minutes) => {
+    const [hours, mins] = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(mins + minutes);
+    return date.toLocaleTimeString("en-US", { hour12: false });
+  };
+
+  function getCurrentTime() {
+    const now = new Date();
+    const hour = now.getHours().toString().padStart(2, "0");
+    const minute = now.getMinutes().toString().padStart(2, "0");
+    return `${hour}:${minute}`;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { jam_masuk, jam_pulang } = kbm;
 
-    if (
-      new Date(`2000-01-01T${jam_masuk}`) >=
-      new Date(`2000-01-01T${jam_pulang}`)
-    ) {
-      Swal.fire("Gagal", "Jam pulang harus lebih dari jam masuk.", "error");
+    const initialKbmData = await getKbmById(id);
+
+    const isDataChanged =
+      initialKbmData.kelasId !== kbm.kelasId ||
+      initialKbmData.jam_masuk !== kbm.jam_masuk ||
+      initialKbmData.jam_pulang !== kbm.jam_pulang ||
+      initialKbmData.keterangan !== kbm.keterangan ||
+      initialKbmData.materi !== kbm.materi;
+
+    if (!isDataChanged) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Minimal satu data harus diubah",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
 
     try {
       await updateKbm(id, kbm);
-      Swal.fire("Berhasil", "Data KBM berhasil diperbarui", "success").then(
-        () => {
-          navigate(-1);
-        }
-      );
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil",
+        text: "Data KBM berhasil diperbarui",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        navigate(-1);
+      });
     } catch (error) {
       console.error("Failed to update KBM:", error);
-      Swal.fire("Gagal", "Gagal memperbarui KBM. Silakan coba lagi.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Gagal memperbarui data KBM. Silakan coba lagi.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
 
@@ -135,12 +208,12 @@ const UpdateKBM = () => {
                   name="kelasId"
                   value={kbm.kelasId}
                   onChange={(e) => handleChange(e)}
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 >
                   <option value="">Pilih Kelas</option>
                   {kelas.map((kelas) => (
                     <option key={kelas.id} value={kelas.id}>
-                     {kelas.kelas} - {kelas.nama_kelas}
+                      {kelas.kelas} - {kelas.nama_kelas}
                     </option>
                   ))}
                 </select>
@@ -161,7 +234,7 @@ const UpdateKBM = () => {
                   name="jam_masuk"
                   value={kbm.jam_masuk}
                   onChange={(e) => handleChange(e)}
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
               <div className="relative">
@@ -169,7 +242,7 @@ const UpdateKBM = () => {
                   htmlFor="jam_pulang"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Jam Pulang
+                  Jam Selesai
                 </label>
                 <input
                   type="time"
@@ -177,28 +250,12 @@ const UpdateKBM = () => {
                   name="jam_pulang"
                   value={kbm.jam_pulang}
                   onChange={(e) => handleChange(e)}
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
             </div>
             {/* Form input untuk keterangan dan materi */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
-              <div className="relative">
-                <label
-                  htmlFor="keterangan"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Keterangan
-                </label>
-                <input
-                  type="text"
-                  id="keterangan"
-                  name="keterangan"
-                  value={kbm.keterangan}
-                  onChange={(e) => handleChange(e)}
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
-                />
-              </div>
               <div className="relative">
                 <label
                   htmlFor="materi"
@@ -212,7 +269,25 @@ const UpdateKBM = () => {
                   name="materi"
                   value={kbm.materi}
                   onChange={(e) => handleChange(e)}
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
+                />
+              </div>
+              
+              <div className="relative">
+                <label
+                  htmlFor="keterangan"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
+                  Keterangan
+                </label>
+                <input
+                  type="text"
+                  id="keterangan"
+                  name="keterangan"
+                  value={kbm.keterangan}
+                  placeholder="Masukan Keterangan"
+                  onChange={(e) => handleChange(e)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
             </div>
@@ -221,7 +296,7 @@ const UpdateKBM = () => {
               <button
                 type="button"
                 onClick={batal}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-white rounded-lg transition duration-300"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>

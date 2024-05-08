@@ -7,7 +7,7 @@ import { createKbm } from "./api_kbm";
 
 const TambahKBM = () => {
   const [kbm, setKbm] = useState({
-    namaId: "",
+    userId: "", // userId diganti dengan nilai username
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",
@@ -17,43 +17,33 @@ const TambahKBM = () => {
 
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
-  const [currentTime, setCurrentTime] = useState(getCurrentTime());
-  const [username, setUsername] = useState(""); // Added state for username
+  const [users, setUsers] = useState([]);
+  // const [selectedUsers, setSelectedUsers] = useState("");
+  const currentTime = useState(getCurrentTime());
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchKelas();
-    fetchUsername();
+    fetchUsers();
   }, []);
 
-  function getCurrentTime() {
-    const now = new Date();
-    const hour = now.getHours().toString().padStart(2, "0");
-    const minute = now.getMinutes().toString().padStart(2, "0");
-    return `${hour}:${minute}`;
-  }
-
   useEffect(() => {
-    // Simulate fetching the username from localStorage
-    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
-    if (storedUsername) {
-      setUsername(storedUsername);
+    const storedUsername = localStorage.getItem("username");
+    const foundUser = users.find((user) => user.username === storedUsername);
+    if (foundUser) {
+      setKbm((prevKbm) => ({
+        ...prevKbm,
+        userId: foundUser.id,
+      }));
     }
-  }, []);
+  }, [users]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(getCurrentTime());
-    }, 60000); // Update the time every minute
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchUsername = async () => {
-    try { 
+  const fetchUsers = async () => {
+    try {
       const response = await axios.get("http://localhost:4001/users");
-      setUsername(response.data.username);
+      setUsers(response.data);
     } catch (error) {
-      console.error("Failed to retrieve user details: ", error);
+      console.error("Gagal mengambil data Users: ", error);
     }
   };
 
@@ -62,8 +52,8 @@ const TambahKBM = () => {
       const response = await axios.get("http://localhost:4001/kelas/all");
       const sanitizedKelas = response.data.map((kelas) => ({
         id: kelas.id,
-        kelas: kelas.kelas ?? "", // Fallback to empty string if undefined
-        nama_kelas: kelas.nama_kelas ?? "", // Fallback to empty string if undefined
+        kelas: kelas.kelas ?? "",
+        nama_kelas: kelas.nama_kelas ?? "",
       }));
       setKelas(sanitizedKelas);
     } catch (error) {
@@ -73,17 +63,69 @@ const TambahKBM = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "jam_masuk" || name === "jam_pulang") {
+      const currentTime = getCurrentTime();
+      const enteredTime = value;
+
+      // Membandingkan waktu yang dimasukkan dengan waktu saat ini
+      if (enteredTime < currentTime) {
+        // Menampilkan pesan kesalahan atau menangani masukan waktu yang tidak valid
+        // Contoh menampilkan pesan kesalahan menggunakan Swal:
+        Swal.fire({
+          title: "Waktu Tidak Valid",
+          text: "Waktu yang dimasukkan tidak valid. Harap masukkan waktu yang valid.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+      }
+
+      // Memeriksa apakah "jam_masuk" dan "jam_pulang" memiliki nilai yang valid
+      if (
+        name === "jam_pulang" &&
+        kbm.jam_masuk &&
+        kbm.jam_masuk !== "" &&
+        enteredTime < addMinutes(kbm.jam_masuk, 30)
+      ) {
+        Swal.fire({
+          title: "Waktu Tidak Valid",
+          text: "'jam_pulang' harus setidaknya 30 menit setelah 'jam_masuk'.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+      }
+    }
+
     setKbm((prevKbm) => ({
       ...prevKbm,
       [name]: value,
     }));
   };
 
+  const addMinutes = (time, minutes) => {
+    const [hours, mins] = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(mins + minutes);
+    return date.toLocaleTimeString("en-US", { hour12: false });
+  };
+
+  function getCurrentTime() {
+    const now = new Date();
+    const hour = now.getHours().toString().padStart(2, "0");
+    const minute = now.getMinutes().toString().padStart(2, "0");
+    return `${hour}:${minute}`;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const kbmData = {
-      namaId: username,
+      userId: kbm.userId,
       kelasId: selectedKelas,
       jam_masuk: kbm.jam_masuk,
       jam_pulang: kbm.jam_pulang,
@@ -139,6 +181,24 @@ const TambahKBM = () => {
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            <div className="relative">
+                <label
+                  htmlFor="userId"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
+                  Guru
+                </label>
+                <input
+                  id="userId"
+                  name="userId"
+                  value={users.find((user) => user.id === kbm.userId)?.username ||
+                    "No User Info"}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  readOnly
+                  disabled
+                />
+              </div>
+
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -163,23 +223,6 @@ const TambahKBM = () => {
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div className="relative">
-                <label
-                  htmlFor="namaId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Guru
-                </label>
-                <input
-                  type="text"
-                  id="namaId"
-                  name="namaId"
-                  value={username}
-                  readOnly
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
-                />
               </div>
             </div>
 

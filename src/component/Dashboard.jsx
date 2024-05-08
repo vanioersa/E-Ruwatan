@@ -187,22 +187,22 @@ function Dashboard() {
                   </div>
                 </div>
                 <hr className="border-white" />
-                  <div className="py-2 text-center font-medium">
-                    <a
-                      style={{ cursor: "default" }}
-                      href="/kelas"
-                      onMouseEnter={() => handleMouseEnter(2)}
-                      onMouseLeave={() => handleMouseLeave(2)}
-                      className={`text-white ${
-                        hoverStates[2] ? "hover:text-cyan-800" : ""
-                      }`}
-                    >
-                      Klik di sini{" "}
-                      <FontAwesomeIcon
-                        icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
-                      />
-                    </a>
-                  </div>
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/kelas"
+                    onMouseEnter={() => handleMouseEnter(2)}
+                    onMouseLeave={() => handleMouseLeave(2)}
+                    className={`text-white ${
+                      hoverStates[2] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -222,17 +222,17 @@ function Dashboard() {
                 </h1>
               </div>
               <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
-                {guru.length > 0 ? (
-                  <table className="w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr className="bg-gray-200 text-gray-900 text-sm">
-                        <th className="py-2 px-4 text-left">No.</th>
-                        <th className="py-2 px-4 text-center">Nama Guru</th>
-                        <th className="py-2 px-4 text-center">Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {guru.slice(0, 5).map((item, index) => (
+                <table className="w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr className="bg-gray-200 text-gray-900 text-sm">
+                      <th className="py-2 px-4 text-left">No.</th>
+                      <th className="py-2 px-4 text-center">Nama Guru</th>
+                      <th className="py-2 px-4 text-center">Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {guru.length > 0 ? (
+                      guru.slice(0, 5).map((item, index) => (
                         <tr
                           key={item.id}
                           className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
@@ -245,14 +245,19 @@ function Dashboard() {
                             {item.email}
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p className="py-4 px-6 text-center text-gray-500">
-                    Maaf, data guru tidak ditemukan.
-                  </p>
-                )}
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="3"
+                          className="py-4 text-center text-gray-500"
+                        >
+                          Maaf, data guru tidak ditemukan.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -270,35 +275,40 @@ function Dashboard() {
                 </h1>
               </div>
               <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
-                {siswa.length > 0 ? (
-                  <table className="w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr className="bg-gray-200 text-gray-900 text-sm">
-                        <th className="py-2 px-4 text-left">No.</th>
-                        <th className="py-2 px-4 text-left">Nama Siswa</th>
-                        <th className="py-2 px-4 text-left">NISN</th>
-                        <th className="py-2 px-4 text-left">Tempat Lahir</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {siswa.slice(0, 5).map((item, index) => (
+                <table className="w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr className="bg-gray-200 text-gray-900 text-sm">
+                      <th className="py-2 px-4 text-left">No.</th>
+                      <th className="py-2 px-4 text-center">Nama Siswa</th>
+                      <th className="py-2 px-4 text-center">NISN</th>
+                      <th className="py-2 px-4 text-center">Tempat Lahir</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {siswa.length > 0 ? (
+                      siswa.slice(0, 5).map((item, index) => (
                         <tr
                           key={item.id}
                           className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4">{item.nama_siswa}</td>
-                          <td className="py-2 px-4">{item.nisn}</td>
-                          <td className="py-2 px-4">{item.tempat}</td>
+                          <td className="py-2 px-4 text-center">{item.nama_siswa}</td>
+                          <td className="py-2 px-4 text-center">{item.nisn}</td>
+                          <td className="py-2 px-4 text-center">{item.tempat}</td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p className="py-4 px-6 text-center text-gray-500">
-                    Maaf, data siswa tidak ditemukan.
-                  </p>
-                )}
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="py-4 text-center text-gray-500"
+                        >
+                          Maaf, data siswa tidak ditemukan.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

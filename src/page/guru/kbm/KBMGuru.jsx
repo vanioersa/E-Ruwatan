@@ -20,7 +20,7 @@ import * as xlsx from "xlsx";
 
 function KBMGuru() {
   const [kbmGuru, setKbmGuru] = useState([]);
-  const [guru, setGuru] = useState([]);
+  const [users, setUsers] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -40,17 +40,17 @@ function KBMGuru() {
     fetchKBMGuru();
   }, [location.pathname]);
 
-  // Ambil data Guru dari API
+  // Ambil data User dari API
   useEffect(() => {
-    const fetchGuru = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/guru/all");
-        setGuru(response.data);
+        const response = await axios.get("http://localhost:4001/users");
+        setUsers(response.data);
       } catch (error) {
-        console.error("Failed to fetch Guru: ", error);
+        console.error("Failed to fetch user: ", error);
       }
     };
-    fetchGuru();
+    fetchUsers();
   }, []);
 
   // Ambil data Kelas dari API
@@ -99,12 +99,16 @@ function KBMGuru() {
 
   // Filter data berdasarkan term pencarian
   const filteredKBMGuru = kbmGuru.filter((kbm) => {
-    const namaGuru = guru.find((g) => g.id === kbm.namaId)?.nama_guru;
-    const kelasNama = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
+    const namaGuru = users.find((u) => u.id === kbm.userId)?.username;
+    const kelass = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
+    const namaKelas = kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas;
     return (
       (namaGuru && namaGuru.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelasNama &&
-        kelasNama.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kelass &&
+        namaKelas &&
+        `${kelass} - ${namaKelas}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
       (kbm.materi &&
         kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (kbm.keterangan &&
@@ -118,8 +122,8 @@ function KBMGuru() {
   };
 
   const dataToExport = filteredKBMGuru.map((kbm) => ({
-    "nama guru": guru.find((g) => g.id === kbm.namaId)?.nama_guru,
-    Kelas: kelas.find((k) => k.id === kbm.kelasId)?.kelas || "",
+    "nama guru": users.find((u) => u.id === kbm.userId)?.username,
+    Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}`,
     "jam masuk": kbm.jam_masuk,
     "jam pulang": kbm.jam_pulang,
     materi: kbm.materi,
@@ -159,16 +163,27 @@ function KBMGuru() {
         const workbook = utils.book_new();
         const worksheet = utils.json_to_sheet(dataToExport);
 
-        const colWidths = [
-          { wch: 20 },
-          { wch: 10 },
-          { wch: 10 },
-          { wch: 10 },
-          { wch: 15 },
-          { wch: 30 },
-        ];
+        const columnWidths = {};
 
-        worksheet["!cols"] = colWidths;
+        const columnKeys =
+          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
+
+        columnKeys.forEach((key) => {
+          columnWidths[key] = key.length;
+        });
+
+        dataToExport.forEach((data) => {
+          columnKeys.forEach((key) => {
+            const value = data[key] ? String(data[key]) : "";
+            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          });
+        });
+
+        const excelColumns = columnKeys.map((key) => ({
+          wch: columnWidths[key],
+        }));
+
+        worksheet["!cols"] = excelColumns;
 
         xlsx.utils.book_append_sheet(workbook, worksheet, "Data KBM Guru");
         const xlsxBuffer = xlsx.write(workbook, {
@@ -256,10 +271,11 @@ function KBMGuru() {
                           {currentPage * itemsPerPage + index + 1}
                         </td>
                         <td className="py-2 px-4">
-                          {guru.find((g) => g.id === kbm.namaId)?.nama_guru}
+                          {users.find((u) => u.id === kbm.userId)?.username}
                         </td>
                         <td className="py-2 px-4">
-                          {kelas.find((k) => k.id === kbm.kelasId)?.kelas}
+                        {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
+                          {kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}
                         </td>
                         <td className="py-2 px-4">{kbm.jam_masuk}</td>
                         <td className="py-2 px-4">{kbm.jam_pulang}</td>

@@ -3,7 +3,6 @@ import axios from "axios";
 import SidebarGuru from "./SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowCircleRight,
   faChalkboardTeacher,
   faUserGroup,
   faRightLong,
@@ -16,7 +15,7 @@ function Dashboard() {
   const [guru, setGuru] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
-  const [hoverStates, setHoverStates] = useState([false, false, false]); // Array to track hover state for each card
+  const [hoverStates, setHoverStates] = useState([false, false, false]);
 
   const handleMouseEnter = (index) => {
     const updatedHoverStates = [...hoverStates];
