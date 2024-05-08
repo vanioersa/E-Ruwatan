@@ -4,18 +4,32 @@ const apiUrl = "http://localhost:4001/piket";
 
 export const createPiket = async (piketData) => {
   try {
+    // Retrieve the token from local storage
     const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Authentication token is not available. Please log in.");
+    }
+
+    // Make the POST request to add new piket data
     const response = await axios.post(`${apiUrl}/add`, piketData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+
+    // Optionally check for expected status code (e.g., 201 Created)
+    if (response.status === 201) {
+      console.log("Piket created successfully:", response.data);
+      return response.data;
+    } else {
+      throw new Error(`Unexpected server response: ${response.status}`);
+    }
   } catch (error) {
     console.error("Failed to create piket: ", error);
-    throw error;
+    throw error; // Re-throw the error to be handled elsewhere if needed
   }
 };
+
 export const getAllPiket = async () => {
   try {
     const response = await axios.get(`${apiUrl}/all`);

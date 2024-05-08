@@ -15,9 +15,11 @@ const TambahPiketan = () => {
     tanggal: new Date().toISOString().slice(0, 10),
   });
   const navigate = useNavigate();
+  const [kelasId , setKelasId]= useState({});
 
   useEffect(() => {
     fetchKelas();
+    // getKelassbyid();
   }, []);
 
   const fetchKelas = async () => {
@@ -35,36 +37,56 @@ const TambahPiketan = () => {
     }
   }, [selectedKelas]);
 
+  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
+
   const fetchSiswaByKelas = async (kelasId) => {
     try {
-      const response = await axios.get(`http://localhost:4001/siswa/kelas/${kelasId}`);
+      const response = await axios.get(
+        `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setSiswaByKelas(response.data);
     } catch (error) {
       console.error("Gagal mengambil data Siswa: ", error);
     }
   };
 
-  const handleKelasChange = (e) => {
-    setSelectedKelas(e.target.value);
+ 
+
+  const handleKelasChange = async (e) => {
+    const selectedKelasId = e.target.value;
+    setSelectedKelas(selectedKelasId);
+
+    if (selectedKelasId) {
+      try {
+        const response = await axios.get(
+          `http://localhost:4001/siswa/kelas/${selectedKelasId}`
+        );
+        setSiswaByKelas(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data Siswa: ", error);
+      }
+    } else {
+      setSiswaByKelas([]);
+    }
   };
 
   const handleStudentCheckboxChange = (studentId, status) => {
-    setSelectedStudentIds((prev) => {
-      const newSelected = { ...prev };
-      if (newSelected[studentId] === status) {
-        delete newSelected[studentId];
-      } else {
-        newSelected[studentId] = status;
-      }
-      return newSelected;
-    });
+    setSelectedStudentIds((prev) => ({
+      ...prev,
+      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
+    }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPiketan(prev => ({
+    setPiketan((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -87,12 +109,18 @@ const TambahPiketan = () => {
             tanggal: piketan.tanggal,
             siswaId: selectedStudentIds,
           });
-          Swal.fire("Berhasil", "Piketan berhasil ditambahkan", "success").then(() => {
-            navigate(-1);
-          });
+          Swal.fire("Berhasil", "Piketan berhasil ditambahkan", "success").then(
+            () => {
+              navigate(-1);
+            }
+          );
         } catch (error) {
           console.error("Gagal menambahkan piketan: ", error);
-          Swal.fire("Gagal", "Gagal menambahkan piketan. Silakan coba lagi.", "error");
+          Swal.fire(
+            "Gagal",
+            "Gagal menambahkan piketan. Silakan coba lagi.",
+            "error"
+          );
         }
       }
     });
@@ -131,8 +159,8 @@ const TambahPiketan = () => {
                 >
                   <option value="">Pilih Kelas</option>
                   {kelas.map((item) => (
-                    <option className="text-sm" key={item.id} value={item.id}>
-                      {item.kelas} {item.nama_kelas}
+                    <option key={item.id} value={item.id}>
+                      {item.kelas} - {item.nama_kelas}
                     </option>
                   ))}
                 </select>
@@ -193,9 +221,9 @@ const TambahPiketan = () => {
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Alamat
                         </th>
-                        <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Kelas
-                        </th>
+                        </th> */}
                         <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Masuk
                         </th>
@@ -222,14 +250,9 @@ const TambahPiketan = () => {
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             {siswa.alamat}
                           </td>
-                          <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            {/* Dynamically retrieve class name and description */}
-                            {kelas.find((k) => k.id === siswa.kelasId)?.kelas} -
-                            {
-                              kelas.find((k) => k.id === siswa.kelasId)
-                                ?.nama_kelas
-                            }
-                          </td>
+                          {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            {siswa.kelasId.nama_kelas}
+                          </td> */}
                           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <input
                               type="checkbox"
