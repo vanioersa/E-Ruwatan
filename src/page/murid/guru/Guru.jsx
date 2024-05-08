@@ -228,25 +228,14 @@ function Guru() {
                     Nama Guru
                   </th>
                   <th className="py-2 px-4 text-left">Email</th>
-                  <th
-                    className="py-2 px-4 text-left whitespace-nowrap"
-                    style={{ width: "5px" }}
-                  >
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
                     Jenis Kelamin
                   </th>
-                  <th className="py-2 px-4 text-left" style={{ width: "5px" }}>
-                    Alamat
-                  </th>
-                  <th
-                    className="py-2 px-4 text-left whitespace-nowrap"
-                    style={{ width: "5px" }}
-                  >
+                  <th className="py-2 px-4 text-left">Alamat</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
                     Nomor Telfon
                   </th>
-                  <th
-                    className="py-2 px-4 text-left whitespace-nowrap"
-                    style={{ width: "5px" }}
-                  >
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
                     Status Pernikahan
                   </th>
                   <th className="py-2 px-4 text-center">Aksi</th>

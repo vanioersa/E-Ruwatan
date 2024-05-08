@@ -74,7 +74,7 @@ function Register_Admin() {
         Swal.fire({
           icon: "success",
           title: "Registrasi Berhasil!",
-          text: "Anda berhasil terdaftar sebagai siswa.",
+          text: "Anda berhasil terdaftar sebagai admin.",
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {
