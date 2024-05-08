@@ -178,7 +178,6 @@ const UpdateKBM = () => {
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              {/* Tampilkan nama guru yang sedang login dan tidak dapat diubah */}
               <div className="relative">
                 <label
                   htmlFor="namaId"
