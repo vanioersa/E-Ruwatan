@@ -8,15 +8,16 @@ import {
   faBarsStaggered,
   faXmark,
   faUser,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom"; // Import useLocation
+import { useLocation } from "react-router-dom";
 
 function SidebarGuru() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
-  const location = useLocation(); // Gunakan useLocation untuk mendapatkan objek location saat ini
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -69,7 +70,6 @@ function SidebarGuru() {
     });
   }
 
-  // Fungsi untuk menentukan apakah link aktif berdasarkan path
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -116,6 +116,7 @@ function SidebarGuru() {
             { name: "Dashboard", icon: faHome, path: "/dashboard_guru" },
             { name: "KBM Guru", icon: faChalkboardTeacher, path: "/kbm_guru" },
             { name: "Piketan", icon: faUserGroup, path: "/piketan_guru" },
+            { name: "Penilaian", icon: faStar, path: "/penilaian" },
           ].map((item, index) => (
             <li
               key={index}
