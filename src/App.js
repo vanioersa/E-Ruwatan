@@ -22,6 +22,7 @@ import UpdateKBM from "./page/guru/kbm/UpdateKBM";
 import ProfileGuru from "./page/guru/Profile/Profile_guru";
 import UpdatePiketan from "./page/guru/piketguru/UpdatePiketan";
 import ProfileAdmin from "./page/murid/Profile Siswa/Profile_admin";
+import Penilaian from "./page/guru/Penilaian/Penilaian";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -64,6 +65,7 @@ function App() {
             <Route path="/pdf" element={<PDFpiket />} />
             <Route path="/profile_guru" element={<ProfileGuru />} />
             <Route path="/profile_admin" element={<ProfileAdmin />} />
+            <Route path="/Penilaian" element={<Penilaian />} />
           </>
         ) : (
           <>
@@ -85,6 +87,7 @@ function App() {
             <Route path="/pdf" element={<Login />}/>
             <Route path="/profile_guru" element={<Login />} />
             <Route path="/profile_admin" element={<Login />} />
+            <Route path="/Penilaian" element={<Login />} />
             <Route path="/EditPiketan/:id" element={<Login />} />
           </>
         )}

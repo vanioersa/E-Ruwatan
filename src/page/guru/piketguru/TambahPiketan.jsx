@@ -15,11 +15,11 @@ const TambahPiketan = () => {
     tanggal: new Date().toISOString().slice(0, 10),
   });
   const navigate = useNavigate();
-  const [kelasId , setKelasId]= useState({});
+  const [kelasId, setKelasId] = useState({});
 
   useEffect(() => {
     fetchKelas();
-    // getKelassbyid();
+    fetchSiswaByKelas();
   }, []);
 
   const fetchKelas = async () => {
@@ -41,30 +41,40 @@ const TambahPiketan = () => {
 
   const fetchSiswaByKelas = async (kelasId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSiswaByKelas(response.data);
+      if (kelasId) {
+        const response = await axios.get(
+          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSiswaByKelas(response.data);
+      } else {
+        // Handle the case when kelasId is undefined
+        // For example, display an error message or set siswaByKelas to an empty array
+        setSiswaByKelas([]);
+      }
     } catch (error) {
       console.error("Gagal mengambil data Siswa: ", error);
     }
   };
 
- 
-
   const handleKelasChange = async (e) => {
     const selectedKelasId = e.target.value;
-    setSelectedKelas(selectedKelasId);
 
+    setSelectedKelas(selectedKelasId);
     if (selectedKelasId) {
+      setKelasId(selectedKelasId); // Atur nilai kelasId dengan selectedKelasId
       try {
         const response = await axios.get(
-          `http://localhost:4001/siswa/kelas/${selectedKelasId}`
+          `http://localhost:4001/siswa/by-kelas-id/${selectedKelasId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSiswaByKelas(response.data);
       } catch (error) {
@@ -202,7 +212,7 @@ const TambahPiketan = () => {
               </button>
             </div>
           </form>
-          <div className="mt-8">
+          <div className="mt-5">
             {selectedKelas ? (
               siswaByKelas.length > 0 ? (
                 <div>
