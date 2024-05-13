@@ -26,7 +26,9 @@ function Penilaian() {
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
         <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
-          <h1 className="text-3xl font-semibold text-gray-800">Penilaian Guru</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">
+            Penilaian Guru
+          </h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"
@@ -36,9 +38,9 @@ function Penilaian() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className="flex flex-wrap justify-center space-y-3">
-              <Link to={`/tambahUpdate`}>
+              <Link to={`/TambahPenilaian`}>
                 <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah Piket
+                  <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
                 </button>
               </Link>
               <button
