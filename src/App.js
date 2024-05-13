@@ -23,6 +23,8 @@ import ProfileGuru from "./page/guru/Profile/Profile_guru";
 import UpdatePiketan from "./page/guru/piketguru/UpdatePiketan";
 import ProfileAdmin from "./page/murid/Profile Siswa/Profile_admin";
 import Penilaian from "./page/guru/Penilaian/Penilaian";
+import TambahPenilaian from "./page/guru/Penilaian/TambahPenilaian";
+import UpdatePenilaian from "./page/guru/Penilaian/UpdatePenilaian";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -66,25 +68,27 @@ function App() {
             <Route path="/profile_guru" element={<ProfileGuru />} />
             <Route path="/profile_admin" element={<ProfileAdmin />} />
             <Route path="/Penilaian" element={<Penilaian />} />
+            <Route path="/TambahPenilaian" element={<TambahPenilaian />} />
+            <Route path="/UpdatePenilaian" element={<UpdatePenilaian />} />
           </>
         ) : (
           <>
-            <Route path="/dashboard_admin" element={<Login />}/>
-            <Route path="/dashboard_guru" element={<Login />}/>
-            <Route path="/piketan_guru/" element={<Login />}/>
-            <Route path="/kbm_guru/" element={<Login />}/>
-            <Route path="/siswa" element={<Login />}/>
-            <Route path="/kelas" element={<Login />}/>
-            <Route path="/guru" element={<Login />}/>
-            <Route path="/tambahsiswa" element={<Login />}/>
-            <Route path="/tambahkelas" element={<Login />}/>
-            <Route path="/tambahguru" element={<Login />}/>
-            <Route path="/tambahkbm" element={<Login />}/>
-            <Route path="/tambahpiketan" element={<Login />}/>
-            <Route path="/EditSiswa/:id" element={<Login />}/>
-            <Route path="/EditKelas/:id" element={<Login />}/>
-            <Route path="/EditGuru/:id" element={<Login />}/>
-            <Route path="/pdf" element={<Login />}/>
+            <Route path="/dashboard_admin" element={<Login />} />
+            <Route path="/dashboard_guru" element={<Login />} />
+            <Route path="/piketan_guru/" element={<Login />} />
+            <Route path="/kbm_guru/" element={<Login />} />
+            <Route path="/siswa" element={<Login />} />
+            <Route path="/kelas" element={<Login />} />
+            <Route path="/guru" element={<Login />} />
+            <Route path="/tambahsiswa" element={<Login />} />
+            <Route path="/tambahkelas" element={<Login />} />
+            <Route path="/tambahguru" element={<Login />} />
+            <Route path="/tambahkbm" element={<Login />} />
+            <Route path="/tambahpiketan" element={<Login />} />
+            <Route path="/EditSiswa/:id" element={<Login />} />
+            <Route path="/EditKelas/:id" element={<Login />} />
+            <Route path="/EditGuru/:id" element={<Login />} />
+            <Route path="/pdf" element={<Login />} />
             <Route path="/profile_guru" element={<Login />} />
             <Route path="/profile_admin" element={<Login />} />
             <Route path="/Penilaian" element={<Login />} />
