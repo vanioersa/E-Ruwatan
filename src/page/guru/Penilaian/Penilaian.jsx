@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import SidebarGuru from '../../../component/SidebarGuru';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import ReactPaginate from 'react-paginate';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import SidebarGuru from "../../../component/SidebarGuru";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faArrowLeft,
+  faArrowRight,
+  faTrash,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
+import ReactPaginate from "react-paginate";
+import axios from "axios";
+import { deletePenilaian } from "./api_penilaian";
 
 function Penilaian() {
   const [data, setData] = useState([]);
@@ -24,16 +31,13 @@ function Penilaian() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://localhost:4001/penilaian');
+      const response = await axios.get("http://localhost:4001/penilaian");
+      console.log("Fetched data: ", response.data); // Debugging step
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       setData([]);
     }
-  };
-
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
   };
 
   const filteredData = data.filter((item) => {
@@ -45,6 +49,22 @@ function Penilaian() {
     );
   });
 
+  const handleUpdate = (id) => {
+    // Navigate to the edit page
+    window.location.href = `/EditPenilaian/${id}`;
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      // Call the delete function from your services/api
+      await deletePenilaian(id);
+      // Refresh the list or remove the item from the state
+      setData(data.filter(item => item.id !== id));
+      console.log("Penilaian berhasil dihapus!!");
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -59,7 +79,7 @@ function Penilaian() {
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Cari Piketan"
+              placeholder="Cari Penilaian"
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -75,9 +95,13 @@ function Penilaian() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Nama Siswa</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nama Siswa
+                  </th>
                   <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Nilai Siswa</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nilai Siswa
+                  </th>
                   <th className="py-2 px-4 text-left">Deskripsi</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
@@ -90,16 +114,33 @@ function Penilaian() {
                       (currentPage + 1) * dataPerPage
                     )
                     .map((item, index) => (
-                      <tr key={index}>
+                      <tr key={item.id}>
                         <td className="py-2 px-4">
                           {index + 1 + currentPage * dataPerPage}
                         </td>
                         <td className="py-2 px-4">{item.namaSiswa}</td>
                         <td className="py-2 px-4">{item.kelas}</td>
                         <td className="py-2 px-4">{item.nilai}</td>
-                        <td className="py-2 px-4">{item.deskripsi}</td>
+                        <td className="py-2 px-4">
+                          {item.deskripsi !== "" ? (
+                            item.deskripsi
+                          ) : (
+                            <span className="italic">Deskripsi Kosong</span>
+                          )}
+                        </td>
                         <td className="py-2 px-4 text-center">
-                          {/* Action buttons like edit/delete */}
+                          <button
+                            className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            onClick={() => handleUpdate(item.id)}
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                          </button>
+                          <button
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -113,7 +154,8 @@ function Penilaian() {
               </tbody>
             </table>
           </div>
-          <ReactPaginate
+          <div className="mt-4">
+            <ReactPaginate
               previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
               nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
               pageCount={pageCount}
@@ -124,6 +166,7 @@ function Penilaian() {
               disabledClassName="paginationDisabled"
               activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
             />
+          </div>
         </div>
       </div>
     </div>
