@@ -115,42 +115,25 @@ function Kelas() {
     });
   };
 
-  // Function to handle page change
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
 
-  // Filter data based on the search term
   const filteredKelas = kelas.filter((k) => {
     return (
       k.nama_kelas &&
-      k.nama_kelas.toLowerCase().includes(searchTerm.toLowerCase())
+      k.nama_kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      k.kelas &&
+      k.kelas.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
-  // Calculate the number of pages needed for pagination
   const pageCount = Math.ceil(filteredKelas.length / kelasPerPage);
-
-  // const headers = [
-  //   { label: "NAMA KELAS", key: "Nama Kelas" },
-  //   { label: "KELAS", key: "Kelas" },
-  // ];
-
-  // Prepare data for export
   const dataToExport = filteredKelas.map((k, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Kelas": k.nama_kelas,
     Kelas: k.kelas,
   }));
-
-  // Prepare options for CSVLink
-  // const csvOptions = {
-  //   headers: headers,
-  //   separator: ";",
-  //   filename: "data_kelas.csv",
-  // };
-
-  // Prepare options for Excel export
   const excelOptions = {
     bookType: "xlsx",
     type: "array",

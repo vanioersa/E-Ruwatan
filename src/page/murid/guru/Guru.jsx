@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import { getAllUsers, deleteUsers } from "./api_guru";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
-// import objact from "../../../asset/profil_guru"
 
 function Guru() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +21,8 @@ function Guru() {
   const guruPerPage = 10;
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
+  const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
+  const [originalTelepon, setOriginalTelepon] = useState("");
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -30,13 +31,12 @@ function Guru() {
         const filteredGuru = response.filter((g) => g.role === "GURU");
         setGuru(filteredGuru.reverse());
       } catch (error) {
-        console.error("Failed to fetch Guru: ", error);
+        console.error("Gagal mengambil data Guru: ", error);
       }
     };
     fetchGuru();
   }, []);
 
-  // Fungsi untuk menghapus guru
   const handleDelete = async (id, username) => {
     Swal.fire({
       title: "Konfirmasi",
@@ -65,12 +65,10 @@ function Guru() {
     });
   };
 
-  // 2Fungsi untuk mengganti halaman
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
 
-  // Filter data berdasarkan term pencarian
   const filteredGuru = guru.filter((g) => {
     const usernameMatch =
       g.username && g.username.toLowerCase().includes(searchTerm.toLowerCase());
@@ -102,23 +100,31 @@ function Guru() {
 
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
-  const dataToExport = filteredGuru.map((g, index) => ({
+  const modifiedGuru = filteredGuru.map((g, index) => {
+    const modifiedTelepon =
+      g.telepon && g.telepon.replace(/^08/, "+62 ").replace(/.{4}$/, "****");
+
+    return {
+      ...g,
+      modifiedTelepon,
+    };
+  });
+
+  const dataToExport = modifiedGuru.map((g, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Guru": g.username,
     Email: g.email,
     "Jenis Kelamin": g.gender,
     Alamat: g.alamat,
-    "Nomor Telfon": g.telepon,
+    "Nomor Telepon": isHiddenTelepon ? g.modifiedTelepon : g.telepon,
     "Status Pernikahan": g.status_nikah,
   }));
 
-  // Prepare options for Excel export
   const excelOptions = {
     bookType: "xlsx",
     type: "array",
   };
 
-  // Export data to Excel
   const handleExportExcel = () => {
     if (dataToExport.length === 0) {
       Swal.fire({
@@ -189,6 +195,15 @@ function Guru() {
     });
   };
 
+  const handleDoubleClick = (telepon) => {
+    if (isHiddenTelepon) {
+      setIsHiddenTelepon(false);
+      setOriginalTelepon(telepon.replace(/^08/, "+62 "));
+    } else {
+      setIsHiddenTelepon(true);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -227,23 +242,23 @@ function Guru() {
                   <th className="py-2 px-4 text-left whitespace-nowrap">
                     Nama Guru
                   </th>
-                  <th className="py-2 px-4 text-left">Email</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center">Email</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jenis Kelamin
                   </th>
-                  <th className="py-2 px-4 text-left">Alamat</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
-                    Nomor Telfon
+                  <th className="py-2 px-4 text-center">Alamat</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Nomor Telepon
                   </th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Status Pernikahan
                   </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-base font-normal">
-                {filteredGuru.length > 0 ? (
-                  filteredGuru
+                {modifiedGuru.length > 0 ? (
+                  modifiedGuru
                     .slice(pagesVisited, pagesVisited + guruPerPage)
                     .map((g, index) => (
                       <tr
@@ -255,7 +270,7 @@ function Guru() {
                         </td>
                         <td className="py-2 px-4">{g.username}</td>
                         <td className="py-2 px-4">{g.email}</td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center">
                           {g.gender ? (
                             <span>{g.gender}</span>
                           ) : (
@@ -264,13 +279,15 @@ function Guru() {
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
                               }}
                             >
                               Data kosong
                             </span>
                           )}
                         </td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center">
                           {g.alamat ? (
                             <span>{g.alamat}</span>
                           ) : (
@@ -279,28 +296,39 @@ function Guru() {
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
                               }}
                             >
                               Data kosong
                             </span>
                           )}
                         </td>
-                        <td className="py-2 px-4">
+                        <td
+                          className="py-2 px-4 text-center"
+                          onDoubleClick={() => handleDoubleClick(g.telepon)}
+                        >
                           {g.telepon ? (
-                            <span>{g.telepon}</span>
-                          ) : (
+              isHiddenTelepon ? (
+                <span>{g.modifiedTelepon}</span>
+              ) : (
+                <span>{g.telepon.replace(/^08/, "+62 ")}</span>
+              )
+            ) : (
                             <span
                               className="text-gray-400 italic text-sm whitespace-nowrap"
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
                               }}
                             >
                               Data kosong
                             </span>
                           )}
                         </td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center">
                           {g.status_nikah ? (
                             <span>{g.status_nikah}</span>
                           ) : (
@@ -309,6 +337,8 @@ function Guru() {
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
                               }}
                             >
                               Data kosong
@@ -319,13 +349,13 @@ function Guru() {
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
-                              <button className="flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
                             <button
                               onClick={() => handleDelete(g.id, g.username)}
-                              className="flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
