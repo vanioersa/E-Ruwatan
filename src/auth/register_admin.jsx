@@ -103,9 +103,7 @@ function Register_Admin() {
     <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
       <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
         <div className="text-center mb-8">
-          <img className="mx-auto h-32 w-auto" 
-          src={logobinus} 
-          alt="binusa" />
+          <img className="mx-auto h-32 w-auto" src={logobinus} alt="binusa" />
         </div>
 
         <form className="space-y-4" onSubmit={handleRegister}>
@@ -128,7 +126,7 @@ function Register_Admin() {
                 onChange={(e) => setUsername(e.target.value)}
               />
               <p className="text-red-500 text-xs mt-1">
-                Huruf pertama username harus kapital.
+                * Huruf pertama username harus kapital.
               </p>
             </div>
           </div>
@@ -153,7 +151,7 @@ function Register_Admin() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <p className="text-red-500 text-xs mt-1">
-                  Silakan masukkan email yang valid.
+                  * Silakan masukkan email yang valid.
                 </p>
               </div>
             </div>
@@ -168,30 +166,30 @@ function Register_Admin() {
                 </label>
               </div>
               <div className="relative mt-2">
-                    <input
-                      id="password"
-                      name="password"
-                      required
-                      type={passwordType}
-                      autoComplete="current-password"
-                      className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <span
-                      onClick={togglePassword}
-                      className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                    >
-                      {passwordType === "password" ? (
-                        <FontAwesomeIcon icon={faEyeSlash} />
-                      ) : (
-                        <FontAwesomeIcon icon={faEye} />
-                      )}
-                    </span>
-                  </div>
-                <p className="text-red-500 text-xs mt-1">
-                  Password minimal 8 karakter
-                </p>
+                <input
+                  id="password"
+                  name="password"
+                  required
+                  type={passwordType}
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <span
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                >
+                  {passwordType === "password" ? (
+                    <FontAwesomeIcon icon={faEyeSlash} />
+                  ) : (
+                    <FontAwesomeIcon icon={faEye} />
+                  )}
+                </span>
+              </div>
+              <p className="text-red-500 text-xs mt-1">
+                * Password minimal 8 karakter
+              </p>
             </div>
           </div>
 
@@ -205,7 +203,7 @@ function Register_Admin() {
           </div>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-500">
+        {/* <p className="mt-6 text-center text-sm text-gray-500">
           Sudah Punya Akun?
           <a
             href="/"
@@ -213,7 +211,7 @@ function Register_Admin() {
           >
             Masuk
           </a>
-        </p>
+        </p> */}
       </div>
     </div>
   );

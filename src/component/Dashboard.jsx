@@ -209,7 +209,7 @@ function Dashboard() {
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
             {/* Tabel Guru */}
-            <div className="w-full md:w-1/2 mb-5">
+            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="bg-white py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
@@ -262,7 +262,7 @@ function Dashboard() {
             </div>
 
             {/* Tabel Siswa */}
-            <div className="w-full md:w-1/2 mb-5">
+            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="bg-white py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
@@ -315,10 +315,10 @@ function Dashboard() {
         </div>
       </section>
       <div className="mb-10" />
-      <style jsx>{`
+       <style>{`
         @media (max-width: 768px) {
           .bg-gray-100 {
-            margin-bottom: 50px; /* Sesuaikan jarak sesuai kebutuhan */
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
           }
         }
       `}</style>
