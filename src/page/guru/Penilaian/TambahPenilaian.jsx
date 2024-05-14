@@ -1,11 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const TambahPenilaian = () => {
+  const [selectedKelas, setSelectedKelas] = useState("");
+  const [siswaByKelas, setSiswaByKelas] = useState([]);
+
+  const fetchSiswaByKelas = async (kelasId) => {
+    try {
+      if (kelasId) {
+        const response = await axios.get(
+          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSiswaByKelas(response.data);
+      } else {
+        // Handle the case when kelasId is undefined
+        // For example, display an error message or set siswaByKelas to an empty array
+        setSiswaByKelas([]);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data Siswa: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSiswaByKelas();
+  }, []);
+
   const batal = () => {
     Navigate(-1);
   };
+
+  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
