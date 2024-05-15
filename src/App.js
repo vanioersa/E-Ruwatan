@@ -23,6 +23,8 @@ import ProfileGuru from "./page/guru/Profile/Profile_guru";
 import UpdatePiketan from "./page/guru/piketguru/UpdatePiketan";
 import ProfileAdmin from "./page/murid/Profile Siswa/Profile_admin";
 import Penilaian from "./page/guru/Penilaian/Penilaian";
+import Setting from "./page/murid/Profile Siswa/Setting";
+import EditAdmin from "./page/murid/Profile Siswa/EditAdmin";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -66,6 +68,8 @@ function App() {
             <Route path="/profile_guru" element={<ProfileGuru />} />
             <Route path="/profile_admin" element={<ProfileAdmin />} />
             <Route path="/Penilaian" element={<Penilaian />} />
+            <Route path="/setting" element={<Setting />} />
+            <Route path="/editprofileadmin" element={<EditAdmin />} />
           </>
         ) : (
           <>
@@ -89,6 +93,8 @@ function App() {
             <Route path="/profile_admin" element={<Login />} />
             <Route path="/Penilaian" element={<Login />} />
             <Route path="/EditPiketan/:id" element={<Login />} />
+            <Route path="/setting" element={<Login />} />
+            <Route path="/editprofileadmin" element={<Login />} />
           </>
         )}
       </Routes>

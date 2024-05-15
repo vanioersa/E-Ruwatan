@@ -9,7 +9,6 @@ import {
   faUserGroup,
   faBarsStaggered,
   faXmark,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
@@ -87,7 +86,7 @@ const Sidebar = () => {
             className="text-black focus:outline-none md:hidden mx-3"
             onClick={toggleSidebar}
           >
-           {sidebarOpen ? (
+            {sidebarOpen ? (
               <FontAwesomeIcon icon={faXmark} size="lg" />
             ) : (
               <FontAwesomeIcon icon={faBarsStaggered} size="lg" />
@@ -98,12 +97,27 @@ const Sidebar = () => {
             <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
           </a>
         </div>
-        <a href="/Profile_admin" className="flex items-center">
-          <FontAwesomeIcon icon={faUser} size="lg" className="mr-2" />
-          <span className="text-black text-lg font-medium hidden md:flex">
-            Profil
-          </span>
-        </a>
+        {/* Profil dropdown */}
+        <div class="relative ml-3">
+          <div>
+            <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+              <span class="absolute -inset-1.5"></span>
+              <span class="sr-only">Open user menu</span>
+              <img class="h-8 w-8 rounded-full" src="#" alt="">
+              </img>
+            </button>
+          </div>
+
+          <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+            <a href="/Profile_admin" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">
+              Your Profile</a>
+            <a href="/setting" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">
+              Settings</a>
+            <a href="/" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">
+              Sign out</a>
+          </div>
+        </div>
+
       </nav>
       <div className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="bg-blue-800 text-white px-4 py-3">

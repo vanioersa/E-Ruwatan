@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import SidebarGuru from "../../../component/SidebarGuru";
+import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Profile_admin() {
   const [editMode, setEditMode] = useState(false);
@@ -9,110 +11,160 @@ function Profile_admin() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
-  const [selectedImage, setSelectedImage] = useState(null);
-  const apiUrl = "http://localhost:4001/user";
-  const authToken = localStorage.getItem("authToken");
+  const [image, setImage] = useState(null);
+  const id = localStorage.getItem("id");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    const user = {
+      email: email,
+      username: username,
+    };
+
+    formData.append("user", JSON.stringify(user));
+    formData.append("image", image);
+
+    try {
+      const response = await axios.put(
+        `http://localhost:2024/api/users/ubahUser/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      Swal.fire("Berhasil", "Berhasil mengubah profil", "success");
+      window.location.reload();
+    } catch (error) {
+      console.error("There was an error uploading the organization!", error);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setProfilePic(URL.createObjectURL(e.target.files[0]));
+      setImage(e.target.files[0]);
+    }
+  };
 
   useEffect(() => {
-    if (!authToken) {
-      console.error("No auth token available");
-      return;
-    }
+    const fetchUserData = async () => {
+      const authToken = localStorage.getItem("authToken");
+      const apiUrl = "http://localhost:4001/user";
 
-    fetch(`${apiUrl}/details`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) =>
-        response.ok
-          ? response.json()
-          : Promise.reject("Failed to fetch user details")
-      )
-      .then((data) => {
+      if (!authToken) {
+        console.error("No auth token available");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiUrl}/details`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user details");
+        }
+
+        const data = await response.json();
         setUsername(data.username || "");
         setEmail(data.email || "");
         setProfilePic(
           data.profilePic ||
             "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
         );
-      })
-      .catch((error) => {
+
+        // Simpan data pengguna di localStorage
+        localStorage.setItem("userData", JSON.stringify(data));
+      } catch (error) {
         console.error("Error fetching user data:", error);
-      });
-  }, [authToken, apiUrl]); // Added dependencies to refresh if these values change
-
-  const handleProfilePicChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      setProfilePic(URL.createObjectURL(file));
-    }
-  };
-
-  const handleSaveChanges = () => {
-    // Convert selected image to base64 string or use existing base64 string
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result;
-
-      fetch(`${apiUrl}/updateProfile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          profilePic: base64String,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            // Assuming the API returns a success property
-            Swal.fire({
-              icon: "success",
-              title: "Updated!",
-              text: "Profile updated successfully.",
-              confirmButtonColor: "#3085d6",
-            });
-            setEditMode(false);
-          } else {
-            throw new Error(data.message || "Unknown error occurred"); // Assuming API returns an error message
-          }
-        })
-        .catch((err) => {
-          console.error("Error updating profile:", err);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: err.toString(),
-            confirmButtonColor: "#d33",
-          });
-        });
+      }
     };
 
-    if (selectedImage) {
-      reader.readAsDataURL(selectedImage);
+    // Coba ambil data pengguna dari localStorage
+    const savedUserData = localStorage.getItem("userData");
+    if (savedUserData) {
+      const parsedUserData = JSON.parse(savedUserData);
+      setUsername(parsedUserData.username || "");
+      setEmail(parsedUserData.email || "");
+      setProfilePic(
+        parsedUserData.profilePic ||
+          "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
+      );
     } else {
-      Swal.fire({
-        icon: "warning",
-        title: "No Image Selected",
-        text: "Please select an image to update your profile picture.",
-        confirmButtonColor: "#f0ad4e",
-      });
+      // Jika tidak ada data pengguna yang tersimpan, ambil dari server
+      fetchUserData();
     }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
-      <SidebarGuru />
+      <Sidebar />
       <div className="flex flex-grow items-center justify-center">
         <div className="max-w-4xl w-full">
+          <div className="mt-20 md:mt-20">
+            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+              <ul
+                className="flex flex-wrap -mb-px text-sm font-medium text-center"
+                id="default-tab"
+                data-tabs-toggle="#default-tab-content"
+              >
+                <li className="me-2">
+                  <Link to={"/Profile_admin"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg"
+                      id="profile-tab"
+                      data-tabs-target="#profile"
+                      type="button"
+                      role="tab"
+                      aria-controls="profile"
+                      aria-selected="false"
+                    >
+                      Profile
+                    </button>
+                  </Link>
+                </li>
+                <li className="me-2">
+                  <Link to={"/editprofileadmin"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      id="settings-tab"
+                      data-tabs-target="#settings"
+                      type="button"
+                      role="tab"
+                      aria-controls="settings"
+                      aria-selected="false"
+                    >
+                      Edit Profile
+                    </button>
+                  </Link>
+                </li>
+                <li className="me-2">
+                  <Link to={"/setting"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      id="settings-tab"
+                      data-tabs-target="#settings"
+                      type="button"
+                      role="tab"
+                      aria-controls="settings"
+                      aria-selected="false"
+                    >
+                      Settings
+                    </button>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div className="border-b-2 block md:flex">
             <div className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md">
               <div className="text-center flex justify-between items-center">
@@ -123,7 +175,7 @@ function Profile_admin() {
                   onClick={() => setEditMode(!editMode)}
                   className="text-md font-bold text-white bg-gray-700 rounded-full px-8 py-2 hover:bg-gray-800"
                 >
-                  {editMode ? "Save" : "Edit"}
+                  Edit
                 </button>
               </div>
               <div className="w-full p-8 mx-auto flex justify-center">
@@ -192,24 +244,24 @@ function Profile_admin() {
                     type="file"
                     id="profilePic"
                     accept="image/*"
-                    onChange={handleProfilePicChange}
+                    onChange={handleImageChange}
                     className="border rounded-r px-4 py-2 w-full"
                     disabled={!editMode}
                   />
                 </div>
               </div>
+              {editMode && (
+                <div className="text-center mt-4">
+                  <button
+                    onClick={handleSubmit}
+                    className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-          {editMode && (
-            <div className="text-center mt-4">
-              <button
-                onClick={handleSaveChanges}
-                className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
-              >
-                Save Changes
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
