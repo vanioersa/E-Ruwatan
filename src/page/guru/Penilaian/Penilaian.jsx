@@ -11,13 +11,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import { deletePenilaian } from "./api_penilaian";
+import { deletePenilaian, getAllPenilaian } from "./api_penilaian";
 
 function Penilaian() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [dataPerPage] = useState(10);
+  const [kelas, setKelas] = useState([]);
+  const [Siswa, setSiswa] = useState([]);
 
   const pageCount = Math.ceil(data.length / dataPerPage);
 
@@ -31,40 +33,90 @@ function Penilaian() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:4001/penilaian");
-      console.log("Fetched data: ", response.data); // Debugging step
-      setData(response.data);
+      const response = await getAllPenilaian();
+      setData(response); // response is the data already
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
     }
   };
 
-  const filteredData = data.filter((item) => {
-    return (
-      item.namaSiswa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.nilai.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  useEffect(() => {
+    const fetchKelas = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/kelas/all");
+        setKelas(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Kelas: ", error);
+      }
+    };
+    fetchKelas();
+  }, []);
+
+  useEffect(() => {
+    const fetchsiswa = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/siswa/all");
+        setSiswa(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Siswa: ", error);
+      }
+    };
+    fetchsiswa();
+  }, []);
 
   const handleUpdate = (id) => {
-    // Navigate to the edit page
     window.location.href = `/EditPenilaian/${id}`;
   };
 
   const handleDelete = async (id) => {
     try {
-      // Call the delete function from your services/api
       await deletePenilaian(id);
-      // Refresh the list or remove the item from the state
-      setData(data.filter(item => item.id !== id));
-      console.log("Penilaian berhasil dihapus!!");
+      setData(data.filter((item) => item.id !== id));
+      console.log("Penilaian berhasil dihapus!");
     } catch (error) {
       console.error("Delete error:", error);
     }
   };
+
+  const filteredData = data.filter((item) => {
+    const namaSiswa = Siswa.find((s) => s.id === item.siswaId)?.nama_siswa;
+    const kelass = kelas.find((k) => k.id === item.kelasId)?.kelas;
+    const namaKelas = kelas.find((k) => k.id === item.kelasId)?.nama_kelas;
+    return (
+      (namaSiswa && namaSiswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kelass &&
+        namaKelas &&
+        `${kelass} - ${namaKelas}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
+      (item.nilai &&
+        item.nilai.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.deskripsi &&
+        item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
+  // Filter data based on search term
+  // const filteredData = data.filter((item) => {
+  //   const siswaNama =
+  //     Siswa.find((s) => s.id === item.siswaId)?.nama_siswa?.toLowerCase() || "";
+  //   const kelasNama =
+  //     kelas.find((k) => k.id === item.kelasId)?.kelas?.toLowerCase() || "";
+  //   const namaKelas =
+  //     kelas.find((k) => k.id === item.kelasId)?.nama_kelas?.toLowerCase() || "";
+  //   const nilai =
+  //     typeof item.nilai === "number" ? item.nilai.toString().toLowerCase() : "";
+  //   const deskripsi = item.deskripsi?.toLowerCase() || "";
+
+  //   return (
+  //     siswaNama.includes(searchTerm.toLowerCase()) ||
+  //     kelasNama.includes(searchTerm.toLowerCase()) ||
+  //     namaKelas.includes(searchTerm.toLowerCase()) ||
+  //     nilai.includes(searchTerm.toLowerCase()) ||
+  //     deskripsi.includes(searchTerm.toLowerCase())
+  //   );
+  // });
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -94,15 +146,15 @@ function Penilaian() {
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center">No</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Siswa
                   </th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nilai Siswa
                   </th>
-                  <th className="py-2 px-4 text-left">Deskripsi</th>
+                  <th className="py-2 px-4 text-center">Deskripsi</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -115,28 +167,35 @@ function Penilaian() {
                     )
                     .map((item, index) => (
                       <tr key={item.id}>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center">
                           {index + 1 + currentPage * dataPerPage}
                         </td>
-                        <td className="py-2 px-4">{item.namaSiswa}</td>
-                        <td className="py-2 px-4">{item.kelas}</td>
-                        <td className="py-2 px-4">{item.nilai}</td>
-                        <td className="py-2 px-4">
-                          {item.deskripsi !== "" ? (
-                            item.deskripsi
-                          ) : (
-                            <span className="italic">Deskripsi Kosong</span>
-                          )}
+                        <td className="py-2 px-4 text-center">
+                          {Siswa.find((s) => s.id === item.siswaId)?.nama_siswa}
                         </td>
                         <td className="py-2 px-4 text-center">
+                          {kelas.find((k) => k.id === item.kelasId)?.kelas} -{" "}
+                          {kelas.find((k) => k.id === item.kelasId)?.nama_kelas}
+                        </td>
+                        <td className="py-2 px-4 text-center">{item.nilai}</td>
+                        <td className="py-2 px-4 text-center">
+                          {item.deskripsi ? (
+                            <span>{item.deskripsi}</span>
+                          ) : (
+                            <span className="text-gray-500 italic">
+                              Deskripsi belum ditambahkan
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-center">
                           <button
-                            className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded inline-flex items-center focus:outline-none focus:ring"
                             onClick={() => handleUpdate(item.id)}
                           >
                             <FontAwesomeIcon icon={faEdit} />
                           </button>
                           <button
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                            className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded inline-flex items-center focus:outline-none focus:ring"
                             onClick={() => handleDelete(item.id)}
                           >
                             <FontAwesomeIcon icon={faTrash} />
@@ -147,7 +206,7 @@ function Penilaian() {
                 ) : (
                   <tr>
                     <td colSpan="6" className="text-center py-2 px-4">
-                      No data found
+                      Tidak ada data ditemukan
                     </td>
                   </tr>
                 )}
@@ -161,9 +220,9 @@ function Penilaian() {
               pageCount={pageCount}
               onPageChange={changePage}
               containerClassName="pagination flex justify-center items-center gap-2"
-              previousLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-              nextLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-              disabledClassName="paginationDisabled"
+              previousLinkClassName="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded focus:outline-none"
+              nextLinkClassName="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded focus:outline-none"
+              disabledClassName="paginationDisabled opacity-50 cursor-not-allowed"
               activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
             />
           </div>

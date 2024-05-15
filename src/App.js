@@ -69,7 +69,7 @@ function App() {
             <Route path="/profile_admin" element={<ProfileAdmin />} />
             <Route path="/Penilaian" element={<Penilaian />} />
             <Route path="/TambahPenilaian" element={<TambahPenilaian />} />
-            <Route path="/EditPenilaian" element={<UpdatePenilaian />} />
+            <Route path="/EditPenilaian/:id" element={<UpdatePenilaian />} />
           </>
         ) : (
           <>
