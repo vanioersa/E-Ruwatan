@@ -18,8 +18,13 @@ export const getAllPenilaian = async () => {
 };
 
 export const getPenilaianById = async (id) => {
+  const token = localStorage.getItem("token");
   try {
-    const response = await axios.get(`${apiUrl}/${id}`);
+    const response = await axios.get(`${apiUrl}/by-id/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -43,8 +48,13 @@ export const createPenilaian = async (penilaianData) => {
 };
 
 export const updatePenilaian = async (id, penilaianData) => {
+  const token = localStorage.getItem("token");
   try {
-    const response = await axios.put(`${apiUrl}/${id}`, penilaianData);
+    const response = await axios.put(`${apiUrl}/ubah/${id}`, penilaianData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {

@@ -52,8 +52,6 @@ const TambahPiketan = () => {
         );
         setSiswaByKelas(response.data);
       } else {
-        // Handle the case when kelasId is undefined
-        // For example, display an error message or set siswaByKelas to an empty array
         setSiswaByKelas([]);
       }
     } catch (error) {
@@ -305,8 +303,8 @@ const TambahPiketan = () => {
                   ) : (
                     <tr>
                       <td
-                        className="px-5 py-5 border-b border-gray-200 bg-white text-center"
-                        colSpan="3"
+                        className="px-5 py-5 border-b border-gray-200 bg-white text-right"
+                        colSpan="4"
                       >
                         {selectedKelas
                           ? "Data yang anda cari tidak ada"
