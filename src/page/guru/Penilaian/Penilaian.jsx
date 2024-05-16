@@ -8,10 +8,14 @@ import {
   faArrowRight,
   faTrash,
   faEdit,
+  faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { deletePenilaian, getAllPenilaian } from "./api_penilaian";
+import Swal from "sweetalert2";
+import { utils } from "xlsx";
+import * as xlsx from "xlsx";
 
 function Penilaian() {
   const [data, setData] = useState([]);
@@ -29,54 +33,74 @@ function Penilaian() {
 
   useEffect(() => {
     fetchData();
+    fetchKelas();
+    fetchSiswa();
   }, []);
 
   const fetchData = async () => {
     try {
       const response = await getAllPenilaian();
-      setData(response); // response is the data already
+      setData(response.reverse());
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
     }
   };
 
-  useEffect(() => {
-    const fetchKelas = async () => {
-      try {
-        const response = await axios.get("http://localhost:4001/kelas/all");
-        setKelas(response.data);
-      } catch (error) {
-        console.error("Failed to fetch Kelas: ", error);
-      }
-    };
-    fetchKelas();
-  }, []);
+  const fetchKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/kelas/all");
+      setKelas(response.data);
+    } catch (error) {
+      console.error("Failed to fetch Kelas: ", error);
+    }
+  };
 
-  useEffect(() => {
-    const fetchsiswa = async () => {
-      try {
-        const response = await axios.get("http://localhost:4001/siswa/all");
-        setSiswa(response.data);
-      } catch (error) {
-        console.error("Failed to fetch Siswa: ", error);
-      }
-    };
-    fetchsiswa();
-  }, []);
+  const fetchSiswa = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/siswa/all");
+      setSiswa(response.data);
+    } catch (error) {
+      console.error("Failed to fetch Siswa: ", error);
+    }
+  };
 
   const handleUpdate = (id) => {
     window.location.href = `/EditPenilaian/${id}`;
   };
 
   const handleDelete = async (id) => {
-    try {
-      await deletePenilaian(id);
-      setData(data.filter((item) => item.id !== id));
-      console.log("Penilaian berhasil dihapus!");
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
+    Swal.fire({
+      title: "Konfirmasi",
+      text: `Anda yakin ingin menghapus data penilaian?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Tidak",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deletePenilaian(id);
+          setKelas((prevpenilaian) => prevpenilaian.filter((p) => p.id !== id));
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data penilaian berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        } catch (error) {
+          console.error("Failed to delete penilaian: ", error);
+          Swal.fire({
+            title: "Gagal",
+            text: `Gagal menghapus penilaian`,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
+      }
+    });
   };
 
   const filteredData = data.filter((item) => {
@@ -84,39 +108,96 @@ function Penilaian() {
     const kelass = kelas.find((k) => k.id === item.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === item.kelasId)?.nama_kelas;
     return (
-      (namaSiswa && namaSiswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelass &&
-        namaKelas &&
-        `${kelass} - ${namaKelas}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())) ||
-      (item.nilai &&
-        item.nilai.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.deskripsi &&
-        item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()))
+      namaSiswa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${kelass} - ${namaKelas}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      item.nilai.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
-  // Filter data based on search term
-  // const filteredData = data.filter((item) => {
-  //   const siswaNama =
-  //     Siswa.find((s) => s.id === item.siswaId)?.nama_siswa?.toLowerCase() || "";
-  //   const kelasNama =
-  //     kelas.find((k) => k.id === item.kelasId)?.kelas?.toLowerCase() || "";
-  //   const namaKelas =
-  //     kelas.find((k) => k.id === item.kelasId)?.nama_kelas?.toLowerCase() || "";
-  //   const nilai =
-  //     typeof item.nilai === "number" ? item.nilai.toString().toLowerCase() : "";
-  //   const deskripsi = item.deskripsi?.toLowerCase() || "";
+  const dataToExport = filteredData.map((item, index) => ({
+    No: index + 1,
+    "Nama Siswa": Siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+    }`,
+    Nilai: item.nilai,
+    Deskripsi: item.deskripsi,
+  }));
 
-  //   return (
-  //     siswaNama.includes(searchTerm.toLowerCase()) ||
-  //     kelasNama.includes(searchTerm.toLowerCase()) ||
-  //     namaKelas.includes(searchTerm.toLowerCase()) ||
-  //     nilai.includes(searchTerm.toLowerCase()) ||
-  //     deskripsi.includes(searchTerm.toLowerCase())
-  //   );
-  // });
+  const exportToXlsx = () => {
+    if (dataToExport.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data penilaian yang diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data penilaian?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const workbook = utils.book_new();
+        const worksheet = utils.json_to_sheet(dataToExport);
+
+        const columnWidths = {};
+
+        const columnKeys =
+          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
+
+        columnKeys.forEach((key) => {
+          columnWidths[key] = key.length;
+        });
+
+        dataToExport.forEach((data) => {
+          columnKeys.forEach((key) => {
+            const value = data[key] ? String(data[key]) : "";
+            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          });
+        });
+
+        const excelColumns = columnKeys.map((key) => ({
+          wch: columnWidths[key],
+        }));
+
+        worksheet["!cols"] = excelColumns;
+
+        xlsx.utils.book_append_sheet(workbook, worksheet, "Data Penilaian");
+        const xlsxBuffer = xlsx.write(workbook, {
+          bookType: "xlsx",
+          type: "buffer",
+        });
+        const blob = new Blob([xlsxBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "data_penilaian.xlsx";
+        link.click();
+        URL.revokeObjectURL(url);
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "Data penilaian berhasil diekspor",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -136,11 +217,19 @@ function Penilaian() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Link to="/TambahPenilaian">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
+            <div className="flex items-center gap-2">
+              <Link to="/TambahPenilaian">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
+                </button>
+              </Link>
+              <button
+                onClick={exportToXlsx}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                <FontAwesomeIcon icon={faFileExport} /> Export
               </button>
-            </Link>
+            </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
@@ -158,7 +247,7 @@ function Penilaian() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-gray-600 text-base font-normal">
                 {filteredData.length > 0 ? (
                   filteredData
                     .slice(
@@ -166,7 +255,10 @@ function Penilaian() {
                       (currentPage + 1) * dataPerPage
                     )
                     .map((item, index) => (
-                      <tr key={item.id}>
+                      <tr
+                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                        key={item.id}
+                      >
                         <td className="py-2 px-4 text-center">
                           {index + 1 + currentPage * dataPerPage}
                         </td>
@@ -182,30 +274,32 @@ function Penilaian() {
                           {item.deskripsi ? (
                             <span>{item.deskripsi}</span>
                           ) : (
-                            <span className="text-gray-500 italic">
+                            <span className="text-gray-400 italic">
                               Deskripsi belum ditambahkan
                             </span>
                           )}
                         </td>
                         <td className="py-3 px-4 text-center">
-                          <button
-                            className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded inline-flex items-center focus:outline-none focus:ring"
-                            onClick={() => handleUpdate(item.id)}
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </button>
-                          <button
-                            className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded inline-flex items-center focus:outline-none focus:ring"
-                            onClick={() => handleDelete(item.id)}
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </button>
+                          <div className="flex justify-center gap-2">
+                            <button
+                              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                              onClick={() => handleUpdate(item.id)}
+                            >
+                              <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                            <button
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              onClick={() => handleDelete(item.id)}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-2 px-4">
+                    <td colSpan="6" className="text-center py-4 ">
                       Tidak ada data ditemukan
                     </td>
                   </tr>
