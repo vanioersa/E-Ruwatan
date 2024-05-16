@@ -136,22 +136,6 @@ const TambahPenilaian = () => {
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              {/* <div className="relative">
-                <label
-                  htmlFor="siswaId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Nama Siswa
-                </label>
-                <select
-                  id="siswaId"
-                  name="siswaId"
-                  value=""
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                ></select>
-              </div> */}
-
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -252,56 +236,6 @@ const TambahPenilaian = () => {
               </button>
             </div>
           </form>
-          {/* 
-          <div className="mt-5">
-            <h2 className="text-xl font-semibold mb-4">
-              Daftar Siswa
-              {selectedKelas ? `Kelas ${selectedKelas}` : ""}
-            </h2>
-            <table className="min-w-full leading-normal">
-              <thead>
-                <tr>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Nama Siswa
-                  </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    NISN
-                  </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Alamat
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedKelas && siswaByKelas.length > 0 ? (
-                  siswaByKelas.map((siswa) => (
-                    <tr key={siswa.id}>
-                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {siswa.nama_siswa}
-                      </td>
-                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {siswa.nisn}
-                      </td>
-                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {siswa.alamat}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center"
-                      colSpan="3"
-                    >
-                      {selectedKelas
-                        ? "Data Kosong"
-                        : "Silakan pilih kelas untuk melihat siswa."}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div> */}
         </div>
       </div>
     </div>
