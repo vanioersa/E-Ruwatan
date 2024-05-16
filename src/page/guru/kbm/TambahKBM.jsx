@@ -7,7 +7,7 @@ import { createKbm } from "./api_kbm";
 
 const TambahKBM = () => {
   const [kbm, setKbm] = useState({
-    userId: "", // userId diganti dengan nilai username
+    userId: "",
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",

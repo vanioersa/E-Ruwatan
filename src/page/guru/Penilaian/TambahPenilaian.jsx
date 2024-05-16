@@ -12,6 +12,12 @@ const TambahPenilaian = () => {
   const [kelasId, setKelasId] = useState({});
   const [selectedStudentIds, setSelectedStudentIds] = useState({});
   const navigate = useNavigate();
+  const [penilaian, setPenilaian] = useState({
+    kelasId: "",
+    siswaId: "",
+    deskripsi: "",
+    nilai: "",
+  });
 
   const fetchKelas = async () => {
     try {
@@ -66,6 +72,14 @@ const TambahPenilaian = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPenilaian((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
     fetchKelas();
     fetchSiswaByKelas();
@@ -79,40 +93,33 @@ const TambahPenilaian = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data Penilaian akan disimpan",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await createPenilaian({
-            kelasId: selectedKelas,
-            // tanggal: piketan.tanggal,
-            siswaId: selectedStudentIds,
-          });
-          Swal.fire(
-            "Berhasil",
-            "Penilaian berhasil ditambahkan",
-            "success"
-          ).then(() => {
-            navigate(-1);
-          });
-        } catch (error) {
-          console.error("Gagal menambahkan Penilaian: ", error);
-          Swal.fire(
-            "Gagal",
-            "Gagal menambahkan penilaian. Silakan coba lagi.",
-            "error"
-          );
-        }
-      }
-    });
+
+    const dataNilai = {
+      kelasId: selectedKelas,
+      siswaId: selectedStudentIds,
+      deskripsi: penilaian.deskripsi,
+      nilai: penilaian.nilai,
+    };
+
+    try {
+      await createPenilaian(dataNilai);
+      Swal.fire({
+        title: "Berhasil",
+        text: "Penilaian berhasil ditambahkan",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        navigate(-1);
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan Penilaian: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal menambahkan penilaian. Silakan coba lagi.",
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -167,26 +174,31 @@ const TambahPenilaian = () => {
                   ))}
                 </select>
               </div>
+
               <div className="relative">
                 <label
-                  htmlFor="nilai siswa"
+                  htmlFor="siswaId"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Deskripsi Siswa
+                  Nama Siswa
                 </label>
-                <input
-                  type="text"
-                  name="deskripsi"
-                  value=""
-                  onChange=""
+                <select
+                  id="siswaId"
+                  name="siswaId"
+                  onChange={(e) => setSelectedStudentIds(e.target.value)}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="deskripsi"
                   required
-                  autoComplete="off"
-                />
+                >
+                  <option value="">Pilih Siswa</option>
+                  {siswaByKelas.map((siswa) => (
+                    <option key={siswa.id} value={siswa.id}>
+                      {siswa.nama_siswa}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-            {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="nilai siswa"
@@ -195,10 +207,10 @@ const TambahPenilaian = () => {
                   Nilai Siswa
                 </label>
                 <input
-                  type="text"
-                  name="materi"
-                  value=""
-                  onChange=""
+                  type="number"
+                  name="nilai"
+                  value={penilaian.nilai}
+                  onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="nilai siswa"
                   required
@@ -210,20 +222,20 @@ const TambahPenilaian = () => {
                   htmlFor="nilai siswa"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Deskripsi Siswa
+                  Deskripsi
                 </label>
                 <input
                   type="text"
                   name="deskripsi"
-                  value=""
-                  onChange=""
+                  value={penilaian.deskripsi}
+                  onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="deskripsi"
-                  required
+                  // required
                   autoComplete="off"
                 />
               </div>
-            </div> */}
+            </div>
             <div className="flex justify-between mt-6">
               <button
                 type="button"
@@ -240,11 +252,11 @@ const TambahPenilaian = () => {
               </button>
             </div>
           </form>
-
+          {/* 
           <div className="mt-5">
             <h2 className="text-xl font-semibold mb-4">
               Daftar Siswa
-               {/* {selectedKelas ? `Kelas ${selectedKelas}` : ""} */}
+              {selectedKelas ? `Kelas ${selectedKelas}` : ""}
             </h2>
             <table className="min-w-full leading-normal">
               <thead>
@@ -289,7 +301,7 @@ const TambahPenilaian = () => {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
