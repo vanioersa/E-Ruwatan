@@ -130,15 +130,6 @@ function KBMGuru() {
     keterangan: kbm.keterangan,
   }));
 
-  // const headers = [
-  //   { label: "NAMA GURU", key: "Nama Guru" },
-  //   { label: "KELAS", key: "Kelas" },
-  //   { label: "JAM MASUK", key: "jam masuk" },
-  //   { label: "JAM PULANG", key: "jam pulang" },
-  //   { label: "MATERI", key: "Materi" },
-  //   { label: "KETERANGAN", key: "Keterangan" },
-  // ];
-
   const exportToXlsx = () => {
     if (dataToExport.length === 0) {
       Swal.fire({
@@ -252,7 +243,7 @@ function KBMGuru() {
                   <th className="py-2 px-4 text-left whitespace-nowrap">Jam Selesai</th>
                   <th className="py-2 px-4 text-left">Materi</th>
                   <th className="py-2 px-4 text-left">Keterangan</th>
-                  <th className="py-2 px-4 text-left">Aksi</th>
+                  <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -273,7 +264,7 @@ function KBMGuru() {
                         <td className="py-2 px-4">
                           {users.find((u) => u.id === kbm.userId)?.username}
                         </td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 whitespace-nowrap">
                         {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
                           {kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}
                         </td>
@@ -289,16 +280,16 @@ function KBMGuru() {
                             </span>
                           )}{" "}
                         </td>
-                        <td className="py-2 px-4">
-                          <div className="flex gap-2">
+                        <td className="py-2 px-4 text-center">
+                          <div className="flex justify-center gap-2">
                             <Link to={`/EditKBM/${kbm.id}`}>
-                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                              <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center focus:outline-none focus:ring">
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
                             <button
                               onClick={() => handleDeleteKBM(kbm.id)}
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded inline-flex items-center focus:outline-none focus:ring"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
@@ -308,7 +299,7 @@ function KBMGuru() {
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-2 px-4">
+                    <td colSpan="8" className="text-center py-4">
                       Tidak ada data kbm yang ditemukan
                     </td>
                   </tr>

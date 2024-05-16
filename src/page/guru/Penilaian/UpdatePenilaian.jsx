@@ -12,35 +12,46 @@ const UpdatePenilaian = () => {
   const [penilaian, setPenilaian] = useState({ deskripsi: "", nilai: "" });
   const [kelas, setKelas] = useState([]);
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [selectedKelas, setSelectedKelas] = useState("");
-  const [selectedStudentIds, setSelectedStudentIds] = useState("");
+
+  const fetchKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/kelas/all");
+      setKelas(response.data);
+    } catch (error) {
+      console.error("Gagal mengambil data Kelas: ", error);
+    }
+  };
+
+  const fetchSiswaByKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/siswa/all");
+      setSiswaByKelas(response.data);
+    } catch (error) {
+      console.error("Gagal mengambil data Siswa: ", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const penilaianData = await getPenilaianById(id);
-        setPenilaian(penilaianData);
-        setSelectedKelas(penilaianData.kelasId);
-        setSelectedStudentIds(penilaianData.siswaId);
+    fetchKelas();
+    fetchSiswaByKelas();
+    fetchPenilaian();
+  }, []);
 
-        const kelasResponse = await axios.get("http://localhost:4001/kelas");
-        setKelas(kelasResponse.data);
-
-        const siswaResponse = await axios.get(
-          `http://localhost:4001/siswa/kelas/${penilaianData.kelasId}`
-        );
-        setSiswaByKelas(siswaResponse.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
+  const fetchPenilaian = async () => {
+    try {
+      const response = await getPenilaianById(id);
+      setPenilaian(response);
+    } catch (error) {
+      console.error("Gagal mengambil data Penilaian: ", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPenilaian({ ...penilaian, [name]: value });
+    setPenilaian((prevPenilaian) => ({
+      ...prevPenilaian,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -58,15 +69,10 @@ const UpdatePenilaian = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await updatePenilaian(id, {
-            kelasId: selectedKelas,
-            siswaId: selectedStudentIds,
-            deskripsi: penilaian.deskripsi,
-            nilai: penilaian.nilai,
-          });
+          await updatePenilaian(id, penilaian);
           Swal.fire({
             title: "Berhasil",
-            text: "Penilaian berhasil ditambahkan",
+            text: "Penilaian berhasil diperbarui",
             icon: "success",
             timer: 1500,
             showConfirmButton: false,
@@ -74,12 +80,12 @@ const UpdatePenilaian = () => {
             navigate(-1);
           });
         } catch (error) {
-          console.error("Gagal menambahkan Penilaian: ", error);
-          Swal.fire(
-            "Gagal",
-            "Gagal menambahkan penilaian. Silakan coba lagi.",
-            "error"
-          );
+          console.error("Gagal memperbarui Penilaian: ", error);
+          Swal.fire({
+            title: "Gagal",
+            text: "Gagal memperbarui penilaian. Silakan coba lagi.",
+            icon: "error",
+          });
         }
       }
     });
@@ -96,10 +102,10 @@ const UpdatePenilaian = () => {
       </div>
 
       <div className="content-page max-h-screen container p-8 min-h-screen">
-        <h1 className="judul text-3xl font-semibold">Tambah Penilaian Guru</h1>
+        <h1 className="judul text-3xl font-semibold">Perbarui Penilaian Guru</h1>
         <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
-            Tambah Penilaian Guru
+            Perbarui Penilaian Guru
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -111,55 +117,50 @@ const UpdatePenilaian = () => {
                   Kelas
                 </label>
                 <input
-                  name="kelasId"
                   type="text"
-                  value={penilaian.kelas}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  disabled
+                  value={`${kelas.find((item) => item.id === penilaian.kelasId)?.kelas} - ${kelas.find((item) => item.id === penilaian.kelasId)?.nama_kelas}`}  
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  readOnly
                 />
               </div>
 
               <div className="relative">
                 <label
                   htmlFor="siswaId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900
-                  "
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
                   Nama Siswa
                 </label>
                 <input
                   type="text"
-                  name="siswaId"
-                  value={penilaian.nama_siswa}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  disabled
+                  value={siswaByKelas.find((siswa) => siswa.id === penilaian.siswaId)?.nama_siswa}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  readOnly
                 />
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
-                  htmlFor="nilai siswa"
+                  htmlFor="nilai"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Nilai Siswa
+                  Nilai
                 </label>
                 <input
                   type="number"
                   name="nilai"
                   value={penilaian.nilai}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="nilai siswa"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan nilai"
                   required
                   autoComplete="off"
                 />
               </div>
               <div className="relative">
                 <label
-                  htmlFor="nilai siswa"
+                  htmlFor="deskripsi"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
                   Deskripsi
@@ -169,8 +170,8 @@ const UpdatePenilaian = () => {
                   name="deskripsi"
                   value={penilaian.deskripsi}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="deskripsi"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan deskripsi"
                   autoComplete="off"
                 />
               </div>
@@ -198,4 +199,3 @@ const UpdatePenilaian = () => {
 };
 
 export default UpdatePenilaian;
-// tambah

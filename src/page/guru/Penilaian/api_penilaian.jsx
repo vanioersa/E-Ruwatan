@@ -65,7 +65,7 @@ export const updatePenilaian = async (id, penilaianData) => {
 export const deletePenilaian = async (id) => {
   const token = localStorage.getItem("token");
   try {
-    const response = await axios.delete(`${apiUrl}/penilaian/${id}`, {
+    const response = await axios.delete(`${apiUrl}/hapus/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

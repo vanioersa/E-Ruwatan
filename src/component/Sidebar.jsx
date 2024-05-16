@@ -16,9 +16,9 @@ import Swal from "sweetalert2";
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Helper function to determine if a menu should be "active"
   const isActive = (path) => {
     return location.pathname === path;
   };
@@ -49,7 +49,11 @@ const Sidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  function logout() {
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen);
+  };
+
+  const logout = () => {
     Swal.fire({
       title: "Keluar",
       text: "Anda harus login kembali apabila keluar dari aplikasi ini!",
@@ -74,7 +78,7 @@ const Sidebar = () => {
         });
       }
     });
-  }
+  };
 
   return (
     <div>
@@ -94,32 +98,62 @@ const Sidebar = () => {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_admin">
-            <span className="text-black text-3xl font-medium ml-2">E-RUWATAN</span>
+            <span className="text-black text-3xl font-medium ml-2">
+              E-RUWATAN
+            </span>
           </a>
         </div>
-        {/* Profil dropdown */}
-        <div class="relative ml-3">
+        <div className="relative ml-3">
           <div>
-            <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-              <span class="absolute -inset-1.5"></span>
-              <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full" src="#" alt="">
-              </img>
+            <button
+              type="button"
+              className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              id="user-menu-button"
+              aria-expanded={userMenuOpen}
+              aria-haspopup="true"
+              onClick={toggleUserMenu}
+            >
+              <span className="absolute -inset-1.5"></span>
+              <span className="sr-only">Open user menu</span>
+              <img className="h-8 w-8 rounded-full" src="#" alt="" />
             </button>
           </div>
 
-          <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-            <a href="/Profile_admin" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">
-              Your Profile</a>
-            <a href="/setting" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">
-              Settings</a>
-            <a href="/" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">
-              Sign out</a>
-          </div>
+          {userMenuOpen && (
+            <div
+              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="user-menu-button"
+              tabIndex="-1"
+            >
+              <a
+                href="/Profile_admin"
+                className="block px-4 py-2 text-sm text-gray-700"
+                role="menuitem"
+                tabIndex="-1"
+                id="user-menu-item-0"
+              >
+                Profile
+              </a>
+              <a
+                onClick={logout}
+                className="block px-4 py-2 text-sm text-gray-700"
+                role="menuitem"
+                tabIndex="-1"
+                id="user-menu-item-2"
+              >
+                keluar
+              </a>
+            </div>
+          )}
         </div>
-
       </nav>
-      <div className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <div
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
@@ -128,15 +162,15 @@ const Sidebar = () => {
             { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
             { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
             { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
-            { icon: faDoorOpen, name: "Kelas", path: "/Kelas" }
+            { icon: faDoorOpen, name: "Kelas", path: "/Kelas" },
           ].map((item, index) => (
             <li
               key={index}
-              className={`py-2 px-3 my-2 rounded cursor-pointer 
-                      ${isActive(item.path)
+              className={`py-2 px-3 my-2 rounded cursor-pointer ${
+                isActive(item.path)
                   ? "bg-gray-400 text-black"
                   : "hover:bg-gray-400 hover:text-black"
-                }`}
+              }`}
             >
               <button
                 onClick={() => handleNavigation(item.path)}
@@ -152,16 +186,24 @@ const Sidebar = () => {
               </button>
             </li>
           ))}
-          {/* Logout list item */}
           <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full">
             <button onClick={logout} className="flex items-center w-full">
               <FontAwesomeIcon icon={faRightToBracket} className="mr-2 ml-3" />
-              <span style={{ fontFamily: "Segoe UI" }} className="mx-2 font-medium">Keluar</span>
+              <span
+                style={{ fontFamily: "Segoe UI" }}
+                className="mx-2 font-medium"
+              >
+                Keluar
+              </span>
             </button>
           </li>
         </ul>
       </div>
-      <div className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"}`} />
+      <div
+        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "md:ml-0" : "-md:ml-64"
+        }`}
+      />
     </div>
   );
 };
