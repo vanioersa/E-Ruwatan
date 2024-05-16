@@ -12,7 +12,7 @@ import {
 function Dashboard() {
   const [piket, setPiket] = useState([]);
   const [kbm, setKbm] = useState([]);
-  const [guru, setGuru] = useState([]);
+  const [user, setUser] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
   const [hoverStates, setHoverStates] = useState([false, false, false]);
@@ -63,15 +63,15 @@ function Dashboard() {
 
   // Ambil data Guru dari API
   useEffect(() => {
-    const fetchGuru = async () => {
+    const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/guru/all");
-        setGuru(response.data);
+        const response = await axios.get("http://localhost:4001/users");
+        setUser(response.data);
       } catch (error) {
         console.error("Failed to fetch Guru: ", error);
       }
     };
-    fetchGuru();
+    fetchUser();
   }, []);
 
   useEffect(() => {
@@ -184,8 +184,7 @@ function Dashboard() {
                         >
                           <td className="py-2 px-4">{index + 1}</td>
                           <td className="py-2 px-4">
-                            {guru.find((g) => g.id === item.namaId)
-                              ?.nama_guru || "Nama Guru Tidak Diketahui"}
+                          {user.find((u) => u.id === item.userId)?.username}
                           </td>
                           <td className="py-2 px-4">{item.jam_masuk}</td>
                           <td className="py-2 px-4">{item.jam_pulang}</td>

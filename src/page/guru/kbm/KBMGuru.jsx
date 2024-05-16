@@ -246,10 +246,10 @@ function KBMGuru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Nama Guru</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
                   <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Jam Masuk</th>
-                  <th className="py-2 px-4 text-left">Jam Selesai</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Jam Masuk</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Jam Selesai</th>
                   <th className="py-2 px-4 text-left">Materi</th>
                   <th className="py-2 px-4 text-left">Keterangan</th>
                   <th className="py-2 px-4 text-left">Aksi</th>
