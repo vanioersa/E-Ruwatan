@@ -133,7 +133,7 @@ function Profile_admin() {
                   </Link>
                 </li>
                 <li className="me-2">
-                  <Link to={"/editprofileadmin"}>
+                  <Link to={"/editProfileAdmin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
