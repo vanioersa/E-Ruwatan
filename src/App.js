@@ -17,6 +17,8 @@ import TambahKBM from "./page/guru/kbm/TambahKBM";
 import UpdateSiswa from "./page/murid/siswa/UpdateSiswa";
 import UpdataKelas from "./page/murid/kelas/UpdataKelas";
 import UpdateGuru from "./page/murid/guru/UpdateGuru";
+import Setting from "./page/murid/Profile Siswa/Setting";
+import EditAdmin from "./page/murid/Profile Siswa/EditAdmin";
 import PDFpiket from "./component/PDF";
 import UpdateKBM from "./page/guru/kbm/UpdateKBM";
 import ProfileGuru from "./page/guru/Profile/Profile_guru";
@@ -69,7 +71,9 @@ function App() {
             <Route path="/profile_admin" element={<ProfileAdmin />} />
             <Route path="/Penilaian" element={<Penilaian />} />
             <Route path="/TambahPenilaian" element={<TambahPenilaian />} />
-            <Route path="/EditPenilaian/:id" element={<UpdatePenilaian />} />
+            <Route path="/EditPenilaian" element={<UpdatePenilaian />} />
+            <Route path="/setting" element={<Setting />} />
+            <Route path="/editProfileAdmin" element={<EditAdmin />} />
           </>
         ) : (
           <>
@@ -95,6 +99,8 @@ function App() {
             <Route path="/pdf" element={<Login />} />
             <Route path="/profile_guru" element={<Login />} />
             <Route path="/profile_admin" element={<Login />} />
+            <Route path="/setting" element={<Login />} />
+            <Route path="/editProfileAdmin" element={<Login />} />
           </>
         )}
       </Routes>
