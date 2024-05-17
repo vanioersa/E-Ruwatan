@@ -1,22 +1,27 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDoorOpen,
   faHome,
   faChalkboardTeacher,
-  faRightToBracket,
   faUserGroup,
   faBarsStaggered,
   faXmark,
+  faSun,
+  faMoon,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
+import "./sidebarA.css"; // Import file CSS sidebar.css
 
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("darkMode") === "true" ? true : false
+  ); // Mengambil nilai darkMode dari localStorage
   const location = useLocation();
 
   const isActive = (path) => {
@@ -36,6 +41,11 @@ const Sidebar = () => {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Menggunakan useEffect untuk menyimpan nilai darkMode ke localStorage saat terjadi perubahan
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const handleNavigation = (to) => {
     setLoading(true);
@@ -80,10 +90,18 @@ const Sidebar = () => {
     });
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
     <div>
       {loading}
-      <nav className="fixed top-0 z-50 w-full bg-gray-100 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
+      <nav
+        className={`fixed top-0 z-50 w-full bg-gray-100 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3 ${
+          darkMode ? "dark" : ""
+        }`}
+      >
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
@@ -127,6 +145,7 @@ const Sidebar = () => {
               aria-labelledby="user-menu-button"
               tabIndex="-1"
             >
+              {" "}
               <a
                 href="/Profile_admin"
                 className="block px-4 py-2 text-sm text-gray-700"
@@ -157,47 +176,59 @@ const Sidebar = () => {
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
-        <ul className="mt-6 text-xl mx-2 text-gray-600">
-          {[
-            { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
-            { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
-            { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
-            { icon: faDoorOpen, name: "Kelas", path: "/Kelas" },
-          ].map((item, index) => (
+        <div className={`content ${darkMode ? "dark" : ""}`}>
+          <ul className="mt-6 text-xl mx-2 text-gray-600">
+            {[
+              { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
+              { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
+              { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
+              { icon: faDoorOpen, name: "Kelas", path: "/Kelas" },
+            ].map((item, index) => (
+              <li
+                key={index}
+                className={`py-2 px-3 my-2 rounded cursor-pointer ${
+                  isActive(item.path)
+                    ? "bg-gray-400 text-black"
+                    : "hover:bg-gray-400 hover:text-black"
+                }`}
+              >
+                <button
+                  onClick={() => handleNavigation(item.path)}
+                  className="flex items-center w-full"
+                >
+                  <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                  <span
+                    style={{ fontFamily: "Segoe UI" }}
+                    className="mx-2 font-medium"
+                  >
+                    {item.name}
+                  </span>
+                </button>
+              </li>
+            ))}
             <li
-              key={index}
-              className={`py-2 px-3 my-2 rounded cursor-pointer ${
-                isActive(item.path)
-                  ? "bg-gray-400 text-black"
-                  : "hover:bg-gray-400 hover:text-black"
+              className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full ${
+                darkMode ? "dark" : ""
               }`}
             >
               <button
-                onClick={() => handleNavigation(item.path)}
+                onClick={toggleDarkMode}
                 className="flex items-center w-full"
               >
-                <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                <FontAwesomeIcon
+                  icon={darkMode ? faMoon : faSun}
+                  className="mr-2 ml-3"
+                />
                 <span
                   style={{ fontFamily: "Segoe UI" }}
                   className="mx-2 font-medium"
                 >
-                  {item.name}
+                  {darkMode ? "Mode gelap" : "Mode terang"}
                 </span>
               </button>
             </li>
-          ))}
-          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full">
-            <button onClick={logout} className="flex items-center w-full">
-              <FontAwesomeIcon icon={faRightToBracket} className="mr-2 ml-3" />
-              <span
-                style={{ fontFamily: "Segoe UI" }}
-                className="mx-2 font-medium"
-              >
-                Keluar
-              </span>
-            </button>
-          </li>
-        </ul>
+          </ul>
+        </div>
       </div>
       <div
         className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
