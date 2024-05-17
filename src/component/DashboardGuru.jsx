@@ -129,7 +129,13 @@ function Dashboard() {
                   />
                   <div>
                     <h2 className="text-4xl text-center font-medium text-white">
-                      {kbm.length}
+                      {
+                        kbm.filter(
+                          (item) =>
+                            user.find((u) => u.id === item.userId)?.username ===
+                            username
+                        ).length
+                      }
                     </h2>
                     <p className="text-lg text-white">KBM Guru</p>
                   </div>
@@ -141,8 +147,9 @@ function Dashboard() {
                     href="/kbm_guru"
                     onMouseEnter={() => handleMouseEnter(0)}
                     onMouseLeave={() => handleMouseLeave(0)}
-                    className={`text-white ${hoverStates[0] ? "hover:text-cyan-800" : ""
-                      }`}
+                    className={`text-white ${
+                      hoverStates[0] ? "hover:text-cyan-800" : ""
+                    }`}
                   >
                     Klik di sini{" "}
                     <FontAwesomeIcon
@@ -165,7 +172,6 @@ function Dashboard() {
                 </h1>
               </div>
               <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
-
                 <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
@@ -176,21 +182,31 @@ function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {kbm.length > 0 ? (
-                      kbm.slice(0, 5).map((item, index) => (
+                    {kbm
+                      .filter(
+                        (item) =>
+                          user.find((u) => u.id === item.userId)?.username ===
+                          username
+                      )
+                      .slice(0, 5)
+                      .map((item, index) => (
                         <tr
                           key={item.id}
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
                           <td className="py-2 px-4">
-                          {user.find((u) => u.id === item.userId)?.username}
+                            {user.find((u) => u.id === item.userId)?.username}
                           </td>
                           <td className="py-2 px-4">{item.jam_masuk}</td>
                           <td className="py-2 px-4">{item.jam_pulang}</td>
                         </tr>
-                      ))
-                    ) : (
+                      ))}
+                    {kbm.filter(
+                      (item) =>
+                        user.find((u) => u.id === item.userId)?.username ===
+                        username
+                    ).length === 0 && (
                       <tr>
                         <td
                           colSpan="4"
@@ -215,7 +231,13 @@ function Dashboard() {
                   />
                   <div>
                     <h2 className="text-4xl text-center font-medium text-white">
-                      {piket.length}
+                      {
+                        piket.filter(
+                          (item) =>
+                            kelas.find((k) => k.id === item.kelasId)?.guruId ===
+                            user.find((u) => u.username === username)?.id
+                        ).length
+                      }
                     </h2>
                     <p className="text-lg text-white">Piketan</p>
                   </div>
@@ -227,8 +249,9 @@ function Dashboard() {
                     href="/piketan_guru"
                     onMouseEnter={() => handleMouseEnter(1)}
                     onMouseLeave={() => handleMouseLeave(1)}
-                    className={`text-white ${hoverStates[1] ? "hover:text-cyan-800" : ""
-                      }`}
+                    className={`text-white ${
+                      hoverStates[1] ? "hover:text-cyan-800" : ""
+                    }`}
                   >
                     Klik di sini{" "}
                     <FontAwesomeIcon
@@ -262,8 +285,14 @@ function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {piket.length > 0 ? (
-                      piket.slice(0, 5).map((item, index) => (
+                    {piket
+                      .filter(
+                        (item) =>
+                          kelas.find((k) => k.id === item.kelasId)?.guruId ===
+                          user.find((u) => u.username === username)?.id
+                      )
+                      .slice(0, 5)
+                      .map((item, index) => (
                         <tr
                           key={item.id}
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
@@ -275,8 +304,12 @@ function Dashboard() {
                           <td className="py-2 px-4">{item.tanggal}</td>
                           <td className="py-2 px-4">{item.status}</td>
                         </tr>
-                      ))
-                    ) : (
+                      ))}
+                    {piket.filter(
+                      (item) =>
+                        kelas.find((k) => k.id === item.kelasId)?.guruId ===
+                        user.find((u) => u.username === username)?.id
+                    ).length === 0 && (
                       <tr>
                         <td
                           colSpan="4"
