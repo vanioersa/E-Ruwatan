@@ -283,13 +283,13 @@ function KBMGuru() {
                         <td className="py-2 px-4 text-center">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditKBM/${kbm.id}`}>
-                              <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center focus:outline-none focus:ring">
+                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </Link>
                             <button
                               onClick={() => handleDeleteKBM(kbm.id)}
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded inline-flex items-center focus:outline-none focus:ring"
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>

@@ -384,7 +384,7 @@ function PiketanGuru() {
                               onClick={() =>
                                 handleUpdatePiket(filteredPiketData[0].id)
                               }
-                              className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                              className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                             >
                               <FontAwesomeIcon icon={faEdit} />
                             </button>
@@ -392,7 +392,7 @@ function PiketanGuru() {
                               onClick={() =>
                                 handledeletePiket(filteredPiketData[0].id)
                               }
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded focus:outline-none focus:ring"
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
