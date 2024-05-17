@@ -165,11 +165,12 @@ function Profile_admin() {
               </ul>
             </div>
           </div>
+
           <div className="border-b-2 block md:flex">
             <div className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md">
               <div className="text-center flex justify-between items-center">
                 <span className="text-xl font-semibold">
-                  Profile {username}
+                  <strong>Profile {username}</strong>
                 </span>
                 <button
                   onClick={() => setEditMode(!editMode)}

@@ -31,7 +31,7 @@ function Dashboard() {
 
   useEffect(() => {
     // Simulate fetching the username from localStorage
-    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -313,8 +313,8 @@ function Dashboard() {
             </div>
           </div>
         </div>
+      <div className="mb-5" />
       </section>
-      <div className="mb-10" />
        <style>{`
         @media (max-width: 768px) {
           .bg-gray-100 {

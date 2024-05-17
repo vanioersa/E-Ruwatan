@@ -116,7 +116,7 @@ function Guru() {
     Email: g.email,
     "Jenis Kelamin": g.gender,
     Alamat: g.alamat,
-    "Nomor Telepon": isHiddenTelepon ? g.modifiedTelepon : g.telepon,
+    "Nomor Telepon": g.telepon,
     "Status Pernikahan": g.status_nikah,
   }));
 
@@ -309,12 +309,12 @@ function Guru() {
                           onDoubleClick={() => handleDoubleClick(g.telepon)}
                         >
                           {g.telepon ? (
-              isHiddenTelepon ? (
-                <span>{g.modifiedTelepon}</span>
-              ) : (
-                <span>{g.telepon.replace(/^08/, "+62 ")}</span>
-              )
-            ) : (
+                            isHiddenTelepon ? (
+                              <span>{g.modifiedTelepon}</span>
+                            ) : (
+                              <span>{g.telepon.replace(/^08/, "+62 ")}</span>
+                            )
+                          ) : (
                             <span
                               className="text-gray-400 italic text-sm whitespace-nowrap"
                               style={{
