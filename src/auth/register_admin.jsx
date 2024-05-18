@@ -57,7 +57,7 @@ function Register_admin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0">
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-gray-100">
       <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
         <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
           <div className="m-12 xl:m-16 w-full flex items-center justify-center">
