@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
+import logobinus from "../asset/logobinus.png";
+import komputer from "../asset/komputer.gif";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import logobinus from "../asset/logobinus.png";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const apiUrl = "http://localhost:4001";
 
 function Logins() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
     setPasswordType(passwordType === "password" ? "text" : "password");
   };
 
@@ -32,9 +35,7 @@ function Logins() {
       return;
     }
 
-    const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-      usernameOrEmail
-    );
+    const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(usernameOrEmail);
     const isUsername = /^(?=.*[A-Z])[A-Za-z\s]+$/.test(usernameOrEmail);
 
     if (isEmail || isUsername) {
@@ -47,7 +48,7 @@ function Logins() {
           const { userData, token } = response.data;
           localStorage.setItem("token", token);
           localStorage.setItem("username", userData.username);
-          localStorage.setItem("id" , userData.id);
+          localStorage.setItem("id", userData.id);
           localStorage.setItem("role", userData.role);
 
           Swal.fire({
@@ -101,71 +102,76 @@ function Logins() {
   };
 
   return (
-    <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
-      <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200 w-full">
-        <div className="text-center mb-8">
-          <img
-            className="mx-auto h-32 w-auto"
-            src={logobinus}
-            alt="Binus Logo"
-          />
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0">
+      <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
+        <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
+          <div className="m-12 xl:m-16 w-full flex items-center justify-center">
+            <img src={komputer} className='w-80 h-80' alt="Komputer" />
+          </div>
         </div>
-        <form className="space-y-4" onSubmit={handleLogin}>
-          <div>
-            <label
-              htmlFor="usernameOrEmail"
-              className="block text-base font-medium leading-6 text-gray-900"
-            >
-              Email atau Username
-            </label>
-            <div className="mt-1">
-              <input
-                id="usernameOrEmail"
-                type="text"
-                required
-                autoComplete="off"
-                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                value={usernameOrEmail}
-                onChange={(e) => setUsernameOrEmail(e.target.value)}
-              />
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-base font-medium text-gray-900"
-            >
-              Password
-            </label>
-            <div className="relative mt-1">
-              <input
-                id="password"
-                type={passwordType}
-                required
-                autoComplete="current-password"
-                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <span
-                onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-              >
-                <FontAwesomeIcon
-                  icon={passwordType === "password" ? faEyeSlash : faEye}
+        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+          <div className="flex flex-col items-center">
+            <div className="text-center">
+              <div className="text-center">
+                <img
+                  className="mx-auto h-32 w-auto"
+                  src={logobinus}
+                  alt="Binus Logo"
                 />
-              </span>
+              </div>
+              <h1 className="text-2xl xl:text-4xl font-extrabold text-sky-600 my-4">
+                E-RUWATAN
+              </h1>
+            </div>
+            <div className="w-full mt-5">
+              <form className="mx-auto max-w-xs flex flex-col gap-4" onSubmit={handleLogin}>
+                <div>
+                  <input
+                    id="usernameOrEmail"
+                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type="text"
+                    placeholder="Masukkan Email atau Username"
+                    value={usernameOrEmail}
+                    onChange={(e) => setUsernameOrEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <div className="relative w-full">
+                    <input
+                      id="password"
+                      className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
+                      type={passwordType}
+                      placeholder="Masukkan Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <span
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                      onClick={togglePasswordVisibility}
+                    >
+                      <FontAwesomeIcon icon={passwordVisible ? faEye : faEyeSlash} />
+                    </span>
+                  </div>
+                  <p className="text-red-500 text-xs mt-1">
+                    * Password harus terdiri 8 karakter
+                  </p>
+                </div>
+                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
+                  <FontAwesomeIcon icon={faUser} size='1x' />
+                  <span className="ml-3">Masuk</span>
+                </button>
+                {/* <p className="mt-6 text-xs text-gray-600 text-center">
+                                    Already have an account?{" "}
+                                    <a href="/">
+                                        <span className="text-blue-900 font-semibold">Sign in</span>
+                                    </a>
+                                </p> */}
+              </form>
             </div>
           </div>
-          <div className="pt-3 pb-10">
-            <button
-              type="submit"
-              className="flex w-full py-2 justify-center rounded-md bg-sky-600 px-3 py-1.5 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Masuk
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
