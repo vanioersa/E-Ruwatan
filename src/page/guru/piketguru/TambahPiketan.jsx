@@ -9,17 +9,16 @@ const TambahPiketan = () => {
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [selectedStudentIds, setSelectedStudentIds] = useState({});
+  const [selectedSiswaId, setSelectedSiswaId] = useState({});
+  const [selectedStatus, setSelectedStatus] = useState({});
   const [piketan, setPiketan] = useState({
     kelasId: "",
     tanggal: new Date().toISOString().slice(0, 10),
   });
   const navigate = useNavigate();
-  const [kelasId, setKelasId] = useState({});
 
   useEffect(() => {
     fetchKelas();
-    fetchSiswaByKelas();
   }, []);
 
   const fetchKelas = async () => {
@@ -37,18 +36,11 @@ const TambahPiketan = () => {
     }
   }, [selectedKelas]);
 
-  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
-
   const fetchSiswaByKelas = async (kelasId) => {
     try {
       if (kelasId) {
         const response = await axios.get(
-          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`
         );
         setSiswaByKelas(response.data);
       } else {
@@ -64,17 +56,8 @@ const TambahPiketan = () => {
 
     setSelectedKelas(selectedKelasId);
     if (selectedKelasId) {
-      setKelasId(selectedKelasId); // Atur nilai kelasId dengan selectedKelasId
       try {
-        const response = await axios.get(
-          `http://localhost:4001/siswa/by-kelas-id/${selectedKelasId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSiswaByKelas(response.data);
+        await fetchSiswaByKelas(selectedKelasId);
       } catch (error) {
         console.error("Gagal mengambil data Siswa: ", error);
       }
@@ -84,9 +67,13 @@ const TambahPiketan = () => {
   };
 
   const handleStudentCheckboxChange = (studentId, status) => {
-    setSelectedStudentIds((prev) => ({
+    setSelectedSiswaId((prev) => ({
       ...prev,
       [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
+    }));
+    setSelectedStatus((prev) => ({
+      ...prev,
+      [studentId]: status, // Set status for student
     }));
   };
 
@@ -100,61 +87,58 @@ const TambahPiketan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data piketan akan disimpan",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await createPiket({
-            kelasId: selectedKelas,
-            tanggal: piketan.tanggal,
-            siswaId: selectedStudentIds,
-          });
-          Swal.fire("Berhasil", "Piketan berhasil ditambahkan", "success").then(
-            () => {
-              navigate(-1);
-            }
-          );
-        } catch (error) {
-          console.error("Gagal menambahkan piketan: ", error);
-          Swal.fire(
-            "Gagal",
-            "Gagal menambahkan piketan. Silakan coba lagi.",
-            "error"
-          );
-        }
-      }
-    });
+    try {
+      await createPiket({
+        kelasId: selectedKelas,
+        tanggal: piketan.tanggal,
+        siswaId: Object.keys(selectedStatus).filter(
+          (studentId) =>
+            selectedStatus[studentId] === "sakit" ||
+            selectedStatus[studentId] === "izin" ||
+            selectedStatus[studentId] === "alpha"
+        ),
+      });
+      Swal.fire({
+        title: "Berhasil",
+        text: "Piketan berhasil ditambahkan",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        navigate(-1);
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan piketan: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal menambahkan piketan. Silakan coba lagi.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const batal = () => {
     navigate(-1);
   };
 
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
         <SidebarGuru />
       </div>
-      <div className="content-page max-h-screen container p-8 min-h-screen">
-        <h1 className="judul text-3xl font-semibold">Tambah Piketan</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
-            Tambah Piketan
-          </p>
+      <div className="content-page flex-grow p-8 min-h-screen">
+        <h1 className="text-3xl font-semibold mb-6">Tambah Piketan</h1>
+        <div className="bg-white p-5 border border-gray-200 rounded-xl shadow-lg">
+          <p className="text-lg sm:text-xl font-medium mb-4">Tambah Piketan</p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="kelasId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Kelas
                 </label>
@@ -162,7 +146,7 @@ const TambahPiketan = () => {
                   name="kelasId"
                   value={selectedKelas}
                   onChange={handleKelasChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -177,7 +161,7 @@ const TambahPiketan = () => {
               <div className="relative">
                 <label
                   htmlFor="tanggal"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Tanggal
                 </label>
@@ -186,7 +170,7 @@ const TambahPiketan = () => {
                   name="tanggal"
                   value={piketan.tanggal}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Tanggal"
                   required
                   readOnly
@@ -198,40 +182,28 @@ const TambahPiketan = () => {
               <button
                 type="button"
                 onClick={batal}
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
+                className="w-24 rounded-lg text-black border border-red-500 py-2 text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
+                className="w-24 rounded-lg text-black border border-blue-700 py-2 text-sm font-medium"
               >
                 Simpan
               </button>
             </div>
           </form>
 
-          <div className="mt-5">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">
-                Daftar Siswa
-                 {/* {selectedKelas} */}
-              </h2>
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>
+            <div className="overflow-x-auto">
               <table className="min-w-full leading-normal">
                 <thead>
                   <tr>
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Nama Siswa
                     </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      NISN
-                    </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Alamat
-                    </th>
-                    {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Kelas
-                        </th> */}
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Masuk
                     </th>
@@ -250,52 +222,43 @@ const TambahPiketan = () => {
                   {selectedKelas && siswaByKelas.length > 0 ? (
                     siswaByKelas.map((siswa) => (
                       <tr key={siswa.id}>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm whitespace-nowrap">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           {siswa.nama_siswa}
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          {siswa.nisn}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          {siswa.alamat}
-                        </td>
-                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            {siswa.kelasId.nama_kelas}
-                          </td> */}
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
                             type="checkbox"
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "masuk")
                             }
-                            checked={selectedStudentIds[siswa.id] === "masuk"}
+                            checked={selectedSiswaId[siswa.id] === "masuk"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
                             type="checkbox"
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "izin")
                             }
-                            checked={selectedStudentIds[siswa.id] === "izin"}
+                            checked={selectedSiswaId[siswa.id] === "izin"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
                             type="checkbox"
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "sakit")
                             }
-                            checked={selectedStudentIds[siswa.id] === "sakit"}
+                            checked={selectedSiswaId[siswa.id] === "sakit"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
                             type="checkbox"
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "alpha")
                             }
-                            checked={selectedStudentIds[siswa.id] === "alpha"}
+                            checked={selectedSiswaId[siswa.id] === "alpha"}
                           />
                         </td>
                       </tr>
@@ -303,8 +266,8 @@ const TambahPiketan = () => {
                   ) : (
                     <tr>
                       <td
-                        className="px-5 py-5 border-b border-gray-200 bg-white text-right"
-                        colSpan="4"
+                        className="px-5 py-5 border-b border-gray-200 bg-white text-center"
+                        colSpan="5"
                       >
                         {selectedKelas
                           ? "Data yang anda cari tidak ada"
