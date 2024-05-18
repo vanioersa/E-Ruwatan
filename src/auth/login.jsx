@@ -102,11 +102,11 @@ function Logins() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0">
-      <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-gray-100">
+      <div className="max-w-screen-xl bg-white border border-gray-300 shadow-lg sm:rounded-lg rounded-lg flex justify-center flex-1">
         <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
           <div className="m-12 xl:m-16 w-full flex items-center justify-center">
-            <img src={komputer} className='w-80 h-80' alt="Komputer" />
+            <img src={komputer} className='w-80 h-80 rounded-lg' alt="Komputer" />
           </div>
         </div>
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
@@ -158,16 +158,10 @@ function Logins() {
                     * Password harus terdiri 8 karakter
                   </p>
                 </div>
-                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
+                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none transition duration-300">
                   <FontAwesomeIcon icon={faUser} size='1x' />
                   <span className="ml-3">Masuk</span>
                 </button>
-                {/* <p className="mt-6 text-xs text-gray-600 text-center">
-                                    Already have an account?{" "}
-                                    <a href="/">
-                                        <span className="text-blue-900 font-semibold">Sign in</span>
-                                    </a>
-                                </p> */}
               </form>
             </div>
           </div>
