@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import axios from "axios";
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import logobinus from "../asset/logobinus.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import register3 from "../asset/register3.gif";
+import axios from "axios";
+import Swal from "sweetalert2";
 
-const apiUrl = "http://localhost:4001";
-
-function Register_Admin() {
+function Register_admin() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordType, setPasswordType] = useState("password");
-  const navigate = useNavigate();
 
   const togglePassword = () => {
     setPasswordType(passwordType === "password" ? "text" : "password");
@@ -22,49 +19,10 @@ function Register_Admin() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!username.match(/^[A-Za-z\s]+$/)) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Username hanya boleh berisi huruf dan spasi",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-    if (!username.charAt(0).match(/^[A-Z]$/)) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Huruf pertama username harus kapital",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-    if (password.length < 8) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Password harus terdiri dari minimal 8 karakter",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-    if (!password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])/)) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Password harus terdiri dari angka dan huruf",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
+    // Validation logic goes here
 
     try {
-      const response = await axios.post(`${apiUrl}/register`, {
+      const response = await axios.post("http://localhost:4001/register", {
         username,
         email,
         password,
@@ -77,9 +35,8 @@ function Register_Admin() {
           text: "Anda berhasil terdaftar sebagai admin.",
           timer: 2000,
           showConfirmButton: false,
-        }).then(() => {
-          navigate("/");
         });
+        // Redirect or show success message
       }
     } catch (error) {
       let errorMessage = "Registrasi gagal! Silakan coba lagi.";
@@ -100,121 +57,81 @@ function Register_Admin() {
   };
 
   return (
-    <div className="flex min-h-screen justify-center items-center px-6 py-8 lg:px-8">
-      <div className="sm:w-full sm:max-w-sm bg-slate-50 p-6 rounded-lg shadow-lg ring-1 ring-slate-200">
-        <div className="text-center mb-8">
-          <img className="mx-auto h-32 w-auto" src={logobinus} alt="binusa" />
-        </div>
-
-        <form className="space-y-4" onSubmit={handleRegister}>
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-base font-medium leading-6 text-gray-900"
-            >
-              Username
-            </label>
-            <div className="mt-2">
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                autoComplete="off"
-                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <p className="text-red-500 text-xs mt-1">
-                * Huruf pertama username harus kapital.
-              </p>
-            </div>
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0">
+      <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
+        <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
+          <div className="m-12 xl:m-16 w-full flex items-center justify-center">
+            <img src={register3} className='w-80 h-80' alt="Komputer" />
           </div>
-
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label
-                htmlFor="email"
-                className="block text-base font-medium leading-6 text-gray-900"
-              >
-                Email
-              </label>
-              <div className="mt-2">
+        </div>
+        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+          <div className="flex flex-col items-center">
+            <div className="text-center">
+              <div className="text-center ">
+                <img
+                  className="mx-auto h-32 w-auto"
+                  src={logobinus}
+                  alt="Binus Logo"
+                />
+              </div>
+              <h1 className="text-2xl xl:text-4xl font-extrabold text-sky-600 my-4">
+                E-RUWATAN
+              </h1>
+            </div>
+            <div className="w-full mt-2">
+              <form className="mx-auto max-w-xs flex flex-col gap-4" onSubmit={handleRegister}>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
+                  className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                  type="text"
+                  placeholder="Masukkan Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
-                  autoComplete="off"
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+                />
+                <p className="text-red-500 text-xs">
+                  * Password harus terdiri 8 karakter
+                </p>
+                <input
+                  className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                  type="email"
+                  placeholder="Masukkan Email atau Username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
-                <p className="text-red-500 text-xs mt-1">
-                  * Silakan masukkan email yang valid.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-base font-medium leading-6 text-gray-900"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="relative mt-2">
-                <input
-                  id="password"
-                  name="password"
                   required
-                  type={passwordType}
-                  autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 pr-10"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
-                <span
-                  onClick={togglePassword}
-                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-                >
-                  {passwordType === "password" ? (
-                    <FontAwesomeIcon icon={faEyeSlash} />
-                  ) : (
-                    <FontAwesomeIcon icon={faEye} />
-                  )}
-                </span>
-              </div>
-              <p className="text-red-500 text-xs mt-1">
-                * Password minimal 8 karakter
-              </p>
+                <p className="text-red-500 text-xs">
+                  * Password harus terdiri 8 karakter
+                </p>
+                <div className="relative w-full">
+                  <input
+                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
+                    type={passwordType}
+                    placeholder="Masukkan Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <span
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                    onClick={togglePassword}
+                  >
+                    <FontAwesomeIcon icon={passwordType === "password" ? faEyeSlash : faEye} />
+                  </span>
+                </div>
+                <p className="text-red-500 text-xs">
+                  * Password harus terdiri 8 karakter
+                </p>
+                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
+                  <FontAwesomeIcon icon={faUserPlus} size='1x' />
+                  <span className="ml-3">Daftar</span>
+                </button>
+              </form>
             </div>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              className="w-full bg-sky-600 px-3 py-2 text-sm font-semibold text-white rounded shadow-sm hover:bg-sky-500 focus:ring-2 focus:ring-inset focus:ring-cyan-600"
-            >
-              Daftar
-            </button>
-          </div>
-        </form>
-
-        {/* <p className="mt-6 text-center text-sm text-gray-500">
-          Sudah Punya Akun?
-          <a
-            href="/"
-            className="mx-1 font-semibold leading-6 text-sky-600 hover:text-blue-600"
-          >
-            Masuk
-          </a>
-        </p> */}
+        </div>
       </div>
     </div>
   );
 }
 
-export default Register_Admin;
+export default Register_admin;
