@@ -15,7 +15,7 @@ function Dashboard() {
   const [kelas, setkelas] = useState([]);
   const [guru, setGuru] = useState([]);
   const [username, setUsername] = useState("");
-  const [hoverStates, setHoverStates] = useState([false, false, false]); // Array to track hover state for each card
+  const [hoverStates, setHoverStates] = useState([false, false, false]);
 
   const handleMouseEnter = (index) => {
     const updatedHoverStates = [...hoverStates];
@@ -171,9 +171,7 @@ function Dashboard() {
 
             {/* Kartu ketiga */}
             <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
-              <div
-                className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
-              >
+              <div className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}>
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
                     icon={faDoorOpen}

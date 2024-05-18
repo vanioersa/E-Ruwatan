@@ -180,25 +180,14 @@ const TambahKBM = () => {
             Tambah KBM Guru
           </p>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-            <div className="relative">
-                <label
-                  htmlFor="userId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Guru
-                </label>
-                <input
+          <input
+                type="hidden"
                   id="userId"
                   name="userId"
                   value={users.find((user) => user.id === kbm.userId)?.username ||
                     "No User Info"}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  readOnly
-                  disabled
                 />
-              </div>
-
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -223,6 +212,25 @@ const TambahKBM = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="materi"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+                >
+                  Materi
+                </label>
+                <input
+                  type="text"
+                  name="materi"
+                  value={kbm.materi}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Materi"
+                  required
+                  autoComplete="off"
+                />
               </div>
             </div>
 
@@ -269,25 +277,7 @@ const TambahKBM = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-                <label
-                  htmlFor="materi"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Materi
-                </label>
-                <input
-                  type="text"
-                  name="materi"
-                  value={kbm.materi}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Materi"
-                  required
-                  autoComplete="off"
-                />
-              </div>
+            {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2"> */}
               <div className="relative">
                 <label
                   htmlFor="keterangan"
@@ -295,10 +285,11 @@ const TambahKBM = () => {
                 >
                   Keterangan
                 </label>
-                <input
+                <textarea
                   type="text"
                   id="keterangan"
                   name="keterangan"
+                  style={{maxHeight: '100px'}}
                   value={kbm.keterangan}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -306,7 +297,7 @@ const TambahKBM = () => {
                   autoComplete="off"
                 />
               </div>
-            </div>
+            {/* </div> */}
 
             <div className="flex justify-between mt-6">
               <button

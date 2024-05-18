@@ -15,7 +15,6 @@ import { getAllKbms, deleteKbm } from "./api_kbm";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { utils } from "xlsx";
-// import { write } from "xlsx";
 import * as xlsx from "xlsx";
 
 function KBMGuru() {
@@ -26,6 +25,7 @@ function KBMGuru() {
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const itemsPerPage = 10;
+  const storedUsername = localStorage.getItem("username");
 
   // Ambil data KBM Guru dari API
   useEffect(() => {
@@ -102,17 +102,28 @@ function KBMGuru() {
     const namaGuru = users.find((u) => u.id === kbm.userId)?.username;
     const kelass = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas;
+
+    const isNamaGuruMatch = namaGuru
+      ? namaGuru.toLowerCase().includes(searchTerm.toLowerCase())
+      : false;
+
+    const isKelasMatch =
+      kelass &&
+      namaKelas &&
+      `${kelass} - ${namaKelas}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+    const isMateriMatch = kbm.materi
+      ? kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())
+      : false;
+
+    const isKeteranganMatch = kbm.keterangan
+      ? kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase())
+      : false;
+
     return (
-      (namaGuru && namaGuru.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelass &&
-        namaKelas &&
-        `${kelass} - ${namaKelas}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())) ||
-      (kbm.materi &&
-        kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kbm.keterangan &&
-        kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase()))
+      isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch
     );
   });
 
@@ -121,13 +132,17 @@ function KBMGuru() {
     setCurrentPage(selected);
   };
 
-  const dataToExport = filteredKBMGuru.map((kbm) => ({
-    "nama guru": users.find((u) => u.id === kbm.userId)?.username,
-    Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}`,
-    "jam masuk": kbm.jam_masuk,
-    "jam pulang": kbm.jam_pulang,
-    materi: kbm.materi,
-    keterangan: kbm.keterangan,
+  const dataToExport = filteredKBMGuru
+  .filter((kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername)
+  .map((kbm) => ({
+    "Nama Guru": users.find((u) => u.id === kbm.userId)?.username,
+    Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas
+    }`,
+    "Jam Masuk": kbm.jam_masuk,
+    "Jam Pulang": kbm.jam_pulang,
+    Materi: kbm.materi,
+    Keterangan: kbm.keterangan,
   }));
 
   const exportToXlsx = () => {
@@ -237,10 +252,16 @@ function KBMGuru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Guru</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Nama Guru
+                  </th>
                   <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Jam Masuk</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Jam Selesai</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Jam Masuk
+                  </th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                    Jam Selesai
+                  </th>
                   <th className="py-2 px-4 text-left">Materi</th>
                   <th className="py-2 px-4 text-left">Keterangan</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
@@ -253,57 +274,83 @@ function KBMGuru() {
                       currentPage * itemsPerPage,
                       (currentPage + 1) * itemsPerPage
                     )
-                    .map((kbm, index) => (
-                      <tr
-                        key={kbm.id}
-                        className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      >
-                        <td className="py-2 px-4">
-                          {currentPage * itemsPerPage + index + 1}
-                        </td>
-                        <td className="py-2 px-4">
-                          {users.find((u) => u.id === kbm.userId)?.username}
-                        </td>
-                        <td className="py-2 px-4 whitespace-nowrap">
-                        {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
-                          {kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}
-                        </td>
-                        <td className="py-2 px-4">{kbm.jam_masuk}</td>
-                        <td className="py-2 px-4">{kbm.jam_pulang}</td>
-                        <td className="py-2 px-4">{kbm.materi}</td>
-                        <td className="py-2 px-4" style={{ maxWidth: "200px" }}>
-                          {kbm.keterangan ? (
-                            <span>{kbm.keterangan}</span>
-                          ) : (
-                            <span className="text-gray-400 italic">
-                              Keterangan belum ditambahkan
-                            </span>
-                          )}{" "}
-                        </td>
-                        <td className="py-2 px-4 text-center">
-                          <div className="flex justify-center gap-2">
-                            <Link to={`/EditKBM/${kbm.id}`}>
-                              <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                                <FontAwesomeIcon icon={faEdit} />
+                    .map((kbm, index) => {
+                      const username = users.find(
+                        (u) => u.id === kbm.userId
+                      )?.username;
+                      if (username !== storedUsername) {
+                        return null;
+                      }
+                      return (
+                        <tr
+                          key={kbm.id}
+                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
+                        >
+                          <td className="py-2 px-4">
+                            {currentPage * itemsPerPage + index + 1}
+                          </td>
+                          <td className="py-2 px-4">
+                            {users.find((u) => u.id === kbm.userId)?.username}
+                          </td>
+                          <td className="py-2 px-4 whitespace-nowrap">
+                            {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
+                            {
+                              kelas.find((k) => k.id === kbm.kelasId)
+                                ?.nama_kelas
+                            }
+                          </td>
+                          <td className="py-2 px-4">{kbm.jam_masuk}</td>
+                          <td className="py-2 px-4">{kbm.jam_pulang}</td>
+                          <td className="py-2 px-4">{kbm.materi}</td>
+                          <td
+                            className="py-2 px-4"
+                            style={{ maxWidth: "200px" }}
+                          >
+                            {kbm.keterangan ? (
+                              <span>{kbm.keterangan}</span>
+                            ) : (
+                              <span className="text-gray-400 italic">
+                                Keterangan belum ditambahkan
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            <div className="flex justify-center gap-2">
+                              <Link to={`/EditKBM/${kbm.id}`}>
+                                <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                              </Link>
+                              <button
+                                onClick={() => handleDeleteKBM(kbm.id)}
+                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
                               </button>
-                            </Link>
-                            <button
-                              onClick={() => handleDeleteKBM(kbm.id)}
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                 ) : (
                   <tr>
                     <td colSpan="8" className="text-center py-4">
-                      Tidak ada data kbm yang ditemukan
+                      Tidak ada data KBM yang ditemukan
                     </td>
                   </tr>
                 )}
+                {filteredKBMGuru.length > 0 &&
+                  filteredKBMGuru.every(
+                    (kbm) =>
+                      users.find((u) => u.id === kbm.userId)?.username !==
+                      storedUsername
+                  ) && (
+                    <tr>
+                      <td colSpan="8" className="text-center py-4">
+                        Data KBM tidak tersedia untuk pengguna ini
+                      </td>
+                    </tr>
+                  )}
               </tbody>
             </table>
           </div>

@@ -11,6 +11,7 @@ import {
 
 function Dashboard() {
   const [piket, setPiket] = useState([]);
+  const [Penilaian, setPenilaian] = useState([]);
   const [kbm, setKbm] = useState([]);
   const [user, setUser] = useState([]);
   const [kelas, setKelas] = useState([]);
@@ -30,8 +31,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    // Simulate fetching the username from localStorage
-    const storedUsername = localStorage.getItem("username"); // Assume 'username' is saved in localStorage on login
+    const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -47,6 +47,18 @@ function Dashboard() {
       }
     };
     fetchPiket();
+  }, []);
+
+  useEffect(() => {
+    const fetchPenilaian = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/panilaian/all");
+        setPenilaian(response.data);
+      } catch (error) {
+        console.error("Failed to fetch Penilaian: ", error);
+      }
+    };
+    fetchPenilaian();
   }, []);
 
   useEffect(() => {
@@ -117,10 +129,10 @@ function Dashboard() {
           </div>
         )}
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:my-0">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
-            {/* Kartu pertama (KBM Guru) */}
-            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/2">
+            {/* Kartu pertama */}
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
@@ -158,8 +170,90 @@ function Dashboard() {
                   </a>
                 </div>
               </div>
+            </div>
 
-              {/* Tabel */}
+            {/* Kartu kedua */}
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faUserGroup}
+                    className="inline-block w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {
+                        piket.filter(
+                          (item) =>
+                            kelas.find((k) => k.id === item.kelasId)?.guruId ===
+                            user.find((u) => u.username === username)?.id
+                        ).length
+                      }
+                    </h2>
+                    <p className="text-lg text-white">Piketan</p>
+                  </div>
+                </div>
+                <hr className="border-white" />
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/piketan_guru"
+                    onMouseEnter={() => handleMouseEnter(1)}
+                    onMouseLeave={() => handleMouseLeave(1)}
+                    className={`text-white ${
+                      hoverStates[1] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Kartu ketiga */}
+            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+              <div
+                className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
+              >
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <FontAwesomeIcon
+                    icon={faUserGroup}
+                    className="inline-block w-12 h-12 text-white mr-4"
+                  />
+                  <div>
+                    <h2 className="text-4xl text-center font-medium text-white">
+                      {Penilaian.length}
+                    </h2>
+                    <p className="text-lg text-white">Penilaian</p>
+                  </div>
+                </div>
+                <hr className="border-white" />
+                <div className="py-2 text-center font-medium">
+                  <a
+                    style={{ cursor: "default" }}
+                    href="/penilaian"
+                    onMouseEnter={() => handleMouseEnter(2)}
+                    onMouseLeave={() => handleMouseLeave(2)}
+                    className={`text-white ${
+                      hoverStates[2] ? "hover:text-cyan-800" : ""
+                    }`}
+                  >
+                    Klik di sini{" "}
+                    <FontAwesomeIcon
+                      icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
+            {/* Tabel Guru */}
+            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="bg-white py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
@@ -168,13 +262,13 @@ function Dashboard() {
                     borderRadius: "8px",
                   }}
                 >
-                  Tabel KBM
+                  Tabel KBM Guru
                 </h1>
               </div>
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
+                <table className="w-full divide-y divide-gray-200">
                   <thead>
-                    <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                    <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
                       <th className="py-2 px-4 text-left">Nama Guru</th>
                       <th className="py-2 px-4 text-left">Jam Masuk</th>
@@ -221,47 +315,8 @@ function Dashboard() {
               </div>
             </div>
 
-            {/* Kartu kedua (Piketan) */}
-            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/2">
-              <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
-                <div className="px-6 py-6 flex items-center justify-between">
-                  <FontAwesomeIcon
-                    icon={faUserGroup}
-                    className="inline-block w-12 h-12 text-white mr-4"
-                  />
-                  <div>
-                    <h2 className="text-4xl text-center font-medium text-white">
-                      {
-                        piket.filter(
-                          (item) =>
-                            kelas.find((k) => k.id === item.kelasId)?.guruId ===
-                            user.find((u) => u.username === username)?.id
-                        ).length
-                      }
-                    </h2>
-                    <p className="text-lg text-white">Piketan</p>
-                  </div>
-                </div>
-                <hr className="border-white" />
-                <div className="py-2 text-center font-medium">
-                  <a
-                    style={{ cursor: "default" }}
-                    href="/piketan_guru"
-                    onMouseEnter={() => handleMouseEnter(1)}
-                    onMouseLeave={() => handleMouseLeave(1)}
-                    className={`text-white ${
-                      hoverStates[1] ? "hover:text-cyan-800" : ""
-                    }`}
-                  >
-                    Klik di sini{" "}
-                    <FontAwesomeIcon
-                      icon={hoverStates[1] ? faRightLong : faCircleArrowRight}
-                    />
-                  </a>
-                </div>
-              </div>
-
-              {/* Tabel */}
+            {/* Tabel Siswa */}
+            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="bg-white py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
@@ -273,11 +328,10 @@ function Dashboard() {
                   Tabel Piketan
                 </h1>
               </div>
-
-              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200 shadow-lg">
-                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
+                <table className="w-full divide-y divide-gray-200">
                   <thead>
-                    <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                    <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
                       <th className="py-2 px-4 text-left">Nama Guru</th>
                       <th className="py-2 px-4 text-left">Tanggal</th>
@@ -325,7 +379,15 @@ function Dashboard() {
             </div>
           </div>
         </div>
+        <div className="mb-5" />
       </section>
+      <style>{`
+        @media (max-width: 768px) {
+          .bg-gray-100 {
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+          }
+        }
+      `}</style>
     </div>
   );
 }

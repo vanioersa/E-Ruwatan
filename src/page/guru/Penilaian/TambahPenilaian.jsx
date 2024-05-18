@@ -9,8 +9,7 @@ const TambahPenilaian = () => {
   const [selectedKelas, setSelectedKelas] = useState("");
   const [siswaByKelas, setSiswaByKelas] = useState([]);
   const [kelas, setKelas] = useState([]);
-  const [kelasId, setKelasId] = useState({});
-  const [selectedStudentIds, setSelectedStudentIds] = useState({});
+  const [selectedStudentId, setSelectedStudentId] = useState("");
   const navigate = useNavigate();
   const [penilaian, setPenilaian] = useState({
     kelasId: "",
@@ -53,7 +52,6 @@ const TambahPenilaian = () => {
 
     setSelectedKelas(selectedKelasId);
     if (selectedKelasId) {
-      setKelasId(selectedKelasId); // Atur nilai kelasId dengan selectedKelasId
       try {
         const response = await axios.get(
           `http://localhost:4001/siswa/by-kelas-id/${selectedKelasId}`,
@@ -82,8 +80,8 @@ const TambahPenilaian = () => {
 
   useEffect(() => {
     fetchKelas();
-    fetchSiswaByKelas();
-  }, []);
+    fetchSiswaByKelas(selectedKelas);
+  }, [selectedKelas]);
 
   const batal = () => {
     navigate(-1);
@@ -96,7 +94,7 @@ const TambahPenilaian = () => {
 
     const dataNilai = {
       kelasId: selectedKelas,
-      siswaId: selectedStudentIds,
+      siswaId: selectedStudentId,
       deskripsi: penilaian.deskripsi,
       nilai: penilaian.nilai,
     };
@@ -166,20 +164,29 @@ const TambahPenilaian = () => {
                 >
                   Nama Siswa
                 </label>
-                <select
-                  id="siswaId"
-                  name="siswaId"
-                  onChange={(e) => setSelectedStudentIds(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Pilih Siswa</option>
-                  {siswaByKelas.map((siswa) => (
-                    <option key={siswa.id} value={siswa.id}>
-                      {siswa.nama_siswa}
-                    </option>
-                  ))}
-                </select>
+                {siswaByKelas.length > 0 ? (
+                  <select
+                    id="siswaId"
+                    name="siswaId"
+                    onChange={(e) => setSelectedStudentId(e.target.value)}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    required
+                  >
+                    <option value="">Pilih Siswa</option>
+                    {siswaByKelas.map((siswa) => (
+                      <option key={siswa.id} value={siswa.id}>
+                        {siswa.nama_siswa}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value="data siswa tidak ditemukan"
+                    readOnly
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
+                  />
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -215,7 +222,6 @@ const TambahPenilaian = () => {
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="deskripsi"
-                  // required
                   autoComplete="off"
                 />
               </div>

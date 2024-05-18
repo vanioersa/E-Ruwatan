@@ -22,7 +22,6 @@ function Guru() {
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
   const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
-  const [originalTelepon, setOriginalTelepon] = useState("");
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -198,7 +197,6 @@ function Guru() {
   const handleDoubleClick = (telepon) => {
     if (isHiddenTelepon) {
       setIsHiddenTelepon(false);
-      setOriginalTelepon(telepon.replace(/^08/, "+62 "));
     } else {
       setIsHiddenTelepon(true);
     }
