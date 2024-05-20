@@ -406,10 +406,7 @@ function PiketanGuru() {
                 {Object.keys(piketByDateAndClass).length === 0 &&
                   searchTerm.length === 0 && (
                     <tr>
-                      <td
-                        colSpan="8"
-                        className="text-center py-4"
-                      >
+                      <td colSpan="8" className="text-center py-4">
                         Tidak ada data piketan yang ditemukan
                       </td>
                     </tr>
