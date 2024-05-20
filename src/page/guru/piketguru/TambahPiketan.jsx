@@ -123,7 +123,6 @@ const TambahPiketan = () => {
     navigate(-1);
   };
 
-
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64">
