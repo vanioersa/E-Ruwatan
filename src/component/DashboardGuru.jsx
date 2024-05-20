@@ -9,7 +9,7 @@ import {
   faCircleArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Dashboard() {
+function DashboardGuru() {
   const [piket, setPiket] = useState([]);
   const [Penilaian, setPenilaian] = useState([]);
   const [kbm, setKbm] = useState([]);
@@ -270,9 +270,9 @@ function Dashboard() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-left">Nama Guru</th>
-                      <th className="py-2 px-4 text-left">Jam Masuk</th>
-                      <th className="py-2 px-4 text-left">Jam Keluar</th>
+                      <th className="py-2 px-4 text-center">Nama Guru</th>
+                      <th className="py-2 px-4 text-center">Jam Masuk</th>
+                      <th className="py-2 px-4 text-center">Jam Keluar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -289,11 +289,11 @@ function Dashboard() {
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center">
                             {user.find((u) => u.id === item.userId)?.username}
                           </td>
-                          <td className="py-2 px-4">{item.jam_masuk}</td>
-                          <td className="py-2 px-4">{item.jam_pulang}</td>
+                          <td className="py-2 px-4 text-center">{item.jam_masuk}</td>
+                          <td className="py-2 px-4 text-center">{item.jam_pulang}</td>
                         </tr>
                       ))}
                     {kbm.filter(
@@ -333,9 +333,9 @@ function Dashboard() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-left">Nama Guru</th>
-                      <th className="py-2 px-4 text-left">Tanggal</th>
-                      <th className="py-2 px-4 text-left">Status</th>
+                      <th className="py-2 px-4 text-center">Nama Guru</th>
+                      <th className="py-2 px-4 text-center">Tanggal</th>
+                      <th className="py-2 px-4 text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -352,11 +352,11 @@ function Dashboard() {
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center">
                             {getNamaKelas(item.kelasId)}
                           </td>
-                          <td className="py-2 px-4">{item.tanggal}</td>
-                          <td className="py-2 px-4">{item.status}</td>
+                          <td className="py-2 px-4 text-center">{item.tanggal}</td>
+                          <td className="py-2 px-4 text-center">{item.status}</td>
                         </tr>
                       ))}
                     {piket.filter(
@@ -392,4 +392,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default DashboardGuru;

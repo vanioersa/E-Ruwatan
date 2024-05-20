@@ -110,7 +110,7 @@ function Logins() {
             <img src={komputer} className='w-80 h-80 rounded-lg' alt="Komputer" />
           </div>
         </div>
-        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+        <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-28">
           <div className="flex flex-col items-center">
             <div className="text-center">
               <div className="text-center">
@@ -124,14 +124,15 @@ function Logins() {
                 E-RUWATAN
               </h1>
             </div>
-            <div className="w-full mt-5">
-              <form className="mx-auto max-w-xs flex flex-col gap-4" onSubmit={handleLogin}>
+            <div className="w-full mt-10">
+              <form className="mx-auto max-w-xl md:max-w-full md:w-full flex flex-col gap-5" onSubmit={handleLogin}>
                 <div>
                   <input
                     id="usernameOrEmail"
                     className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                     type="text"
                     placeholder="Masukkan Email atau Username"
+                    autoComplete="off"
                     value={usernameOrEmail}
                     onChange={(e) => setUsernameOrEmail(e.target.value)}
                     required
@@ -144,6 +145,7 @@ function Logins() {
                       className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
                       type={passwordType}
                       placeholder="Masukkan Password"
+                      autoComplete="off"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -159,7 +161,7 @@ function Logins() {
                     * Password harus terdiri 8 karakter
                   </p>
                 </div>
-                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none transition duration-300">
+                <button className="mt-3 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-3 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none transition duration-300">
                   <FontAwesomeIcon icon={faUser} size='1x' />
                   <span className="ml-3">Masuk</span>
                 </button>

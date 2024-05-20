@@ -303,6 +303,10 @@ const TambahGuru = () => {
                   <option value="">Pilih Jenis Kelamin</option>
                   <option value="Laki-laki">Laki-laki</option>
                   <option value="Perempuan">Perempuan</option>
+                  {/* <option value="Manusia">Manusia</option>
+                  <option value="Hewan">Hewan</option>
+                  <option value="Tuhan">Tuhan</option>
+                  <option value="Powor rangger">Powor rangger</option> */}
                 </select>
               </div>
               <div className="relative">
@@ -324,6 +328,8 @@ const TambahGuru = () => {
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
                   <option value="Cerai">Cerai</option>
+                  {/* <option value="Perjodohan">Perjodohan</option>
+                  <option value="Kawin lari">Kawin lari</option> */}
                 </select>
               </div>
             </div>

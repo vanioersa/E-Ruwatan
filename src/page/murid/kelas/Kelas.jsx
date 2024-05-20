@@ -81,10 +81,10 @@ function Kelas() {
   }, []);
 
   // Function to delete a Kelas
-  const handleDelete = async (id, kelasName) => {
+  const handleDelete = async (id, namaKelas, kelasName) => {
     Swal.fire({
       title: "Konfirmasi",
-      text: `Anda yakin ingin menghapus data kelas ${kelasName}?`,
+      text: `Anda yakin ingin menghapus data kelas ${kelasName} ${namaKelas}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Ya",
@@ -96,7 +96,7 @@ function Kelas() {
           setKelas((prevKelas) => prevKelas.filter((k) => k.id !== id));
           Swal.fire({
             title: "Berhasil",
-            text: `Data kelas ${kelasName} berhasil dihapus`,
+            text: `Data kelas ${kelasName} ${namaKelas} berhasil dihapus`,
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
@@ -105,7 +105,7 @@ function Kelas() {
           console.error("Failed to delete Kelas: ", error);
           Swal.fire({
             title: "Gagal",
-            text: `Gagal menghapus kelas ${kelasName}`,
+            text: `Gagal menghapus kelas ${kelasName} ${namaKelas}`,
             icon: "error",
             showConfirmButton: false,
             timer: 2000,
@@ -121,10 +121,9 @@ function Kelas() {
 
   const filteredKelas = kelas.filter((k) => {
     return (
-      k.nama_kelas &&
-      k.nama_kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      k.kelas &&
-      k.kelas.toLowerCase().includes(searchTerm.toLowerCase())
+      (k.nama_kelas &&
+        k.nama_kelas.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (k.kelas && k.kelas.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
 
@@ -250,11 +249,46 @@ function Kelas() {
     });
   };
 
+  // const handleExportById = (kelas) => {
+  //   const dataToExport = [
+  //     {
+  //       No: 1,
+  //       "Nama Kelas": kelas.nama_kelas,
+  //       Kelas: kelas.kelas,
+  //     },
+  //   ];
+  //   const workbook = XLSX.utils.book_new();
+  //   const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  //   const excelBuffer = XLSX.write(workbook, {
+  //     bookType: "xlsx",
+  //     type: "array",
+  //   });
+  //   const excelData = new Blob([excelBuffer], {
+  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //   });
+  //   const excelUrl = URL.createObjectURL(excelData);
+
+  //   const link = document.createElement("a");
+  //   link.href = excelUrl;
+  //   link.download = `data_kelas_${kelas.kelas}-${kelas.nama_kelas}.xlsx`;
+  //   link.click();
+
+  //   Swal.fire({
+  //     title: "Berhasil",
+  //     text: `Data kelas ${kelas.kelas} ${kelas.nama_kelas} berhasil diekspor`,
+  //     icon: "success",
+  //     showConfirmButton: false,
+  //     timer: 2000,
+  //   });
+  // };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
-        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${isModalOpen ? "bg-gray-100" : ""
-          }`}
+        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${
+          isModalOpen ? "bg-gray-100" : ""
+        }`}
         style={{
           backgroundColor: isModalOpen ? "#F3F4F6" : "",
         }}
@@ -274,7 +308,7 @@ function Kelas() {
             />
             <div className="flex">
               <Link to="/TambahKelas">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Kelas
                 </button>
               </Link>
@@ -291,8 +325,10 @@ function Kelas() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Nama Kelas</th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
+                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Nama Kelas
+                  </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -308,8 +344,8 @@ function Kelas() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4">{k.nama_kelas}</td>
-                        <td className="py-2 px-4">{k.kelas}</td>
+                        <td className="py-2 px-4 text-center">{k.kelas}</td>
+                        <td className="py-2 px-4 text-center">{k.nama_kelas}</td>
                         <td className="py-2 px-4 text-center">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditKelas/${k.id}`}>
@@ -318,11 +354,19 @@ function Kelas() {
                               </button>
                             </Link>
                             <button
-                              onClick={() => handleDelete(k.id, k.nama_kelas)}
+                              onClick={() =>
+                                handleDelete(k.id, k.nama_kelas, k.kelas)
+                              }
                               className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
+                            {/* <button
+                              onClick={() => handleExportById(k)}
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                            >
+                              <FontAwesomeIcon icon={faFileExport} /> Export
+                            </button> */}
                           </div>
                         </td>
                       </tr>

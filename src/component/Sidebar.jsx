@@ -13,7 +13,7 @@ import {
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
 
-const Sidebar = () => {
+const SidebarAdmin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -128,7 +128,7 @@ const Sidebar = () => {
               tabIndex="-1"
             >
               <a
-                href="/Profile_admin"
+                href="/profile_admin"
                 className="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
                 tabIndex="-1"
@@ -143,7 +143,7 @@ const Sidebar = () => {
                 tabIndex="-1"
                 id="user-menu-item-2"
               >
-                keluar
+                Keluar
               </a>
             </div>
           )}
@@ -160,9 +160,9 @@ const Sidebar = () => {
         <ul className="mt-6 text-xl mx-2 text-gray-600">
           {[
             { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
-            { icon: faChalkboardTeacher, name: "Guru", path: "/Guru" },
-            { icon: faUserGroup, name: "Siswa", path: "/Siswa" },
-            { icon: faDoorOpen, name: "Kelas", path: "/Kelas" },
+            { icon: faChalkboardTeacher, name: "Guru", path: "/guru" },
+            { icon: faUserGroup, name: "Siswa", path: "/siswa" },
+            { icon: faDoorOpen, name: "Kelas", path: "/kelas" },
           ].map((item, index) => (
             <li
               key={index}
@@ -186,7 +186,7 @@ const Sidebar = () => {
               </button>
             </li>
           ))}
-          {/* <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full">
+          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full">
             <button onClick={logout} className="flex items-center w-full">
               <FontAwesomeIcon icon={faRightToBracket} className="mr-2 ml-3" />
               <span
@@ -196,7 +196,7 @@ const Sidebar = () => {
                 Keluar
               </span>
             </button>
-          </li> */}
+          </li>
         </ul>
       </div>
       <div
@@ -208,4 +208,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarAdmin;

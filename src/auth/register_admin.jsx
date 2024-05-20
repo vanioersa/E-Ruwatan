@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faEyeSlash,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import register3 from "../asset/register3.gif";
 import axios from "axios";
@@ -61,10 +65,10 @@ function Register_admin() {
       <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
         <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
           <div className="m-12 xl:m-16 w-full flex items-center justify-center">
-            <img src={register3} className='w-80 h-80' alt="Komputer" />
+            <img src={register3} className="w-80 h-80" alt="Komputer" />
           </div>
         </div>
-        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+        <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-16">
           <div className="flex flex-col items-center">
             <div className="text-center">
               <div className="text-center ">
@@ -78,30 +82,37 @@ function Register_admin() {
                 E-RUWATAN
               </h1>
             </div>
-            <div className="w-full mt-2">
-              <form className="mx-auto max-w-xs flex flex-col gap-4" onSubmit={handleRegister}>
-                <input
-                  className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                  type="text"
-                  placeholder="Masukkan Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-                <p className="text-red-500 text-xs">
-                  * Password harus terdiri 8 karakter
-                </p>
-                <input
-                  className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                  type="email"
-                  placeholder="Masukkan Email atau Username"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <p className="text-red-500 text-xs">
-                  * Password harus terdiri 8 karakter
-                </p>
+            <div className="w-full mt-10">
+              <form
+                className="mx-auto max-w-xl md:max-w-full md:w-2/3 flex flex-col gap-4"
+                onSubmit={handleRegister}
+              >
+                <div>
+                  <input
+                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type="text"
+                    placeholder="Masukkan Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                  <p className="text-red-500 text-xs mt-1">
+                    * Username harus diisi
+                  </p>
+                </div>
+                <div>
+                  <input
+                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type="email"
+                    placeholder="Masukkan Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <p className="text-red-500 text-xs mt-1">
+                    * Email harus diisi
+                  </p>
+                </div>
                 <div className="relative w-full">
                   <input
                     className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
@@ -114,15 +125,18 @@ function Register_admin() {
                   <span
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
                     onClick={togglePassword}
+                    style={{ top: '37%', transform: 'translateY(-50%)' }}
                   >
-                    <FontAwesomeIcon icon={passwordType === "password" ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon
+                      icon={passwordType === "password" ? faEyeSlash : faEye}
+                    />
                   </span>
+                  <p className="text-red-500 text-xs mt-1">
+                    * Password harus terdiri dari 8 karakter
+                  </p>
                 </div>
-                <p className="text-red-500 text-xs">
-                  * Password harus terdiri 8 karakter
-                </p>
-                <button className="mt-5 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-4 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
-                  <FontAwesomeIcon icon={faUserPlus} size='1x' />
+                <button className="mt-8 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-3 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
+                  <FontAwesomeIcon icon={faUserPlus} size="1x" />
                   <span className="ml-3">Daftar</span>
                 </button>
               </form>

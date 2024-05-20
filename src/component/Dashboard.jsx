@@ -171,7 +171,9 @@ function Dashboard() {
 
             {/* Kartu ketiga */}
             <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
-              <div className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}>
+              <div
+                className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
+              >
                 <div className="px-6 py-6 flex items-center justify-between">
                   <FontAwesomeIcon
                     icon={faDoorOpen}
@@ -226,6 +228,7 @@ function Dashboard() {
                       <th className="py-2 px-4 text-left">No.</th>
                       <th className="py-2 px-4 text-center">Nama Guru</th>
                       <th className="py-2 px-4 text-center">Email</th>
+                      <th className="py-2 px-4 text-center">Nomor Telepon</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -241,6 +244,15 @@ function Dashboard() {
                           </td>
                           <td className="py-2 px-4 text-center">
                             {item.email}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {item.telepon ? (
+                              item.telepon
+                            ) : (
+                              <span className="text-gray-400 italic text-sm">
+                                Data kosong
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))
@@ -290,9 +302,13 @@ function Dashboard() {
                           className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center">{item.nama_siswa}</td>
+                          <td className="py-2 px-4 text-center">
+                            {item.nama_siswa}
+                          </td>
                           <td className="py-2 px-4 text-center">{item.nisn}</td>
-                          <td className="py-2 px-4 text-center">{item.tempat}</td>
+                          <td className="py-2 px-4 text-center">
+                            {item.tempat}
+                          </td>
                         </tr>
                       ))
                     ) : (
@@ -311,9 +327,9 @@ function Dashboard() {
             </div>
           </div>
         </div>
-      <div className="mb-5" />
+        <div className="mb-5" />
       </section>
-       <style>{`
+      <style>{`
         @media (max-width: 768px) {
           .bg-gray-100 {
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
