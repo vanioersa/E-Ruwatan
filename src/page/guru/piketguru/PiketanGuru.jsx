@@ -27,68 +27,43 @@ function PiketanGuru() {
   const [showModal, setShowModal] = useState(false);
   const [filteredDate, setFilteredDate] = useState("");
   const [piketByDateAndClass, setPiketByDateAndClass] = useState({});
+  const [excel, setExcel] = useState("");
+  const [showImportModal, setShowImportModal] = useState(false);
 
-  const handleUpdatePiket = (id) => {
-    // Navigate to the edit page
-    window.location.href = `/EditPiketan/${id}`;
+  const openImportModal = () => {
+    setShowImportModal(true);
   };
 
-  const handledeletePiket = async (id) => {
-    try {
-      // Call the delete function from your services/api
-      await deletePiket(id);
-      // Refresh the list or remove the item from the state
-      console.log("Piket berhasil dihapus!!");
-    } catch (error) {
-      console.error("delete error:", error);
-    }
+  const closeImportModal = () => {
+    setShowImportModal(false);
   };
+
 
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
-  const handleModalOpen = () => {
-    setShowModal(true);
-  };
+  const fetchData = async () => {
+    try {
+      const response = await getAllPiket();
+      setData(response);
 
-  const handleModalClose = () => {
-    setShowModal(false);
-    window.location.reload();
-  };
-
-  const handleFilterPDF = () => {
-    if (filteredDate) {
-      navigate(`/pdf?date=${filteredDate}`);
-    } else {
-      navigate("/pdf");
+      // Organize data by date and class
+      const groupedData = {};
+      response.forEach((item) => {
+        const key = `${item.tanggal}_${item.kelasId}`;
+        if (groupedData[key]) {
+          groupedData[key].push(item);
+        } else {
+          groupedData[key] = [item];
+        }
+      });
+      setPiketByDateAndClass(groupedData);
+    } catch (error) {
+      console.error("Failed to fetch Piketan Guru: ", error);
     }
   };
 
-  const handleFilterDate = (event) => {
-    setFilteredDate(event.target.value);
-  };
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getAllPiket();
-        setData(response);
-
-        // Organize data by date and class
-        const groupedData = {};
-        response.forEach((item) => {
-          const key = `${item.tanggal}_${item.kelasId}`;
-          if (groupedData[key]) {
-            groupedData[key].push(item);
-          } else {
-            groupedData[key] = [item];
-          }
-        });
-        setPiketByDateAndClass(groupedData);
-      } catch (error) {
-        console.error("Failed to fetch Piketan Guru: ", error);
-      }
-    };
     fetchData();
   }, []);
 
@@ -135,6 +110,43 @@ function PiketanGuru() {
     fetchKelas();
   }, []);
 
+  const handleUpdatePiket = (id) => {
+    // Navigate to the edit page
+    window.location.href = `/EditPiketan/${id}`;
+  };
+
+  const handledeletePiket = async (id) => {
+    try {
+      // Call the delete function from your services/api
+      await deletePiket(id);
+      // Refresh the list or remove the item from the state
+      console.log("Piket berhasil dihapus!!");
+    } catch (error) {
+      console.error("delete error:", error);
+    }
+  };
+
+  const handleModalOpen = () => {
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    window.location.reload();
+  };
+
+  const handleFilterPDF = () => {
+    if (filteredDate) {
+      navigate(`/pdf?date=${filteredDate}`);
+    } else {
+      navigate("/pdf");
+    }
+  };
+
+  const handleFilterDate = (event) => {
+    setFilteredDate(event.target.value);
+  };
+
   const getStatusSummaryByDateAndClass = (tanggal, kelasId) => {
     const key = `${tanggal}_${kelasId}`;
     const piketData = piketByDateAndClass[key] || [];
@@ -178,9 +190,8 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-    }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+      }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -243,6 +254,48 @@ function PiketanGuru() {
     });
   };
 
+  // const handleFileChange = (event) => {
+  //   setFile(event.target.files[0]);
+  // };
+
+  // Tambahkan state baru untuk menangani file Excel yang diunggah
+  const [excelFile, setExcelFile] = useState(null);
+
+  // Buat fungsi untuk menangani perubahan pada file Excel yang diunggah
+  const handleExcelChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+
+  // Perbarui fungsi importExcell untuk mengirimkan data Excel yang diunggah ke backend
+  const importExcell = async (e) => {
+    e.preventDefault();
+    if (!excelFile) {
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", excelFile);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:4001/piket/import`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+      // Tambahkan logika tambahan jika diperlukan setelah impor berhasil
+      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
+    } catch (error) {
+      console.error("Error importing file:", error);
+      Swal.fire("Error", "Gagal mengimpor file.", "error");
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -277,6 +330,43 @@ function PiketanGuru() {
               >
                 <FontAwesomeIcon icon={faUpload} /> Export PDF
               </button>
+              <button
+                onClick={openImportModal}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <FontAwesomeIcon icon={faUpload} /> Import Data
+              </button>
+
+              {showImportModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+                  <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+                    <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
+                    <div className="flex justify-between mb-4">
+                      <input
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onChange={handleExcelChange}
+                        className="border border-gray-400 p-2 w-full mb-4"
+                      />
+                      <button
+                        onClick={closeImportModal}
+                        className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      >
+                        Batal
+                      </button>
+                    </div>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={importExcell}
+                        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        Import
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
