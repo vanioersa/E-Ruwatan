@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDoorOpen,
@@ -13,6 +13,7 @@ import {
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
+import profil from "../asset/profil.png";
 import Swal from "sweetalert2";
 
 const SidebarAdmin = () => {
@@ -95,6 +96,8 @@ const SidebarAdmin = () => {
     });
   };
 
+  const backgroundColor = darkMode ? "bg-white" : "bg-gray-800";
+
   return (
     <div className={darkMode ? "dark" : ""}>
       {loading}
@@ -113,16 +116,24 @@ const SidebarAdmin = () => {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_admin">
-            <span className={`${darkMode ? 'text-white' : 'text-black'} text-3xl font-medium ml-2`}>
+            <span
+              className={`${
+                darkMode ? "text-white" : "text-black"
+              } text-3xl font-medium ml-2`}
+            >
               E-RUWATAN
             </span>
           </a>
         </div>
-        <div className="relative ml-3 flex items-center">
+
+        {/* Profil dropdown */}
+        <div className="relative ml-3">
           <div>
             <button
               type="button"
-              className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className={`${
+                darkMode ? "bg-white" : "bg-gray-800"
+              } relative flex rounded-full text-sm`}
               id="user-menu-button"
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
@@ -130,42 +141,51 @@ const SidebarAdmin = () => {
             >
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">Open user menu</span>
-              <img className="h-8 w-8 rounded-full" src="#" alt="" />
+              <img className="h-8 w-8 rounded-full" src={profil} alt="" />
             </button>
           </div>
 
           {userMenuOpen && (
             <div
-              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-700 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className={`${
+                darkMode ? backgroundColor : "bg-white"
+              } absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1`}
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
               tabIndex="-1"
             >
-              <a
-                href="/profile_admin"
-                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200"
-                role="menuitem"
-                tabIndex="-1"
-                id="user-menu-item-0"
-              >
-                Profile
-              </a>
+              <Link to="/profile_admin">
+                <button
+                  className={`${
+                    darkMode ? "text-white" : "text-gray-700"
+                  } block px-4 py-2 text-sm`}
+                  role="menuitem"
+                  tabIndex="-1"
+                  id="user-menu-item-0"
+                >
+                  Profile
+                </button>
+              </Link>
               <a
                 onClick={logout}
-                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200"
+                className={`${
+                  darkMode ? "text-white" : "text-gray-700"
+                } block px-4 py-2 text-sm`}
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-2"
               >
-                Keluar
+                keluar
               </a>
             </div>
           )}
         </div>
       </nav>
-       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${darkMode ? 'dark:bg-gray-800' : ''} shadow-xl border transition-transform duration-300 transform ${
+      <div
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${
+          darkMode ? "dark:bg-gray-800" : ""
+        } shadow-xl border transition-transform duration-300 transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -183,34 +203,52 @@ const SidebarAdmin = () => {
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${
                 isActive(item.path)
-                  ? `${darkMode ? '' : 'hover:text-black hover:bg-gray-400'} bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
-                  : `${darkMode ? 'hover:text-white hover:bg-gray-600' : ''} hover:text-black dark:hover:text-white`
+                  ? `${
+                      darkMode ? "" : "hover:text-black hover:bg-gray-400"
+                    } bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
+                  : `${
+                      darkMode ? "hover:text-white hover:bg-gray-600" : ""
+                    } hover:text-black dark:hover:text-white`
               }`}
             >
               <button
                 onClick={() => handleNavigation(item.path)}
-                className={`${darkMode ? 'text-white' : 'text-black'} flex items-center w-full"`}
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } flex items-center w-full"`}
               >
                 <FontAwesomeIcon icon={item.icon} className="mr-2" />
                 <span
                   style={{ fontFamily: "Segoe UI" }}
-                  className={`${darkMode ? 'text-white' : 'text-black'} mx-2 font-medium`}
+                  className={`${
+                    darkMode ? "text-white" : "text-black"
+                  } mx-2 font-medium`}
                 >
                   {item.name}
                 </span>
               </button>
             </li>
           ))}
-          <li className={`py-2 px-5 my-2 rounded cursor-pointer ${darkMode ? 'hover:text-black hover:bg-gray-400 ' : 'hover:text-white hover:bg-gray-600'} absolute bottom-0 left-0 right-0 w-full`}>
+          <li
+            className={`py-2 px-5 my-2 rounded cursor-pointer ${
+              darkMode
+                ? "hover:text-black hover:bg-gray-400 "
+                : "hover:text-white hover:bg-gray-600"
+            } absolute bottom-0 left-0 right-0 w-full`}
+          >
             <button
               type="button"
-              className={`${darkMode ? 'text-white' : 'text-black'} flex items-center w-full`}
+              className={`${
+                darkMode ? "text-white" : "text-black"
+              } flex items-center w-full`}
               onClick={toggleDarkMode}
             >
               <FontAwesomeIcon icon={darkMode ? faSun : faMoon} size="lg" />{" "}
               <span
                 style={{ fontFamily: "Segoe UI" }}
-                className={`${darkMode ? 'text-white' : 'text-black'} mx-4 font-medium`}
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } mx-4 font-medium`}
               >
                 {darkMode ? "Terang" : "Gelap"}
               </span>
