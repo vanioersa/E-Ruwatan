@@ -9,7 +9,6 @@ const TambahPiketan = () => {
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [selectedSiswaId, setSelectedSiswaId] = useState({});
   const [selectedStatus, setSelectedStatus] = useState({});
   const [piketan, setPiketan] = useState({
     kelasId: "",
@@ -36,11 +35,18 @@ const TambahPiketan = () => {
     }
   }, [selectedKelas]);
 
+  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
+
   const fetchSiswaByKelas = async (kelasId) => {
     try {
       if (kelasId) {
         const response = await axios.get(
-          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`
+          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSiswaByKelas(response.data);
       } else {
@@ -67,13 +73,9 @@ const TambahPiketan = () => {
   };
 
   const handleStudentCheckboxChange = (studentId, status) => {
-    setSelectedSiswaId((prev) => ({
-      ...prev,
-      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
-    }));
     setSelectedStatus((prev) => ({
       ...prev,
-      [studentId]: status, // Set status for student
+      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
     }));
   };
 
@@ -87,17 +89,22 @@ const TambahPiketan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const siswaStatus = Object.keys(selectedStatus).map((studentId) => ({
+      siswaId: studentId,
+      status: selectedStatus[studentId],
+    }));
+  
     try {
-      await createPiket({
-        kelasId: selectedKelas,
-        tanggal: piketan.tanggal,
-        siswaId: Object.keys(selectedStatus).filter(
-          (studentId) =>
-            selectedStatus[studentId] === "sakit" ||
-            selectedStatus[studentId] === "izin" ||
-            selectedStatus[studentId] === "alpha"
-        ),
-      });
+      const createPiketPromises = siswaStatus.map((status) =>
+        createPiket({
+          kelasId: selectedKelas,
+          tanggal: piketan.tanggal,
+          siswaStatus: [status],
+        })
+      );
+  
+      await Promise.all(createPiketPromises);
+  
       Swal.fire({
         title: "Berhasil",
         text: "Piketan berhasil ditambahkan",
@@ -226,38 +233,42 @@ const TambahPiketan = () => {
                         </td>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
-                            type="checkbox"
+                            type="radio"
+                            name={`status-${siswa.id}`}
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "masuk")
                             }
-                            checked={selectedSiswaId[siswa.id] === "masuk"}
+                            checked={selectedStatus[siswa.id] === "masuk"}
                           />
                         </td>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
-                            type="checkbox"
+                            type="radio"
+                            name={`status-${siswa.id}`}
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "izin")
                             }
-                            checked={selectedSiswaId[siswa.id] === "izin"}
+                            checked={selectedStatus[siswa.id] === "izin"}
                           />
                         </td>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
-                            type="checkbox"
+                            type="radio"
+                            name={`status-${siswa.id}`}
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "sakit")
                             }
-                            checked={selectedSiswaId[siswa.id] === "sakit"}
+                            checked={selectedStatus[siswa.id] === "sakit"}
                           />
                         </td>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
                           <input
-                            type="checkbox"
+                            type="radio"
+                            name={`status-${siswa.id}`}
                             onChange={() =>
                               handleStudentCheckboxChange(siswa.id, "alpha")
                             }
-                            checked={selectedSiswaId[siswa.id] === "alpha"}
+                            checked={selectedStatus[siswa.id] === "alpha"}
                           />
                         </td>
                       </tr>

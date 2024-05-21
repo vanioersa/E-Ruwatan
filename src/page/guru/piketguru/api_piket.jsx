@@ -13,6 +13,7 @@ export const createPiket = async (piketData) => {
     return response.data;
   } catch (error) {
     console.error("Data error!", error);
+    console.error("Request Data:", piketData);
     throw error;
   }
 };
