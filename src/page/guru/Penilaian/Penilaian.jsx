@@ -81,7 +81,7 @@ function Penilaian() {
       if (result.isConfirmed) {
         try {
           await deletePenilaian(id);
-          setKelas((prevpenilaian) => prevpenilaian.filter((p) => p.id !== id));
+          setData((prevData) => prevData.filter((p) => p.id !== id));
           Swal.fire({
             title: "Berhasil",
             text: `Data penilaian berhasil dihapus`,
