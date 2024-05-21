@@ -159,8 +159,8 @@ const TambahGuru = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah Guru</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Guru
           </p>
           <form onSubmit={handleRegister}>
@@ -303,10 +303,6 @@ const TambahGuru = () => {
                   <option value="">Pilih Jenis Kelamin</option>
                   <option value="Laki-laki">Laki-laki</option>
                   <option value="Perempuan">Perempuan</option>
-                  {/* <option value="Manusia">Manusia</option>
-                  <option value="Hewan">Hewan</option>
-                  <option value="Tuhan">Tuhan</option>
-                  <option value="Powor rangger">Powor rangger</option> */}
                 </select>
               </div>
               <div className="relative">
@@ -328,8 +324,6 @@ const TambahGuru = () => {
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
                   <option value="Cerai">Cerai</option>
-                  {/* <option value="Perjodohan">Perjodohan</option>
-                  <option value="Kawin lari">Kawin lari</option> */}
                 </select>
               </div>
             </div>

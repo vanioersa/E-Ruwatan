@@ -78,8 +78,8 @@ const TambahKelas = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah Kelas</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Kelas
           </p>
           <form onSubmit={handleSubmit}>

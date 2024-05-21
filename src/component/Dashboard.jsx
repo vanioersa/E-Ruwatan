@@ -81,7 +81,7 @@ function Dashboard() {
       <Sidebar />
       <section className="text-gray-800 body-font flex-1 mt-20">
         {username && (
-          <div className="bg-white py-4 px-6">
+          <div className="py-4 px-6">
             <h1
               className="text-gray-800 text-center relative text-lg p-3 bg-gray-100"
               style={{
@@ -209,8 +209,8 @@ function Dashboard() {
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
             {/* Tabel Guru */}
-            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
-              <div className="bg-white py-2 mb-2">
+            <div className="w-full md:w-1/2 mb-10 overflow-x-auto">
+              <div className="py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
                   style={{
@@ -235,8 +235,9 @@ function Dashboard() {
                     {guru.length > 0 ? (
                       guru.slice(0, 5).map((item, index) => (
                         <tr
+                          style={{ backgroundColor: "white" }}
                           key={item.id}
-                          className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
+                          className="bg-white border-b hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
                           <td className="py-2 px-4 text-center">
@@ -272,8 +273,8 @@ function Dashboard() {
             </div>
 
             {/* Tabel Siswa */}
-            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
-              <div className="bg-white py-2 mb-2">
+            <div className="w-full md:w-1/2 mb-10 overflow-x-auto">
+              <div className="py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
                   style={{
@@ -299,7 +300,8 @@ function Dashboard() {
                       siswa.slice(0, 5).map((item, index) => (
                         <tr
                           key={item.id}
-                          className="bg-white hover:bg-gray-100 transition duration-200 ease-in-out"
+                          style={{ backgroundColor: "white" }}
+                          className="bg-white border-b hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
                           <td className="py-2 px-4 text-center">

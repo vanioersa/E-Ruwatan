@@ -296,7 +296,7 @@ function Kelas() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
           <h1 className="text-3xl font-semibold text-gray-800">Data Kelas</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -332,7 +332,7 @@ function Kelas() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-600 text-base font-normal">
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
                 {filteredKelas.length > 0 ? (
                   filteredKelas
                     .slice(pagesVisited, pagesVisited + kelasPerPage)

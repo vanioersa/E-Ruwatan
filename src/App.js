@@ -27,6 +27,8 @@ import Penilaian from "./page/guru/Penilaian/Penilaian";
 import TambahPenilaian from "./page/guru/Penilaian/TambahPenilaian";
 import UpdatePenilaian from "./page/guru/Penilaian/UpdatePenilaian";
 import PrivateRoute from "./routeer/PrivateRoute";
+import EditGuru from "./page/guru/Profile/EditGuru";
+import SettingGuru from "./page/guru/Profile/SettingGuru";
 
 function App() {
   return (
@@ -61,6 +63,8 @@ function App() {
           <Route path="/Penilaian" element={<Penilaian />} />
           <Route path="/TambahPenilaian" element={<TambahPenilaian />} />
           <Route path="/EditPenilaian/:id" element={<UpdatePenilaian />} />
+          <Route path="/edit_guru" element={<EditGuru />} />
+          <Route path="/setting_guru" element={<SettingGuru />} />
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/pdf" element={<PDFpiket />} />
