@@ -48,8 +48,8 @@ function App() {
           <Route path="/EditKelas/:id" element={<UpdateKelas />} />
           <Route path="/EditGuru/:id" element={<UpdateGuru />} />
           <Route path="/profile_admin" element={<ProfileAdmin />} />
-          <Route path="/setting" element={<Setting />} />
-          <Route path="/editProfileAdmin" element={<EditAdmin />} />
+          <Route path="/edit_password_admin" element={<Setting />} />
+          <Route path="/edit_profile_admin" element={<EditAdmin />} />
         </Route>
         <Route element={<PrivateRoute role="GURU" />}>
           <Route path="/dashboard_guru" element={<DashboardGuru />} />

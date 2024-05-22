@@ -32,7 +32,7 @@ function Setting() {
                   </Link>
                 </li>
                 <li className="me-2" role="presentation">
-                  <Link to={"/editprofileadmin"}>
+                  <Link to={"/edit_profile_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
@@ -47,7 +47,7 @@ function Setting() {
                   </Link>
                 </li>
                 <li className="me-2" role="presentation">
-                  <Link to={"/setting"}>
+                  <Link to={"/edit_password_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
