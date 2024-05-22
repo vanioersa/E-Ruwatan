@@ -266,33 +266,27 @@ function PiketanGuru() {
     setExcelFile(e.target.files[0]);
   };
 
-  // Perbarui fungsi importExcell untuk mengirimkan data Excel yang diunggah ke backend
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      Swal.fire('Error', 'Anda belum memilih file untuk diimport!.', 'error');
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", excelFile);
+    formData.append('file', excelFile);
 
     try {
-      const response = await axios.post(
-        `http://localhost:4001/piket/import`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post('http://localhost:4001/piket/import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log(response.data);
-      // Tambahkan logika tambahan jika diperlukan setelah impor berhasil
-      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
+      Swal.fire('Sukses!', 'Berhasil Ditambahkan.', 'success');
     } catch (error) {
-      console.error("Error importing file:", error);
-      Swal.fire("Error", "Gagal mengimpor file.", "error");
+      console.error('Error importing file:', error);
+      Swal.fire('Error', 'Gagal mengimpor file.', 'error');
     }
   };
 
