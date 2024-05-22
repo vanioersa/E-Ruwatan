@@ -2,38 +2,17 @@ import React, { useState, useEffect } from "react";
 import logobinus from "../asset/logobinus.png";
 import profil from "../asset/profil.png";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-function SidebarGuru() {
+const SidebarGuru = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("darkMode") === "true"
+  );
   const [currentTime, setCurrentTime] = useState("");
   const location = useLocation();
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-
-    handleResize(); // Check initial window size
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const options = { timeZone: "Asia/Jakarta", hour12: false };
-      const currentTime = new Date().toLocaleTimeString("en-US", options);
-      setCurrentTime(currentTime);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleNavigation = (to) => {
     setLoading(true);
@@ -49,6 +28,10 @@ function SidebarGuru() {
 
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
 
   function logout() {
@@ -79,14 +62,50 @@ function SidebarGuru() {
 
   const isActive = (path) => location.pathname === path;
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    handleResize(); // Check initial window size
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const options = { timeZone: "Asia/Jakarta", hour12: false };
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      setCurrentTime(currentTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
+    } else {
+      document.body.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
+    }
+  }, [darkMode]);
+
   return (
-    <div>
+    <div className={darkMode ? "dark" : ""}>
       {loading}
-      <nav className="fixed top-0 z-50 w-full bg-gray-100 border-b border-gray-200 shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
+      <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
-            className="text-black focus:outline-none md:hidden mx-3"
+            className={`text-black focus:outline-none md:hidden mx-3 ${
+              darkMode ? "text-white" : "text-black"
+            }`}
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
@@ -127,18 +146,26 @@ function SidebarGuru() {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_guru">
-            <span className="text-black text-3xl font-medium ml-2">
+            <span
+              className={`text-black text-3xl font-medium ml-2 ${
+                darkMode ? "text-white" : "text-black"
+              }`}
+            >
               E-RUWATAN
             </span>
           </a>
         </div>
 
         {/* Profil dropdown */}
-        <div className="relative ml-3">
+        <div
+          className="relative ml-3"
+        >
           <div>
-            <button
+          <button
               type="button"
-              className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className={`${
+                darkMode ? "bg-white" : "bg-gray-800"
+              } relative flex rounded-full text-sm`}
               id="user-menu-button"
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
@@ -146,17 +173,15 @@ function SidebarGuru() {
             >
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">Open user menu</span>
-              <img
-                className="h-8 w-8 rounded-full"
-                src={profil}
-                alt=""
-              />
+              <img className="h-8 w-8 rounded-full" src={profil} alt="" />
             </button>
           </div>
 
           {userMenuOpen && (
             <div
-              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md ${
+                darkMode ? "bg-gray-800" : "bg-white"
+              } py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
@@ -164,7 +189,9 @@ function SidebarGuru() {
             >
               <a
                 href="/profile_guru"
-                className="block px-4 py-2 text-sm text-gray-700"
+                className={`block px-4 py-2 text-sm ${
+                  darkMode ? "text-white" : "text-gray-700"
+                }`}
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-0"
@@ -173,12 +200,14 @@ function SidebarGuru() {
               </a>
               <a
                 onClick={logout}
-                className="block px-4 py-2 text-sm text-gray-700"
+                className={`block px-4 py-2 text-sm ${
+                  darkMode ? "text-white" : "text-gray-700"
+                }`}
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-2"
               >
-                keluar
+                Keluar
               </a>
             </div>
           )}
@@ -186,23 +215,32 @@ function SidebarGuru() {
       </nav>
 
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border-r transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${
+          darkMode ? "dark:bg-gray-800" : ""
+        } shadow-xl border transition-transform duration-300 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        <div className="bg-blue-800 text-white px-4 py-3">
+        <div
+          className={`bg-blue-800 text-white px-4 py-3 ${
+            darkMode ? "bg-gray-800" : ""
+          }`}
+        >
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
-        <ul className="mt-6 text-xl mx-2 text-gray-600">
+        <ul
+          className={`mt-6 text-xl mx-2 ${
+            darkMode ? "text-gray-200" : "text-gray-600"
+          }`}
+        >
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/dashboard_guru")
-                ? "bg-gray-400 text-black"
-                : "hover:bg-gray-400 hover:text-black"
-              }`}
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${
+              isActive("/dashboard_guru")
+                ? `bg-gray-400 text-black`
+                : `hover:bg-gray-400 hover:text-black`
+            }`}
           >
-            <button
-              onClick={() => handleNavigation("/dashboard_guru")}
-              className="flex items-center w-full"
-            >
+            <Link to="/dashboard_guru" className="flex items-center w-full">
               <svg
                 className="w-7 h-7 mr-2"
                 data-slot="icon"
@@ -221,22 +259,20 @@ function SidebarGuru() {
               </svg>
               <span
                 style={{ fontFamily: "Roboto", fontWeight: "bold" }}
-                className="mx-2"
+                className={`${darkMode ? "text-white" : "text-black"} mx-2`}
               >
                 Dashboard
               </span>
-            </button>
+            </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/kbm_guru")
-                ? "bg-gray-400 text-black"
-                : "hover:bg-gray-400 hover:text-black"
-              }`}
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${
+              isActive("/kbm_guru")
+                ? `bg-gray-400 text-black`
+                : `hover:bg-gray-400 hover:text-black`
+            }`}
           >
-            <button
-              onClick={() => handleNavigation("/kbm_guru")}
-              className="flex items-center w-full"
-            >
+            <Link to="/kbm_guru" className="flex items-center w-full">
               <svg
                 className="w-7 h-7 mr-2"
                 data-slot="icon"
@@ -255,22 +291,22 @@ function SidebarGuru() {
               </svg>
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className="mx-2 font-medium"
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } mx-2 font-medium`}
               >
                 KBM Guru
               </span>
-            </button>
+            </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/piketan_guru")
-                ? "bg-gray-400 text-black"
-                : "hover:bg-gray-400 hover:text-black"
-              }`}
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${
+              isActive("/piketan_guru")
+                ? `bg-gray-400 text-black`
+                : `hover:bg-gray-400 hover:text-black`
+            }`}
           >
-            <button
-              onClick={() => handleNavigation("/piketan_guru")}
-              className="flex items-center w-full"
-            >
+            <Link to="/piketan_guru" className="flex items-center w-full">
               <svg
                 className="w-7 h-7 mr-2"
                 data-slot="icon"
@@ -289,22 +325,22 @@ function SidebarGuru() {
               </svg>
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className="mx-2 font-medium"
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } mx-2 font-medium`}
               >
                 Piketan
               </span>
-            </button>
+            </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/penilaian")
-                ? "bg-gray-400 text-black"
-                : "hover:bg-gray-400 hover:text-black"
-              }`}
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${
+              isActive("/penilaian")
+                ? `bg-gray-400 text-black`
+                : `hover:bg-gray-400 hover:text-black`
+            }`}
           >
-            <button
-              onClick={() => handleNavigation("/penilaian")}
-              className="flex items-center w-full"
-            >
+            <Link to="/penilaian" className="flex items-center w-full">
               <svg
                 className="w-7 h-7 mr-2"
                 data-slot="icon"
@@ -323,48 +359,99 @@ function SidebarGuru() {
               </svg>
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className="mx-2 font-medium"
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } mx-2 font-medium`}
               >
                 Penilaian
               </span>
-            </button>
+            </Link>
           </li>
-          <div className="ml-6 text-xl font-bold absolute bottom-16 w-full">Waktu : {currentTime}</div>
-          <hr className="absolute bottom-14 w-60 text-black" />
-          <li className="py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full">
-            <button onClick={logout} className="flex items-center w-full">
-              <svg
-                className="w-7 h-7 mr-2 ml-3"
-                data-slot="icon"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                ></path>
-              </svg>
+          <div className="ml-6 text-xl font-bold absolute bottom-16 w-full">
+            Waktu : {currentTime}
+          </div>
+          <hr
+            className={`absolute bottom-14 w-60 ${
+              darkMode ? "text-white" : "text-black"
+            }`}
+          />
+          <li
+            className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full`}
+          >
+            <button
+              onClick={toggleDarkMode}
+              className={`flex items-center w-full`}
+            >
+              {darkMode ? (
+                <svg
+                  className="w-7 h-7 mx-2"
+                  viewBox="0 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <title />
+                  <g data-name="1" id="_1">
+                    <path d="M370.24,425.59a14.89,14.89,0,0,1-7-1.72L257,368,150.74,423.87A15,15,0,0,1,129,408.06l20.3-118.32-86-83.8a15,15,0,0,1,8.31-25.59l118.81-17.26L243.55,55.43a15,15,0,0,1,26.9,0l53.13,107.66,118.8,17.26a15,15,0,0,1,8.32,25.59l-86,83.8L385,408.06a15,15,0,0,1-14.78,17.53ZM106,205.67l69.85,68.09A15,15,0,0,1,180.17,287l-16.49,96.14L250,337.78a15,15,0,0,1,14,0l86.34,45.39L333.83,287a15,15,0,0,1,4.31-13.27L408,205.67l-96.53-14a15,15,0,0,1-11.29-8.2L257,96l-43.17,87.47a15,15,0,0,1-11.3,8.2Z" />
+                  </g>
+                </svg>
+              ) : (
+                <svg
+                  className="w-7 h-7 mx-2"
+                  viewBox="0 0 256 256"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect fill="none" height="256" width="256" />
+                  <path
+                    d="M216.7,152.6A91.9,91.9,0,0,1,103.4,39.3h0A92,92,0,1,0,216.7,152.6Z"
+                    fill="none"
+                    stroke="#000"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="16"
+                  />
+                </svg>
+              )}
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className="mx-2 font-medium"
+                className={`${
+                  darkMode ? "text-white" : "text-black"
+                } mx-2 font-medium`}
               >
-                Keluar
+                {darkMode ? "Gelap" : "Terang"}
               </span>
             </button>
           </li>
         </ul>
       </div>
       <div
-        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"
-          }`}
+        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "md:ml-0" : "-md:ml-64"
+        }`}
       />
+      <style>{`
+          body {
+            background-color: white;
+            color: black;
+            transition: background-color 0.3s ease, color 0.3s ease;
+          }
+          
+          body.dark {
+            background-color: #2a2b2e;
+            color: white;
+          }
+  
+          .dark nav,
+          .dark .bg-blue-800 {
+            background-color: #43537d;
+            transition: background-color 0.3s ease, color 0.3s ease;
+          }
+  
+          .dark .bg-white {
+            background-color: #434752;
+            transition: background-color 0.3s ease, color 0.3s ease;
+          }
+        `}</style>
     </div>
   );
-}
+};
 
 export default SidebarGuru;

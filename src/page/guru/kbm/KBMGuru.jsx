@@ -223,7 +223,7 @@ function KBMGuru() {
         <SidebarGuru />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div style={{ backgroundColor: "white" }} className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
           <h1 className="text-3xl font-semibold text-gray-800">KBM Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -267,7 +267,7 @@ function KBMGuru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal" >
                 {filteredKBMGuru.length > 0 ? (
                   filteredKBMGuru
                     .slice(
@@ -334,7 +334,7 @@ function KBMGuru() {
                     })
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-4">
+                    <td colSpan="8" className="text-center py-4 text-gray-500">
                       Tidak ada data KBM yang ditemukan
                     </td>
                   </tr>
