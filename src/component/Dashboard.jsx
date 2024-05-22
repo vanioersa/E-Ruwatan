@@ -258,9 +258,9 @@ function Dashboard() {
                         </tr>
                       ))
                     ) : (
-                      <tr>
+                      <tr style={{ backgroundColor: "white" }}>
                         <td
-                          colSpan="3"
+                          colSpan="4"
                           className="py-4 text-center text-gray-500"
                         >
                           Maaf, data guru tidak ditemukan.
@@ -314,7 +314,7 @@ function Dashboard() {
                         </tr>
                       ))
                     ) : (
-                      <tr>
+                      <tr style={{ backgroundColor: "white" }}>
                         <td
                           colSpan="4"
                           className="py-4 text-center text-gray-500"

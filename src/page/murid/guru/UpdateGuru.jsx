@@ -3,8 +3,6 @@ import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import { getUsersById, updateUsers } from "./api_guru";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const UpdateGuru = () => {
   const { id } = useParams();
@@ -13,18 +11,12 @@ const UpdateGuru = () => {
   const [guru, setGuru] = useState({
     username: "",
     email: "",
-    // password: "",
     alamat: "",
     gender: "",
     telepon: "",
     status_nikah: "",
+    password: "", // Add password field
   });
-
-//   const [passwordType, setPasswordType] = useState("password");
-
-//   const togglePassword = () => {
-//     setPasswordType(passwordType === "password" ? "text" : "password");
-//   };
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -55,11 +47,11 @@ const UpdateGuru = () => {
     const isDataChanged =
       initialGuruData.username !== guru.username ||
       initialGuruData.email !== guru.email ||
-    //   initialGuruData.password !== guru.password ||
       initialGuruData.alamat !== guru.alamat ||
       initialGuruData.gender !== guru.gender ||
       initialGuruData.telepon !== guru.telepon ||
-      initialGuruData.status_nikah !== guru.status_nikah;
+      initialGuruData.status_nikah !== guru.status_nikah ||
+      guru.password !== ""; // Check if password is changed
 
     if (!isDataChanged) {
       Swal.fire({
@@ -73,7 +65,11 @@ const UpdateGuru = () => {
     }
 
     try {
-      await updateUsers(id, guru);
+      const updatedGuru = { ...guru };
+      if (guru.password === "") {
+        delete updatedGuru.password; // Remove password field if not changed
+      }
+      await updateUsers(id, updatedGuru);
       Swal.fire({
         icon: "success",
         title: "Berhasil",
@@ -152,41 +148,6 @@ const UpdateGuru = () => {
                 />
               </div>
             </div>
-
-            {/* <div className="relative mt-3">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-              >
-                Kata Sandi (Password)
-              </label>
-              <input
-                id="password"
-                name="password"
-                type={passwordType}
-                autoComplete="off"
-                value={guru.password}
-                onChange={handleChange}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                placeholder="Masukkan Kata Sandi"
-                required
-              />
-              <span
-                onClick={togglePassword}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer bottom-7 sm:bottom-3"
-              >
-                {passwordType === "password" ? (
-                  <FontAwesomeIcon icon={faEyeSlash} />
-                ) : (
-                  <FontAwesomeIcon icon={faEye} />
-                )}
-              </span>
-            // Pesan pemberitahuan di bawah field password 
-            <p className="text-gray-500 text-sm text-center my-5">
-              *Field Alamat, Telepon, Jenis Kelamin, dan Status Nikah boleh
-              kosong
-            </p>
-            </div> */}
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
@@ -268,6 +229,25 @@ const UpdateGuru = () => {
                   <option value="Cerai">Cerai</option>
                 </select>
               </div>
+            </div>
+
+            <div className="relative mt-4">
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="off"
+                value={guru.password}
+                onChange={handleChange}
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                placeholder="Masukkan Password"
+              />
             </div>
 
             <div className="flex justify-between mt-6">

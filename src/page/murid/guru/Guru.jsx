@@ -363,7 +363,7 @@ function Guru() {
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="py-4 text-center text-gray-500">
+                    <td colSpan="8" className="py-4 text-center text-gray-500">
                       Tidak ada data guru yang ditemukan.
                     </td>
                   </tr>

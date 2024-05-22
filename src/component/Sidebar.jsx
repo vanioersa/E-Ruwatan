@@ -20,7 +20,9 @@ const SidebarAdmin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("darkMode") === "true"
+  );
   const location = useLocation();
 
   const isActive = (path) => {
@@ -44,8 +46,10 @@ const SidebarAdmin = () => {
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
     } else {
       document.body.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
 
@@ -203,30 +207,26 @@ const SidebarAdmin = () => {
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${
                 isActive(item.path)
-                  ? `${
-                      darkMode ? "" : "hover:text-black hover:bg-gray-400"
-                    } bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
-                  : `${
-                      darkMode ? "hover:text-white hover:bg-gray-600" : ""
-                    } hover:text-black dark:hover:text-white`
+                  ? `bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
+                  : `hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
               }`}
             >
-              <button
-                onClick={() => handleNavigation(item.path)}
+              <Link
+                to={item.path}
                 className={`${
-                  darkMode ? "text-white" : "text-black"
-                } flex items-center w-full"`}
+                  darkMode ? "text-white" : "text-gray-800"
+                } flex items-center w-full`}
               >
                 <FontAwesomeIcon icon={item.icon} className="mr-2" />
                 <span
                   style={{ fontFamily: "Segoe UI" }}
                   className={`${
-                    darkMode ? "text-white" : "text-black"
+                    darkMode ? "text-white" : "text-gray-800"
                   } mx-2 font-medium`}
                 >
                   {item.name}
                 </span>
-              </button>
+              </Link>
             </li>
           ))}
           <li
@@ -236,7 +236,7 @@ const SidebarAdmin = () => {
                 : "hover:text-white hover:bg-gray-600"
             } absolute bottom-0 left-0 right-0 w-full`}
           >
-            <button
+            <Link
               type="button"
               className={`${
                 darkMode ? "text-white" : "text-black"
@@ -248,11 +248,11 @@ const SidebarAdmin = () => {
                 style={{ fontFamily: "Segoe UI" }}
                 className={`${
                   darkMode ? "text-white" : "text-black"
-                } mx-4 font-medium`}
+                } mx-3 font-medium`}
               >
                 {darkMode ? "Terang" : "Gelap"}
               </span>
-            </button>
+            </Link>
           </li>
         </ul>
       </div>

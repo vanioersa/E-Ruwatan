@@ -39,8 +39,9 @@ function Register_admin() {
           text: "Anda berhasil terdaftar sebagai admin.",
           timer: 2000,
           showConfirmButton: false,
+        }).then(() => {
+          window.location.href = "/";
         });
-        // Redirect or show success message
       }
     } catch (error) {
       let errorMessage = "Registrasi gagal! Silakan coba lagi.";
@@ -125,7 +126,7 @@ function Register_admin() {
                   <span
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
                     onClick={togglePassword}
-                    style={{ top: '37%', transform: 'translateY(-50%)' }}
+                    style={{ top: "37%", transform: "translateY(-50%)" }}
                   >
                     <FontAwesomeIcon
                       icon={passwordType === "password" ? faEyeSlash : faEye}

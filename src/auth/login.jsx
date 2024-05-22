@@ -63,12 +63,10 @@ function Logins() {
           if (userData.role === "ADMIN") {
             setTimeout(() => {
               navigate("/dashboard_admin");
-              window.location.reload();
             }, 2000);
           } else if (userData.role === "GURU") {
             setTimeout(() => {
               navigate("/dashboard_guru");
-              window.location.reload();
             }, 2000);
           }
         }

@@ -118,9 +118,9 @@ function Profile_admin() {
                 data-tabs-toggle="#default-tab-content"
               >
                 <li className="me-2">
-                  <Link to={"/Profile_admin"}>
+                  <Link to={"/profile_admin"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="profile-tab"
                       data-tabs-target="#profile"
                       type="button"
@@ -135,7 +135,7 @@ function Profile_admin() {
                 <li className="me-2">
                   <Link to={"/editProfileAdmin"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -150,7 +150,7 @@ function Profile_admin() {
                 <li className="me-2">
                   <Link to={"/setting"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -158,7 +158,7 @@ function Profile_admin() {
                       aria-controls="settings"
                       aria-selected="false"
                     >
-                      Settings
+                      Edit Password
                     </button>
                   </Link>
                 </li>
@@ -166,10 +166,13 @@ function Profile_admin() {
             </div>
           </div>
 
-          <div className="border-b-2 block md:flex">
-            <div className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md">
+          <div className="block md:flex">
+            <div
+              style={{ backgroundColor: "white" }}
+              className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
+            >
               <div className="text-center flex justify-between items-center">
-                <span className="text-xl font-semibold">
+                <span className="text-xl font-semibold text-gray-800">
                   <strong>Profile {username}</strong>
                 </span>
                 <button
@@ -186,7 +189,7 @@ function Profile_admin() {
                   alt="Profile"
                 />
               </div>
-              <div className="text-center mt-4">
+              <div className="text-center mt-4 text-gray-800">
                 <p>
                   <strong>Name:</strong> {username}
                 </p>
@@ -196,9 +199,12 @@ function Profile_admin() {
               </div>
             </div>
 
-            <div className="md:flex-1 p-8 bg-white lg:ml-4 shadow-md">
+            <div
+              style={{ backgroundColor: "white" }}
+              className="md:flex-1 p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
+            >
               <div className="rounded shadow p-6">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold text-gray-800">
                   <strong>Edit Data Profile</strong>
                 </h1>{" "}
                 <br />
@@ -211,7 +217,7 @@ function Profile_admin() {
                   </label>
                   <input
                     id="username"
-                    className="border rounded-r px-4 py-2 w-full"
+                    className="border rounded-r px-4 py-2 w-full text-gray-600"
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -227,7 +233,7 @@ function Profile_admin() {
                   </label>
                   <input
                     id="email"
-                    className="border rounded-r px-4 py-2 w-full"
+                    className="border rounded-r px-4 py-2 w-full text-gray-600"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -246,7 +252,7 @@ function Profile_admin() {
                     id="profilePic"
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="border rounded-r px-4 py-2 w-full"
+                    className="border rounded-r px-4 py-2 w-full text-gray-600"
                     disabled={!editMode}
                   />
                 </div>
