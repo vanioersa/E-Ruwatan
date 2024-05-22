@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../component/SidebarGuru";
 import Swal from "sweetalert2";
-import { useParams, Link } from "react-router-dom";
-import { getAdminById, updateAdmin } from "./api_guru";
+import { Link } from "react-router-dom";
+import { getGuruById, updateGuru } from "./api_guru";
 
-function EditGuru() {
-  const { id } = useParams();
+const EditGuru = () => {const id = localStorage.getItem("id");
 
-  const [admin, setAdmin] = useState({
+
+  const [guru, setGuru] = useState({
     username: "",
     email: "",
     alamat: "",
@@ -17,81 +17,55 @@ function EditGuru() {
   });
 
   useEffect(() => {
-    const fetchAdmin = async () => {
+    const fetchGuru = async () => {
       try {
-        const adminData = await getAdminById(id);
-        setAdmin(adminData);
+        const guruData = await getGuruById(id);
+        setGuru(guruData);
       } catch (error) {
-        console.error("Failed to fetch admin:", error);
+        console.error("Failed to fetch guru:", error);
       }
     };
 
-    fetchAdmin();
+    fetchGuru();
   }, [id]);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData) {
-      setAdmin({
-        username: userData.username,
-        email: userData.email,
-        alamat: userData.alamat,
-        gender: userData.gender,
-        telepon: userData.telepon,
-        status_nikah: userData.status_nikah,
-      });
+      setGuru(userData);
     }
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setAdmin((prevAdmin) => ({
-      ...prevAdmin,
+    setGuru((prevGuru) => ({
+      ...prevGuru,
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const initialAdminData = await getAdminById(id);
-
-      const isDataChanged =
-        initialAdminData.username !== admin.username ||
-        initialAdminData.email !== admin.email ||
-        initialAdminData.alamat !== admin.alamat ||
-        initialAdminData.gender !== admin.gender ||
-        initialAdminData.telepon !== admin.telepon ||
-        initialAdminData.status_nikah !== admin.status_nikah;
-
-      if (!isDataChanged) {
-        Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: "Minimal satu data harus diubah",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-        return;
-      }
-
-      await updateAdmin(id, admin);
+      await updateGuru(id, guru);
+      // Menampilkan pesan sukses menggunakan Swal
       Swal.fire({
         icon: "success",
         title: "Berhasil",
-        text: "Data admin berhasil diperbarui",
+        text: "Data Guru berhasil diperbarui",
         showConfirmButton: false,
         timer: 2000,
       }).then(() => {
-        window.location.reload();
+        // Setelah berhasil, tidak perlu lagi reload halaman atau login ulang
+        // Cukup set state guru dengan data yang baru
+        setGuru(guru);
       });
     } catch (error) {
-      console.error("Failed to update admin:", error);
+      console.error("Gagal memperbarui data guru:", error);
       Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: "Gagal memperbarui data admin. Silakan coba lagi.",
+        text: "Gagal memperbarui data guru. Silakan coba lagi.",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -182,7 +156,7 @@ function EditGuru() {
                         className="border rounded-r px-4 py-2 w-full"
                         type="text"
                         autoComplete="off"
-                        value={admin.username}
+                        value={guru.username}
                         onChange={handleChange}
                       />
                     </div>
@@ -199,7 +173,7 @@ function EditGuru() {
                         className="border rounded-r px-4 py-2 w-full"
                         type="email"
                         autoComplete="off"
-                        value={admin.email}
+                        value={guru.email}
                         onChange={handleChange}
                       />
                     </div>
@@ -216,7 +190,7 @@ function EditGuru() {
                         autoComplete="off"
                         className="border rounded-r px-4 py-2 w-full"
                         type="text"
-                        value={admin.alamat}
+                        value={guru.alamat}
                         onChange={handleChange}
                       />
                     </div>
@@ -233,7 +207,7 @@ function EditGuru() {
                         autoComplete="off"
                         className="border rounded-r px-4 py-2 w-full"
                         type="text"
-                        value={admin.telepon}
+                        value={guru.telepon}
                         onChange={handleChange}
                       />
                     </div>
@@ -249,7 +223,7 @@ function EditGuru() {
                         name="gender"
                         autoComplete="off"
                         className="border rounded-r px-4 py-2 w-full"
-                        value={admin.gender}
+                        value={guru.gender}
                         onChange={handleChange}
                       >
                         <option value="">Pilih Jenis Kelamin</option>
@@ -269,7 +243,7 @@ function EditGuru() {
                         name="status_nikah"
                         autoComplete="off"
                         className="border rounded-r px-4 py-2 w-full"
-                        value={admin.status_nikah}
+                        value={guru.status_nikah}
                         onChange={handleChange}
                       >
                         <option value="">Pilih Status Nikah</option>
