@@ -231,7 +231,7 @@ const TambahPiketan = () => {
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           {siswa.nama_siswa}
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -241,7 +241,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "masuk"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -251,7 +251,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "izin"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -261,7 +261,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "sakit"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-center">
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
