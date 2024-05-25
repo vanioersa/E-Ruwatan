@@ -175,18 +175,20 @@ const TambahKBM = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah KBM Guru</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah KBM Guru
           </p>
           <form onSubmit={handleSubmit}>
-          <input
-                type="hidden"
-                  id="userId"
-                  name="userId"
-                  value={users.find((user) => user.id === kbm.userId)?.username ||
-                    "No User Info"}
-                />
+            <input
+              type="hidden"
+              id="userId"
+              name="userId"
+              value={
+                users.find((user) => user.id === kbm.userId)?.username ||
+                "No User Info"
+              }
+            />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
@@ -278,25 +280,25 @@ const TambahKBM = () => {
             </div>
 
             {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2"> */}
-              <div className="relative">
-                <label
-                  htmlFor="keterangan"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Keterangan
-                </label>
-                <textarea
-                  type="text"
-                  id="keterangan"
-                  name="keterangan"
-                  style={{maxHeight: '100px'}}
-                  value={kbm.keterangan}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukan Keterangan"
-                  autoComplete="off"
-                />
-              </div>
+            <div className="relative">
+              <label
+                htmlFor="keterangan"
+                className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
+              >
+                Keterangan
+              </label>
+              <textarea
+                type="text"
+                id="keterangan"
+                name="keterangan"
+                style={{ maxHeight: "100px" }}
+                value={kbm.keterangan}
+                onChange={handleChange}
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                placeholder="Masukan Keterangan"
+                autoComplete="off"
+              />
+            </div>
             {/* </div> */}
 
             <div className="flex justify-between mt-6">

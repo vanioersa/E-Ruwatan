@@ -4,8 +4,8 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { getGuruById, updateGuru } from "./api_guru";
 
-const EditGuru = () => {const id = localStorage.getItem("id");
-
+const EditGuru = () => {
+  const id = localStorage.getItem("id");
 
   const [guru, setGuru] = useState({
     username: "",
@@ -88,7 +88,7 @@ const EditGuru = () => {const id = localStorage.getItem("id");
                 <li className="me-2" role="presentation">
                   <Link to={"/profile_guru"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="profile-tab"
                       data-tabs-target="#profile"
                       type="button"
@@ -103,7 +103,7 @@ const EditGuru = () => {const id = localStorage.getItem("id");
                 <li className="me-2" role="presentation">
                   <Link to={"/edit_guru"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -118,7 +118,7 @@ const EditGuru = () => {const id = localStorage.getItem("id");
                 <li className="me-2" role="presentation">
                   <Link to={"/setting_guru"}>
                     <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -126,7 +126,7 @@ const EditGuru = () => {const id = localStorage.getItem("id");
                       aria-controls="settings"
                       aria-selected="false"
                     >
-                      Settings
+                       Edit Password
                     </button>
                   </Link>
                 </li>
@@ -134,141 +134,142 @@ const EditGuru = () => {const id = localStorage.getItem("id");
             </div>
           </div>
 
-          <div className="border-b-2 block md:flex">
-            <div className="md:flex-1 p-8 bg-white lg:ml-4 shadow-md">
-              <div className="rounded shadow p-6">
-                <h1 className="text-xl font-semibold">
-                  <strong>Edit Profile</strong>
-                </h1>
-                <br />
-                <form onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="pb-4">
-                      <label
-                        htmlFor="username"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Username
-                      </label>
-                      <input
-                        id="username"
-                        name="username"
-                        className="border rounded-r px-4 py-2 w-full"
-                        type="text"
-                        autoComplete="off"
-                        value={guru.username}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="pb-4">
-                      <label
-                        htmlFor="email"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Email
-                      </label>
-                      <input
-                        id="email"
-                        name="email"
-                        className="border rounded-r px-4 py-2 w-full"
-                        type="email"
-                        autoComplete="off"
-                        value={guru.email}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="pb-4">
-                      <label
-                        htmlFor="alamat"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Alamat
-                      </label>
-                      <input
-                        id="alamat"
-                        name="alamat"
-                        autoComplete="off"
-                        className="border rounded-r px-4 py-2 w-full"
-                        type="text"
-                        value={guru.alamat}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="pb-4">
-                      <label
-                        htmlFor="telepon"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Telepon
-                      </label>
-                      <input
-                        id="telepon"
-                        name="telepon"
-                        autoComplete="off"
-                        className="border rounded-r px-4 py-2 w-full"
-                        type="text"
-                        value={guru.telepon}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="pb-4">
-                      <label
-                        htmlFor="gender"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Gender
-                      </label>
-                      <select
-                        id="gender"
-                        name="gender"
-                        autoComplete="off"
-                        className="border rounded-r px-4 py-2 w-full"
-                        value={guru.gender}
-                        onChange={handleChange}
-                      >
-                        <option value="">Pilih Jenis Kelamin</option>
-                        <option value="Laki-laki">Laki-laki</option>
-                        <option value="Perempuan">Perempuan</option>
-                      </select>
-                    </div>
-                    <div className="pb-4">
-                      <label
-                        htmlFor="status_nikah"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Status Nikah
-                      </label>
-                      <select
-                        id="status_nikah"
-                        name="status_nikah"
-                        autoComplete="off"
-                        className="border rounded-r px-4 py-2 w-full"
-                        value={guru.status_nikah}
-                        onChange={handleChange}
-                      >
-                        <option value="">Pilih Status Nikah</option>
-                        <option value="Belum Menikah">Belum Menikah</option>
-                        <option value="Menikah">Menikah</option>
-                        <option value="Cerai">Cerai</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="text-center mt-4">
-                    <button
-                      type="submit"
-                      className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
+          <div className="block md:flex">
+            <div
+              style={{ backgroundColor: "white" }}
+              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md"
+            >
+              <h1 className="text-xl font-semibold text-gray-800">
+                <strong>Edit Profile</strong>
+              </h1>
+              <br />
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="pb-4">
+                    <label
+                      htmlFor="username"
+                      className="font-semibold text-gray-700 block pb-1"
                     >
-                      Submit
-                    </button>
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      name="username"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      type="text"
+                      autoComplete="off"
+                      value={guru.username}
+                      onChange={handleChange}
+                    />
                   </div>
-                </form>
-              </div>
+                  <div className="pb-4">
+                    <label
+                      htmlFor="email"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      type="email"
+                      autoComplete="off"
+                      value={guru.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="pb-4">
+                    <label
+                      htmlFor="alamat"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Alamat
+                    </label>
+                    <input
+                      id="alamat"
+                      name="alamat"
+                      autoComplete="off"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      type="text"
+                      value={guru.alamat}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="pb-4">
+                    <label
+                      htmlFor="telepon"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Telepon
+                    </label>
+                    <input
+                      id="telepon"
+                      name="telepon"
+                      autoComplete="off"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      type="text"
+                      value={guru.telepon}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="pb-4">
+                    <label
+                      htmlFor="gender"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Gender
+                    </label>
+                    <select
+                      id="gender"
+                      name="gender"
+                      autoComplete="off"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      value={guru.gender}
+                      onChange={handleChange}
+                    >
+                      <option value="">Pilih Jenis Kelamin</option>
+                      <option value="Laki-laki">Laki-laki</option>
+                      <option value="Perempuan">Perempuan</option>
+                    </select>
+                  </div>
+                  <div className="pb-4">
+                    <label
+                      htmlFor="status_nikah"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Status Nikah
+                    </label>
+                    <select
+                      id="status_nikah"
+                      name="status_nikah"
+                      autoComplete="off"
+                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      value={guru.status_nikah}
+                      onChange={handleChange}
+                    >
+                      <option value="">Pilih Status Nikah</option>
+                      <option value="Belum Menikah">Belum Menikah</option>
+                      <option value="Menikah">Menikah</option>
+                      <option value="Cerai">Cerai</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="text-center mt-4">
+                  <button
+                    type="submit"
+                    className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default EditGuru;
