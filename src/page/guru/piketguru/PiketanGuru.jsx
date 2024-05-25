@@ -27,7 +27,6 @@ function PiketanGuru() {
   const [showModal, setShowModal] = useState(false);
   const [filteredDate, setFilteredDate] = useState("");
   const [piketByDateAndClass, setPiketByDateAndClass] = useState({});
-  const [excel, setExcel] = useState("");
   const [showImportModal, setShowImportModal] = useState(false);
 
   const openImportModal = () => {
@@ -37,7 +36,6 @@ function PiketanGuru() {
   const closeImportModal = () => {
     setShowImportModal(false);
   };
-
 
   const itemsPerPage = 10;
   const navigate = useNavigate();
@@ -115,7 +113,7 @@ function PiketanGuru() {
     window.location.href = `/EditPiketan/${id}`;
   };
 
-  const handledeletePiket = async (id) => {
+  const handleDeletePiket = async (id) => {
     try {
       // Call the delete function from your services/api
       await deletePiket(id);
@@ -159,21 +157,24 @@ function PiketanGuru() {
     };
 
     piketData.forEach((item) => {
-      switch (item.status.toLowerCase()) {
-        case "masuk":
-          statusCounts.Masuk++;
-          break;
-        case "izin":
-          statusCounts.Izin++;
-          break;
-        case "sakit":
-          statusCounts.Sakit++;
-          break;
-        case "alpha":
-          statusCounts.Alpha++;
-          break;
-        default:
-          break;
+      // Check if item.status is defined before calling toLowerCase
+      if (item.status) {
+        switch (item.status.toLowerCase()) {
+          case "masuk":
+            statusCounts.Masuk++;
+            break;
+          case "izin":
+            statusCounts.Izin++;
+            break;
+          case "sakit":
+            statusCounts.Sakit++;
+            break;
+          case "alpha":
+            statusCounts.Alpha++;
+            break;
+          default:
+            break;
+        }
       }
     });
 
@@ -190,8 +191,9 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-      }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+    }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -269,24 +271,28 @@ function PiketanGuru() {
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
-      Swal.fire('Error', 'Anda belum memilih file untuk diimport!.', 'error');
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', excelFile);
+    formData.append("file", excelFile);
 
     try {
-      const response = await axios.post('http://localhost:4001/piket/import', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:4001/piket/import",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(response.data);
-      Swal.fire('Sukses!', 'Berhasil Ditambahkan.', 'success');
+      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
     } catch (error) {
-      console.error('Error importing file:', error);
-      Swal.fire('Error', 'Gagal mengimpor file.', 'error');
+      console.error("Error importing file:", error);
+      Swal.fire("Error", "Gagal mengimpor file.", "error");
     }
   };
 
@@ -296,7 +302,7 @@ function PiketanGuru() {
         <SidebarGuru />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
           <h1 className="text-3xl font-semibold text-gray-800">Piketan Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -360,7 +366,6 @@ function PiketanGuru() {
                   </div>
                 </div>
               )}
-
             </div>
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
@@ -402,7 +407,7 @@ function PiketanGuru() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
                 {Object.keys(piketByDateAndClass)
                   .slice(
                     currentPage * itemsPerPage,
@@ -426,16 +431,20 @@ function PiketanGuru() {
                       (item) => {
                         const kelasNama = kelasData ? kelasData.kelas : "";
                         const namaKelas = kelasData ? kelasData.nama_kelas : "";
-                        const tanggalItem = item.tanggal.toLowerCase(); // Convert date to lowercase
+                        const tanggalItem = item.tanggal
+                          ? item.tanggal.toLowerCase()
+                          : ""; // Check if item.tanggal is defined
                         const searchTermLower = searchTerm.toLowerCase();
 
                         return (
                           (kelasNama.toLowerCase().includes(searchTermLower) ||
                             namaKelas.toLowerCase().includes(searchTermLower) ||
                             tanggalItem.includes(searchTermLower)) &&
-                          item.status
-                            .toLowerCase()
-                            .includes(filteredDate.toLowerCase()) // Filter by date
+                          (filteredDate === "" ||
+                            (item.status &&
+                              item.status
+                                .toLowerCase()
+                                .includes(filteredDate.toLowerCase()))) // Filter by date and check if item.status is defined
                         );
                       }
                     );
@@ -474,7 +483,7 @@ function PiketanGuru() {
                             </button>
                             <button
                               onClick={() =>
-                                handledeletePiket(filteredPiketData[0].id)
+                                handleDeletePiket(filteredPiketData[0].id)
                               }
                               className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
@@ -487,14 +496,14 @@ function PiketanGuru() {
                       return null;
                     }
                   })}
-                {Object.keys(piketByDateAndClass).length === 0 &&
-                  searchTerm.length === 0 && (
+                {Object.keys(piketByDateAndClass).length === 0 ||
+                  (searchTerm.length > 0 && !filteredDate && (
                     <tr>
                       <td colSpan="8" className="text-center py-4">
                         Tidak ada data piketan yang ditemukan
                       </td>
                     </tr>
-                  )}
+                  ))}
               </tbody>
             </table>
           </div>

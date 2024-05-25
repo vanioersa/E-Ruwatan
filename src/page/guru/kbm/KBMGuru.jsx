@@ -267,7 +267,7 @@ function KBMGuru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal" >
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
                 {filteredKBMGuru.length > 0 ? (
                   filteredKBMGuru
                     .slice(

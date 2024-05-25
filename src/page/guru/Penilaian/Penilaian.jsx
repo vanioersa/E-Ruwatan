@@ -205,7 +205,7 @@ function Penilaian() {
         <SidebarGuru />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
           <h1 className="text-3xl font-semibold text-gray-800">
             Penilaian Guru
           </h1>
@@ -247,7 +247,7 @@ function Penilaian() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-600 text-base font-normal">
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
                 {filteredData.length > 0 ? (
                   filteredData
                     .slice(

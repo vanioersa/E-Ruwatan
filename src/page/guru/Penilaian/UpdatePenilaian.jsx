@@ -103,8 +103,8 @@ const UpdatePenilaian = () => {
 
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Perbarui Penilaian Guru</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Perbarui Penilaian Guru
           </p>
           <form onSubmit={handleSubmit}>
