@@ -157,11 +157,9 @@ const SidebarGuru = () => {
         </div>
 
         {/* Profil dropdown */}
-        <div
-          className="relative ml-3"
-        >
+        <div className="relative ml-3">
           <div>
-          <button
+            <button
               type="button"
               className={`${
                 darkMode ? "bg-white" : "bg-gray-800"
@@ -179,8 +177,8 @@ const SidebarGuru = () => {
 
           {userMenuOpen && (
             <div
-              className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md ${
-                darkMode ? "bg-gray-800" : "bg-white"
+              className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 ${
+                darkMode ? "bg-gray-700" : "bg-white"
               } py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
               role="menu"
               aria-orientation="vertical"
@@ -380,36 +378,49 @@ const SidebarGuru = () => {
           >
             <button
               onClick={toggleDarkMode}
-              className={`flex items-center w-full`}
+              className={`flex items-center w-full ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
             >
-              {darkMode ? (
-                <svg
-                  className="w-7 h-7 mx-2"
-                  viewBox="0 0 512 512"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <title />
-                  <g data-name="1" id="_1">
-                    <path d="M370.24,425.59a14.89,14.89,0,0,1-7-1.72L257,368,150.74,423.87A15,15,0,0,1,129,408.06l20.3-118.32-86-83.8a15,15,0,0,1,8.31-25.59l118.81-17.26L243.55,55.43a15,15,0,0,1,26.9,0l53.13,107.66,118.8,17.26a15,15,0,0,1,8.32,25.59l-86,83.8L385,408.06a15,15,0,0,1-14.78,17.53ZM106,205.67l69.85,68.09A15,15,0,0,1,180.17,287l-16.49,96.14L250,337.78a15,15,0,0,1,14,0l86.34,45.39L333.83,287a15,15,0,0,1,4.31-13.27L408,205.67l-96.53-14a15,15,0,0,1-11.29-8.2L257,96l-43.17,87.47a15,15,0,0,1-11.3,8.2Z" />
-                  </g>
-                </svg>
-              ) : (
-                <svg
-                  className="w-7 h-7 mx-2"
-                  viewBox="0 0 256 256"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect fill="none" height="256" width="256" />
-                  <path
-                    d="M216.7,152.6A91.9,91.9,0,0,1,103.4,39.3h0A92,92,0,1,0,216.7,152.6Z"
+              <span
+                className={`w-7 h-7 mx-2 ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                {darkMode ? (
+                  <svg
+                    className="w-7 h-7 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    data-slot="icon"
                     fill="none"
-                    stroke="#000"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="16"
-                  />
-                </svg>
-              )}
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-7 h-7 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    data-slot="icon"
+                    fill="none"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                    />
+                  </svg>
+                )}
+              </span>
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
                 className={`${

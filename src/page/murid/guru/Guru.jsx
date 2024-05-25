@@ -99,9 +99,18 @@ function Guru() {
 
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
-  const modifiedGuru = filteredGuru.map((g, index) => {
-    const modifiedTelepon =
-      g.telepon && g.telepon.replace(/^08/, "+62 ").replace(/.{4}$/, "****");
+  // const modifiedGuru = filteredGuru.map((g, index) => {
+  //   const modifiedTelepon =
+  //     g.telepon && g.telepon.replace(/^08/, "+62 ").replace(/.{4}$/, "****");
+
+  //   return {
+  //     ...g,
+  //     modifiedTelepon,
+  //   };
+  // });
+
+   const modifiedGuru = filteredGuru.map((g, index) => {
+    const modifiedTelepon = g.telepon && g.telepon.replace(/^08/, "+62 ");
 
     return {
       ...g,
@@ -115,7 +124,7 @@ function Guru() {
     Email: g.email,
     "Jenis Kelamin": g.gender,
     Alamat: g.alamat,
-    "Nomor Telepon": g.telepon,
+    "Nomor Telepon": g.modifiedTelepon,
     "Status Pernikahan": g.status_nikah,
   }));
 
@@ -308,9 +317,9 @@ function Guru() {
                         >
                           {g.telepon ? (
                             isHiddenTelepon ? (
-                              <span>{g.modifiedTelepon}</span>
+                              <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
                             ) : (
-                              <span>{g.telepon.replace(/^08/, "+62 ")}</span>
+                              <span>{g.telepon}</span>
                             )
                           ) : (
                             <span

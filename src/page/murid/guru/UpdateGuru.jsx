@@ -3,10 +3,13 @@ import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import { getUsersById, updateUsers } from "./api_guru";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const UpdateGuru = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [guru, setGuru] = useState({
     username: "",
@@ -15,8 +18,12 @@ const UpdateGuru = () => {
     gender: "",
     telepon: "",
     status_nikah: "",
-    password: "", // Add password field
+    password: "",
   });
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -50,8 +57,7 @@ const UpdateGuru = () => {
       initialGuruData.alamat !== guru.alamat ||
       initialGuruData.gender !== guru.gender ||
       initialGuruData.telepon !== guru.telepon ||
-      initialGuruData.status_nikah !== guru.status_nikah ||
-      guru.password !== ""; // Check if password is changed
+      initialGuruData.status_nikah !== guru.status_nikah;
 
     if (!isDataChanged) {
       Swal.fire({
@@ -64,11 +70,20 @@ const UpdateGuru = () => {
       return;
     }
 
+    // Validasi password minimal 8 karakter saat ingin mengganti password
+    if (guru.password && guru.password.length < 8) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Password harus minimal 8 karakter",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
     try {
       const updatedGuru = { ...guru };
-      if (guru.password === "") {
-        delete updatedGuru.password; // Remove password field if not changed
-      }
       await updateUsers(id, updatedGuru);
       Swal.fire({
         icon: "success",
@@ -102,7 +117,10 @@ const UpdateGuru = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Update Guru</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Guru
           </p>
@@ -241,13 +259,22 @@ const UpdateGuru = () => {
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="off"
                 value={guru.password}
                 onChange={handleChange}
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                placeholder="Masukkan Password"
+                placeholder="Masukkan password yang akan diubah"
               />
+              <div
+                className="icon-container"
+                onClick={togglePasswordVisibility}
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  className="text-gray-400"
+                />
+              </div>
             </div>
 
             <div className="flex justify-between mt-6">
@@ -268,6 +295,15 @@ const UpdateGuru = () => {
           </form>
         </div>
       </div>
+      <style>{`
+      .icon-container {
+        position: absolute;
+        top: 70%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+      }
+      `}</style>
     </div>
   );
 };

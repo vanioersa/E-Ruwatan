@@ -243,14 +243,14 @@ const SidebarAdmin = () => {
               } flex items-center w-full`}
               onClick={toggleDarkMode}
             >
-              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} size="lg" />{" "}
+              <FontAwesomeIcon icon={darkMode ? faMoon : faSun} size="lg" />{" "}
               <span
                 style={{ fontFamily: "Segoe UI" }}
                 className={`${
                   darkMode ? "text-white" : "text-black"
                 } mx-3 font-medium`}
               >
-                {darkMode ? "Terang" : "Gelap"}
+                {darkMode ? "Gelap" : "Terang"}
               </span>
             </Link>
           </li>
