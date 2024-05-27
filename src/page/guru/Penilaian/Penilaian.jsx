@@ -231,6 +231,7 @@ function Penilaian() {
               </button>
             </div>
           </div>
+          
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
@@ -262,10 +263,10 @@ function Penilaian() {
                         <td className="py-2 px-4 text-center">
                           {index + 1 + currentPage * dataPerPage}
                         </td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {Siswa.find((s) => s.id === item.siswaId)?.nama_siswa}
                         </td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {kelas.find((k) => k.id === item.kelasId)?.kelas} -{" "}
                           {kelas.find((k) => k.id === item.kelasId)?.nama_kelas}
                         </td>
@@ -274,7 +275,7 @@ function Penilaian() {
                           {item.deskripsi ? (
                             <span>{item.deskripsi}</span>
                           ) : (
-                            <span className="text-gray-400 italic">
+                            <span className="text-gray-400 italic whitespace-nowrap">
                               Deskripsi belum ditambahkan
                             </span>
                           )}

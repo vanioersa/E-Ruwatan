@@ -133,17 +133,20 @@ function KBMGuru() {
   };
 
   const dataToExport = filteredKBMGuru
-  .filter((kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername)
-  .map((kbm) => ({
-    "Nama Guru": users.find((u) => u.id === kbm.userId)?.username,
-    Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas
-    }`,
-    "Jam Masuk": kbm.jam_masuk,
-    "Jam Pulang": kbm.jam_pulang,
-    Materi: kbm.materi,
-    Keterangan: kbm.keterangan,
-  }));
+    .filter(
+      (kbm) =>
+        users.find((u) => u.id === kbm.userId)?.username === storedUsername
+    )
+    .map((kbm) => ({
+      "Nama Guru": users.find((u) => u.id === kbm.userId)?.username,
+      Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${
+        kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas
+      }`,
+      "Jam Masuk": kbm.jam_masuk,
+      "Jam Pulang": kbm.jam_pulang,
+      Materi: kbm.materi,
+      Keterangan: kbm.keterangan,
+    }));
 
   const exportToXlsx = () => {
     if (dataToExport.length === 0) {
@@ -223,7 +226,10 @@ function KBMGuru() {
         <SidebarGuru />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div style={{ backgroundColor: "white" }} className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
+        >
           <h1 className="text-3xl font-semibold text-gray-800">KBM Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -263,11 +269,14 @@ function KBMGuru() {
                     Jam Selesai
                   </th>
                   <th className="py-2 px-4 text-left">Materi</th>
-                  <th className="py-2 px-4 text-left">Keterangan</th>
+                  <th className="py-2 px-4 text-center">Keterangan</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
                 {filteredKBMGuru.length > 0 ? (
                   filteredKBMGuru
                     .slice(
@@ -302,19 +311,16 @@ function KBMGuru() {
                           <td className="py-2 px-4">{kbm.jam_masuk}</td>
                           <td className="py-2 px-4">{kbm.jam_pulang}</td>
                           <td className="py-2 px-4">{kbm.materi}</td>
-                          <td
-                            className="py-2 px-4"
-                            style={{ maxWidth: "200px" }}
-                          >
+                          <td className="py-2 px-4 text-center">
                             {kbm.keterangan ? (
                               <span>{kbm.keterangan}</span>
                             ) : (
-                              <span className="text-gray-400 italic">
+                              <span className="text-gray-400 italic whitespace-nowrap">
                                 Keterangan belum ditambahkan
                               </span>
                             )}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <Link to={`/EditKBM/${kbm.id}`}>
                                 <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">

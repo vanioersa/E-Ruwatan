@@ -114,14 +114,37 @@ function PiketanGuru() {
   };
 
   const handleDeletePiket = async (id) => {
-    try {
-      // Call the delete function from your services/api
-      await deletePiket(id);
-      // Refresh the list or remove the item from the state
-      console.log("Piket berhasil dihapus!!");
-    } catch (error) {
-      console.error("delete error:", error);
-    }
+    Swal.fire({
+      title: "Konfirmasi",
+      text: `Anda yakin ingin menghapus data penilaian?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Tidak",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deletePiket(id);
+          setData((prevData) => prevData.filter((item) => item.id !== id));
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data penilaian berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        } catch (error) {
+          console.error("Failed to delete penilaian: ", error);
+          Swal.fire({
+            title: "Gagal",
+            text: `Gagal menghapus penilaian`,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
+      }
+    });
   };
 
   const handleModalOpen = () => {
@@ -302,7 +325,10 @@ function PiketanGuru() {
         <SidebarGuru />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
+        >
           <h1 className="text-3xl font-semibold text-gray-800">Piketan Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -368,142 +394,144 @@ function PiketanGuru() {
               )}
             </div>
           </div>
+
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Tanggal</th>
+                  <th className="py-2 px-4 text-center">No</th>
+                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center">Tanggal</th>
                   <th
-                    className="py-2 px-4 text-center"
+                    className="py-2 px-4 text-center whitespace-nowrap"
                     style={{ maxWidth: "50px" }}
                   >
                     Masuk
                   </th>
                   <th
-                    className="py-2 px-4 text-center"
+                    className="py-2 px-4 text-center whitespace-nowrap"
                     style={{ maxWidth: "50px" }}
                   >
                     Izin
                   </th>
                   <th
-                    className="py-2 px-4 text-center"
+                    className="py-2 px-4 text-center whitespace-nowrap"
                     style={{ maxWidth: "50px" }}
                   >
                     Sakit
                   </th>
                   <th
-                    className="py-2 px-4 text-center"
+                    className="py-2 px-4 text-center whitespace-nowrap"
                     style={{ maxWidth: "50px" }}
                   >
                     Alpha
                   </th>
-                  <th
-                    className="py-2 px-4 text-center"
-                    style={{ maxWidth: "50px" }}
-                  >
-                    Aksi
-                  </th>
+                  <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
-                {Object.keys(piketByDateAndClass)
-                  .slice(
-                    currentPage * itemsPerPage,
-                    (currentPage + 1) * itemsPerPage
-                  )
-                  .map((key, index) => {
-                    const [tanggal, kelasId] = key.split("_");
-                    const kelasData = kelas.find(
-                      (k) => k.id === parseInt(kelasId)
-                    );
-                    const kelasName = kelasData
-                      ? `${kelasData.kelas} ${kelasData.nama_kelas}`
-                      : "";
-                    const statusSummary = getStatusSummaryByDateAndClass(
-                      tanggal,
-                      parseInt(kelasId)
-                    );
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
+                {Object.keys(piketByDateAndClass).length > 0 ? (
+                  Object.keys(piketByDateAndClass)
+                    .slice(
+                      currentPage * itemsPerPage,
+                      (currentPage + 1) * itemsPerPage
+                    )
+                    .map((key, index) => {
+                      const [tanggal, kelasId] = key.split("_");
+                      const kelasData = kelas.find(
+                        (k) => k.id === parseInt(kelasId)
+                      );
+                      const kelasName = kelasData
+                        ? `${kelasData.kelas} ${kelasData.nama_kelas}`
+                        : "";
+                      const statusSummary = getStatusSummaryByDateAndClass(
+                        tanggal,
+                        parseInt(kelasId)
+                      );
 
-                    // Filter data based on search term and filteredDate
-                    const filteredPiketData = piketByDateAndClass[key].filter(
-                      (item) => {
-                        const kelasNama = kelasData ? kelasData.kelas : "";
-                        const namaKelas = kelasData ? kelasData.nama_kelas : "";
-                        const tanggalItem = item.tanggal
-                          ? item.tanggal.toLowerCase()
-                          : ""; // Check if item.tanggal is defined
-                        const searchTermLower = searchTerm.toLowerCase();
+                      const filteredPiketData = piketByDateAndClass[key].filter(
+                        (item) => {
+                          const kelasNama = kelasData ? kelasData.kelas : "";
+                          const namaKelas = kelasData
+                            ? kelasData.nama_kelas
+                            : "";
+                          const tanggalItem = item.tanggal
+                            ? item.tanggal.toLowerCase()
+                            : "";
+                          const searchTermLower = searchTerm.toLowerCase();
 
-                        return (
-                          (kelasNama.toLowerCase().includes(searchTermLower) ||
-                            namaKelas.toLowerCase().includes(searchTermLower) ||
-                            tanggalItem.includes(searchTermLower)) &&
-                          (filteredDate === "" ||
-                            (item.status &&
-                              item.status
+                          return (
+                            (kelasNama
+                              .toLowerCase()
+                              .includes(searchTermLower) ||
+                              namaKelas
                                 .toLowerCase()
-                                .includes(filteredDate.toLowerCase()))) // Filter by date and check if item.status is defined
-                        );
-                      }
-                    );
+                                .includes(searchTermLower) ||
+                              tanggalItem.includes(searchTermLower)) &&
+                            (filteredDate === "" ||
+                              (item.status &&
+                                item.status
+                                  .toLowerCase()
+                                  .includes(filteredDate.toLowerCase())))
+                          );
+                        }
+                      );
 
-                    if (filteredPiketData.length > 0) {
                       return (
                         <tr
                           key={index}
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center">
                             {currentPage * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2 px-4">{kelasName}</td>
-                          <td className="py-2 px-4">{tanggal}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kelasName}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{tanggal}</td>
+                          <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Masuk}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Izin}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Sakit}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Alpha}
                           </td>
                           <td className="py-2 px-4 text-center">
-                            <button
-                              onClick={() =>
-                                handleUpdatePiket(filteredPiketData[0].id)
-                              }
-                              className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                            >
-                              <FontAwesomeIcon icon={faEdit} />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDeletePiket(filteredPiketData[0].id)
-                              }
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
+                            <div className="flex justify-center gap-2">
+                              <button
+                                onClick={() =>
+                                  handleUpdatePiket(filteredPiketData[0].id)
+                                }
+                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                              >
+                                <FontAwesomeIcon icon={faEdit} />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleDeletePiket(filteredPiketData[0].id)
+                                }
+                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
-                    } else {
-                      return null;
-                    }
-                  })}
-                {Object.keys(piketByDateAndClass).length === 0 ||
-                  (searchTerm.length > 0 && !filteredDate && (
-                    <tr>
-                      <td colSpan="8" className="text-center py-4">
-                        Tidak ada data piketan yang ditemukan
-                      </td>
-                    </tr>
-                  ))}
+                    })
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="text-sm py-4">
+                      Data Piketan tidak tersedia untuk pengguna ini
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -514,9 +542,9 @@ function PiketanGuru() {
               pageCount={pageCount}
               onPageChange={changePage}
               containerClassName="pagination flex justify-center items-center gap-2"
-              previousLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-              nextLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
-              disabledClassName="paginationDisabled"
+              previousLinkClassName="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded focus:outline-none"
+              nextLinkClassName="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded focus:outline-none"
+              disabledClassName="paginationDisabled opacity-50 cursor-not-allowed"
               activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
             />
           </div>

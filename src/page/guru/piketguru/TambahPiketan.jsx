@@ -93,7 +93,7 @@ const TambahPiketan = () => {
       siswaId: studentId,
       status: selectedStatus[studentId],
     }));
-  
+
     try {
       const createPiketPromises = siswaStatus.map((status) =>
         createPiket({
@@ -102,9 +102,9 @@ const TambahPiketan = () => {
           siswaStatus: [status],
         })
       );
-  
+
       await Promise.all(createPiketPromises);
-  
+
       Swal.fire({
         title: "Berhasil",
         text: "Piketan berhasil ditambahkan",
@@ -137,8 +137,13 @@ const TambahPiketan = () => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Tambah Piketan</h1>
-        <div className="bg-white p-5 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4">Tambah Piketan</p>
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
+        >
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+            Tambah Piketan
+          </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
@@ -201,12 +206,17 @@ const TambahPiketan = () => {
             </div>
           </form>
 
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>
+          <div
+            style={{ backgroundColor: "white" }}
+            className="my-10 bg-white border border-gray-200 rounded-xl shadow-lg p-6 mt-8"
+          >
+            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+              Daftar Siswa
+            </h2>
             <div className="overflow-x-auto">
-              <table className="min-w-full leading-normal">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
-                  <tr>
+                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Nama Siswa
                     </th>
@@ -224,14 +234,21 @@ const TambahPiketan = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody
+                  style={{ backgroundColor: "white" }}
+                  className="text-gray-600 text-base font-normal"
+                >
                   {selectedKelas && siswaByKelas.length > 0 ? (
                     siswaByKelas.map((siswa) => (
-                      <tr key={siswa.id}>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <tr
+                        className="px-5 py-5 border-b border-gray-200"
+                        key={siswa.id}
+                        style={{ backgroundColor: "white" }}
+                      >
+                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
                           {siswa.nama_siswa}
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -241,7 +258,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "masuk"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -251,7 +268,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "izin"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -261,7 +278,7 @@ const TambahPiketan = () => {
                             checked={selectedStatus[siswa.id] === "sakit"}
                           />
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-left">
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
                           <input
                             type="radio"
                             name={`status-${siswa.id}`}
@@ -276,7 +293,8 @@ const TambahPiketan = () => {
                   ) : (
                     <tr>
                       <td
-                        className="px-5 py-5 border-b border-gray-200 bg-white text-center"
+                        style={{ backgroundColor: "white" }}
+                        className="bg-white border border-gray-200 p-6 text-center"
                         colSpan="5"
                       >
                         {selectedKelas
