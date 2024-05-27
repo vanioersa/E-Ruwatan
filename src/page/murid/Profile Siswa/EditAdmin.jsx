@@ -4,7 +4,8 @@ import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import { getAdminById, updateAdmin } from "./api_admin";
 
-const EditAdmin = () => {const id = localStorage.getItem("id");
+const EditAdmin = () => {
+  const id = localStorage.getItem("id");
 
   const [admin, setAdmin] = useState({
     username: "",
@@ -41,9 +42,12 @@ const EditAdmin = () => {const id = localStorage.getItem("id");
 
     const initialAdminData = await getAdminById(id);
 
-    const isDataChanged =
+    const isUsernameEmailChanged =
       initialAdminData.username !== admin.username ||
-      initialAdminData.email !== admin.email ||
+      initialAdminData.email !== admin.email;
+
+    const isDataChanged =
+      isUsernameEmailChanged ||
       initialAdminData.alamat !== admin.alamat ||
       initialAdminData.gender !== admin.gender ||
       initialAdminData.telepon !== admin.telepon ||
@@ -60,26 +64,82 @@ const EditAdmin = () => {const id = localStorage.getItem("id");
       return;
     }
 
-    try {
-      await updateAdmin(id, admin);
+    if (isUsernameEmailChanged) {
       Swal.fire({
-        icon: "success",
-        title: "Berhasil",
-        text: "Data admin berhasil diperbarui",
-        showConfirmButton: false,
-        timer: 2000,
-      }).then(() => {
-        window.location.reload()
+        icon: "question",
+        title: "Apakah Anda yakin ",
+        text: "ingin mengubah email atau username?",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Ya",
+        cancelButtonText: "Tidak",
+        reverseButtons: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await updateAdmin(id, admin);
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil",
+              text: "Data admin berhasil diperbarui",
+              showConfirmButton: false,
+              timer: 2000,
+            }).then(() => {
+              localStorage.removeItem("token");
+              Swal.fire({
+                icon: "info",
+                title: "Anda harus login kembali",
+                text: "Silakan login kembali untuk melanjutkan",
+                showConfirmButton: false,
+                timer: 3000,
+              }).then(() => {
+                window.location.href = "/";
+              });
+            });
+          } catch (error) {
+            console.error("Failed to update admin:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Gagal memperbarui data admin. Silakan coba lagi.",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire({
+            icon: "error",
+            title: "Dibatalkan",
+            text: "Perubahan email atau username dibatalkan",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
       });
-    } catch (error) {
-      console.error("Failed to update admin:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Gagal",
-        text: "Gagal memperbarui data admin. Silakan coba lagi.",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+    } else {
+      try {
+        await updateAdmin(id, admin);
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Data admin berhasil diperbarui",
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } catch (error) {
+        console.error("Failed to update admin:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Gagal memperbarui data admin. Silakan coba lagi.",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
     }
   };
 
@@ -239,9 +299,15 @@ const EditAdmin = () => {const id = localStorage.getItem("id");
                       value={admin.gender}
                       onChange={handleChange}
                     >
-                      <option className="text-gray-700" value="">Pilih Jenis Kelamin</option>
-                      <option className="text-gray-700" value="Laki-laki">Laki-laki</option>
-                      <option className="text-gray-700" value="Perempuan">Perempuan</option>
+                      <option className="text-gray-700" value="">
+                        Pilih Jenis Kelamin
+                      </option>
+                      <option className="text-gray-700" value="Laki-laki">
+                        Laki-laki
+                      </option>
+                      <option className="text-gray-700" value="Perempuan">
+                        Perempuan
+                      </option>
                     </select>
                   </div>
                   <div className="pb-4">
@@ -259,10 +325,18 @@ const EditAdmin = () => {const id = localStorage.getItem("id");
                       value={admin.status_nikah}
                       onChange={handleChange}
                     >
-                      <option className="text-gray-700" value="">Pilih Status Nikah</option>
-                      <option className="text-gray-700" value="Belum Menikah">Belum Menikah</option>
-                      <option className="text-gray-700" value="Menikah">Menikah</option>
-                      <option className="text-gray-700" value="Cerai">Cerai</option>
+                      <option className="text-gray-700" value="">
+                        Pilih Status Nikah
+                      </option>
+                      <option className="text-gray-700" value="Belum Menikah">
+                        Belum Menikah
+                      </option>
+                      <option className="text-gray-700" value="Menikah">
+                        Menikah
+                      </option>
+                      <option className="text-gray-700" value="Cerai">
+                        Cerai
+                      </option>
                     </select>
                   </div>
                 </div>
