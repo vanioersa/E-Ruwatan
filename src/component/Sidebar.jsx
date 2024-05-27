@@ -121,9 +121,8 @@ const SidebarAdmin = () => {
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_admin">
             <span
-              className={`${
-                darkMode ? "text-white" : "text-black"
-              } text-3xl font-medium ml-2`}
+              className={`${darkMode ? "text-white" : "text-black"
+                } text-3xl font-medium ml-2`}
             >
               E-RUWATAN
             </span>
@@ -135,9 +134,8 @@ const SidebarAdmin = () => {
           <div>
             <button
               type="button"
-              className={`${
-                darkMode ? "bg-white" : "bg-gray-800"
-              } relative flex rounded-full text-sm`}
+              className={`${darkMode ? "bg-white" : "bg-gray-800"
+                } relative flex rounded-full text-sm`}
               id="user-menu-button"
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
@@ -151,9 +149,8 @@ const SidebarAdmin = () => {
 
           {userMenuOpen && (
             <div
-              className={`${
-                darkMode ? backgroundColor : "bg-white"
-              } absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1`}
+              className={`${darkMode ? backgroundColor : "bg-white"
+                } absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1`}
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
@@ -161,9 +158,8 @@ const SidebarAdmin = () => {
             >
               <Link to="/profile_admin">
                 <button
-                  className={`${
-                    darkMode ? "text-white" : "text-gray-700"
-                  } block px-4 py-2 text-sm`}
+                  className={`${darkMode ? "text-white" : "text-gray-700"
+                    } block px-4 py-2 text-sm`}
                   role="menuitem"
                   tabIndex="-1"
                   id="user-menu-item-0"
@@ -173,9 +169,8 @@ const SidebarAdmin = () => {
               </Link>
               <a
                 onClick={logout}
-                className={`${
-                  darkMode ? "text-white" : "text-gray-700"
-                } block px-4 py-2 text-sm`}
+                className={`${darkMode ? "text-white" : "text-gray-700"
+                  } block px-4 py-2 text-sm`}
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-2"
@@ -187,42 +182,65 @@ const SidebarAdmin = () => {
         </div>
       </nav>
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${
-          darkMode ? "dark:bg-gray-800" : ""
-        } shadow-xl border transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${darkMode ? "dark:bg-gray-800" : ""
+          } shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
         <ul className="mt-6 text-xl mx-2 text-gray-600 dark:text-gray-200">
           {[
-            { icon: faHome, name: "Dashboard", path: "/dashboard_admin" },
-            { icon: faChalkboardTeacher, name: "Guru", path: "/guru" },
-            { icon: faUserGroup, name: "Siswa", path: "/siswa" },
-            { icon: faDoorOpen, name: "Kelas", path: "/kelas" },
+            {
+              icon:
+                <svg className="w-7 h-7 mr-2" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path>
+                </svg>,
+              name: "Dashboard",
+              path: "/dashboard_admin"
+            },
+            {
+              icon:
+                <svg className="w-7 h-7 mr-2" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"></path>
+                </svg>,
+              name: "Guru",
+              path: "/guru"
+            },
+            {
+              icon:
+                <svg className="w-7 h-7 mr-2" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"></path>
+                </svg>,
+              name: "Siswa",
+              path: "/siswa"
+            },
+            {
+              icon:
+                <svg className="w-7 h-7 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#454444">
+                  <path d="M10.385 21.788a.997.997 0 0 0 .857.182l8-2A.999.999 0 0 0 20 19V5a1 1 0 0 0-.758-.97l-8-2A1.003 1.003 0 0 0 10 3v1H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4v1c0 .308.142.599.385.788zM12 4.281l6 1.5v12.438l-6 1.5V4.281zM7 18V6h3v12H7z"></path><path d="M14.242 13.159c.446-.112.758-.512.758-.971v-.377a1 1 0 1 0-2 .001v.377a1 1 0 0 0 1.242.97z"></path>
+                </svg>,
+              name: "Kelas",
+              path: "/kelas"
+            },
           ].map((item, index) => (
             <li
               key={index}
-              className={`py-2 px-3 my-2 rounded cursor-pointer ${
-                isActive(item.path)
-                  ? `bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
-                  : `hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
-              }`}
+              className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive(item.path)
+                ? `bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
+                : `hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
+                }`}
             >
               <Link
                 to={item.path}
-                className={`${
-                  darkMode ? "text-white" : "text-gray-800"
-                } flex items-center w-full`}
+                className={`${darkMode ? "text-white" : "text-gray-800"
+                  } flex items-center w-full`}
               >
-                <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                {item.icon}
                 <span
-                  style={{ fontFamily: "Segoe UI" }}
-                  className={`${
-                    darkMode ? "text-white" : "text-gray-800"
-                  } mx-2 font-medium`}
+                  style={{ fontFamily: "Poopins", fontWeight: "bold" }}
+                  className={`${darkMode ? "text-white" : "text-gray-800"
+                    } mx-2 font-medium`}
                 >
                   {item.name}
                 </span>
@@ -230,25 +248,22 @@ const SidebarAdmin = () => {
             </li>
           ))}
           <li
-            className={`py-2 px-5 my-2 rounded cursor-pointer ${
-              darkMode
-                ? "hover:text-black hover:bg-gray-400 "
-                : "hover:text-white hover:bg-gray-600"
-            } absolute bottom-0 left-0 right-0 w-full`}
+            className={`py-2 px-5 my-2 rounded cursor-pointer ${darkMode
+              ? "hover:text-black hover:bg-gray-400 "
+              : "hover:text-white hover:bg-gray-600"
+              } absolute bottom-0 left-0 right-0 w-full`}
           >
             <Link
               type="button"
-              className={`${
-                darkMode ? "text-white" : "text-black"
-              } flex items-center w-full`}
+              className={`${darkMode ? "text-white" : "text-black"
+                } flex items-center w-full`}
               onClick={toggleDarkMode}
             >
               <FontAwesomeIcon icon={darkMode ? faMoon : faSun} size="lg" />{" "}
               <span
                 style={{ fontFamily: "Segoe UI" }}
-                className={`${
-                  darkMode ? "text-white" : "text-black"
-                } mx-3 font-medium`}
+                className={`${darkMode ? "text-white" : "text-black"
+                  } mx-3 font-medium`}
               >
                 {darkMode ? "Gelap" : "Terang"}
               </span>
@@ -257,9 +272,8 @@ const SidebarAdmin = () => {
         </ul>
       </div>
       <div
-        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "md:ml-0" : "-md:ml-64"
-        }`}
+        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"
+          }`}
       />
       <style>{`
         body {

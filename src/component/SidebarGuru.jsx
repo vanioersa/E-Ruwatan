@@ -256,7 +256,7 @@ const SidebarGuru = () => {
                 ></path>
               </svg>
               <span
-                style={{ fontFamily: "Roboto", fontWeight: "bold" }}
+                style={{ fontFamily: "Poopins", fontWeight: "bold" }}
                 className={`${darkMode ? "text-white" : "text-black"} mx-2`}
               >
                 Dashboard
