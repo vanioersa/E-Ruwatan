@@ -18,6 +18,15 @@ export const createPiket = async (piketData) => {
   }
 };
 
+export const getPiketByClass = async (classId) => {
+  try {
+    const response = await axios.get(`${apiUrl}/pikets/class/${classId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getAllPiket = async () => {
   try {
     const response = await axios.get(`${apiUrl}/all`);

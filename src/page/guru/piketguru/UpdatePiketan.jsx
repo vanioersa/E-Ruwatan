@@ -1,66 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import SidebarGuru from "../../../component/SidebarGuru";
-import { updatePiket, getAllPiket } from "./api_piket";
+import { updatePiket, getAllPiket, getPiketByClass } from "./api_piket"; // Ensure you have API functions to get all piket data and piket data by class
 
 const UpdatePiketan = () => {
-  const [kelas, setKelas] = useState([]);
-  const [selectedKelas, setSelectedKelas] = useState('');
-  const [piketan, setPiketan] = useState({ tanggal: '' });
+  const [kelasList, setKelasList] = useState([]);
+  const [selectedKelas, setSelectedKelas] = useState("");
+  const [piketan, setPiketan] = useState({ tanggal: "" });
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [selectedStudentIds, setSelectedStudentIds] = useState({});
-
-  // Assuming you need useParams to get some parameter
-  const { id } = useParams(); // id of the piket to update
+  const [selectedStatus, setSelectedStatus] = useState({});
 
   useEffect(() => {
-    // Fetch all kelas information
-    getAllPiket().then(response => {
-      setKelas(response.data);
-      // Assume response.data returns array of class objects
-    });
+    const fetchAllKelas = async () => {
+      try {
+        const response = await getAllPiket(); // Fetch all piket data
+        setKelasList(response);
+      } catch (error) {
+        console.error("Error fetching all piket data: ", error);
+        Swal.fire("Error", "Failed to fetch kelas data", "error");
+      }
+    };
 
-    // Simulating fetch of student details if you have such an API or logic
-    if (selectedKelas) {
-      // Fetch students by kelas
-      fetch(`/api/siswa/kelas/${selectedKelas}`).then(response => response.json()).then(data => {
-        setSiswaByKelas(data);
-      });
-    }
+    fetchAllKelas();
+  }, []);
+
+  useEffect(() => {
+    const fetchPiketByClass = async () => {
+      if (selectedKelas) {
+        try {
+          const response = await getPiketByClass(selectedKelas); // Fetch piket data by class
+          const piketData = response;
+
+          setPiketan({ tanggal: piketData.tanggal });
+          setSiswaByKelas(piketData.siswa); // Assuming piketData includes student data
+          const statusMap = piketData.siswa.reduce((acc, student) => {
+            acc[student.id] = student.status;
+            return acc;
+          }, {});
+          setSelectedStatus(statusMap);
+        } catch (error) {
+          console.error("Error fetching piket data: ", error);
+          Swal.fire("Error", "Failed to fetch piket data", "error");
+        }
+      }
+    };
+
+    fetchPiketByClass();
   }, [selectedKelas]);
 
   const handleKelasChange = (event) => {
     setSelectedKelas(event.target.value);
   };
 
-  const handleChange = (event) => {
-    setPiketan({ ...piketan, [event.target.name]: event.target.value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    updatePiket(id, { ...piketan, kelas: selectedKelas, studentStatuses: selectedStudentIds })
-      .then(() => {
-        Swal.fire('Success', 'Piketan updated successfully', 'success');
-      })
-      .catch(error => {
-        Swal.fire('Error', 'Failed to update piketan', 'error');
-      });
-  };
-
   const handleStudentCheckboxChange = (studentId, status) => {
-    setSelectedStudentIds({
-      ...selectedStudentIds,
-      [studentId]: status
-    });
+    setSelectedStatus((prev) => ({
+      ...prev,
+      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const siswaStatus = Object.keys(selectedStatus).map((studentId) => ({
+      siswaId: studentId,
+      status: selectedStatus[studentId],
+    }));
+
+    try {
+      await updatePiket(selectedKelas, { siswaStatus });
+
+      Swal.fire({
+        title: "Berhasil",
+        text: "Piketan berhasil diperbarui",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error updating piketan: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal memperbarui piketan. Silakan coba lagi.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const batal = () => {
-    // Optionally, navigate back or clear form
-    setSelectedKelas('');
-    setPiketan({ tanggal: '' });
-    setSelectedStudentIds({});
+    setSelectedKelas("");
+    setPiketan({ tanggal: "" });
+    setSiswaByKelas([]);
+    setSelectedStatus({});
   };
 
   return (
@@ -68,23 +100,29 @@ const UpdatePiketan = () => {
       <div className="sidebar w-full md:w-64">
         <SidebarGuru />
       </div>
-      <div className="content-page max-h-screen container p-8 min-h-screen">
-        <h1 className="judul text-3xl font-semibold">Update Piketan</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
-          <p className="text-lg sm:text-xl font-medium mb-4 sm:mb-7">
+      <div className="content-page flex-grow p-8 min-h-screen">
+        <h1 className="text-3xl font-semibold mb-6">Update Piketan</h1>
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
+        >
+          <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Piketan
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
-                <label htmlFor="kelasId" className="block mb-2 text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="kelasId"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
                   Kelas
                 </label>
                 <select
                   name="kelasId"
                   value={selectedKelas}
                   onChange={handleKelasChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 >
                   <option value="">Pilih Kelas</option>
@@ -97,7 +135,10 @@ const UpdatePiketan = () => {
               </div>
 
               <div className="relative">
-                <label htmlFor="tanggal" className="block mb-2 text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="tanggal"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
                   Tanggal
                 </label>
                 <input
@@ -105,43 +146,124 @@ const UpdatePiketan = () => {
                   name="tanggal"
                   value={piketan.tanggal}
                   onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Tanggal"
                   required
+                  readOnly
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-4">
+
+            <div className="flex justify-between mt-6">
               <button
                 type="button"
                 onClick={batal}
-                className="text-gray-600 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                className="w-24 rounded-lg text-black border border-red-500 py-2 text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                className="w-24 rounded-lg text-black border border-blue-700 py-2 text-sm font-medium"
               >
-                Update Piketan
+                Simpan
               </button>
             </div>
           </form>
-          {/* Optionally list students to select for the duty */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>
-            <ul>
-              {siswaByKelas.map((student) => (
-                <li key={student.id} className="mb-2">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedStudentIds[student.id] || false}
-                      onChange={() => handleStudentCheckboxChange(student.id, !selectedStudentIds[student.id])}
-                    /> {student.nama}
-                  </label>
-                </li>
-              ))}
-            </ul>
+
+          <div
+            style={{ backgroundColor: "white" }}
+            className="my-10 bg-white border border-gray-200 rounded-xl shadow-lg p-6 mt-8"
+          >
+            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+              Daftar Siswa
+            </h2>
+            <div className="overflow-x-auto">
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Nama Siswa
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Masuk
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Izin
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Sakit
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Alpha
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-600 text-base font-normal">
+                  {siswaByKelas.length > 0 ? (
+                    siswaByKelas.map((siswa) => (
+                      <tr
+                        key={siswa.id}
+                        className="px-5 py-5 border-b border-gray-200"
+                      >
+                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                          {siswa.nama_siswa}
+                        </td>
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
+                          <input
+                            type="radio"
+                            name={`status-${siswa.id}`}
+                            onChange={() =>
+                              handleStudentCheckboxChange(siswa.id, "masuk")
+                            }
+                            checked={selectedStatus[siswa.id] === "masuk"}
+                          />
+                        </td>
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
+                          <input
+                            type="radio"
+                            name={`status-${siswa.id}`}
+                            onChange={() =>
+                              handleStudentCheckboxChange(siswa.id, "izin")
+                            }
+                            checked={selectedStatus[siswa.id] === "izin"}
+                          />
+                        </td>
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
+                          <input
+                            type="radio"
+                            name={`status-${siswa.id}`}
+                            onChange={() =>
+                              handleStudentCheckboxChange(siswa.id, "sakit")
+                            }
+                            checked={selectedStatus[siswa.id] === "sakit"}
+                          />
+                        </td>
+                        <td className="px-5 py-5 border-b border-gray-200 text-left">
+                          <input
+                            type="radio"
+                            name={`status-${siswa.id}`}
+                            onChange={() =>
+                              handleStudentCheckboxChange(siswa.id, "alpha")
+                            }
+                            checked={selectedStatus[siswa.id] === "alpha"}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="px-5 py-5 border-b border-gray-200 text-center"
+                      >
+                        Tidak ada data siswa.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
