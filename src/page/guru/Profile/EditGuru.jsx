@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Sidebar from "../../../component/SidebarGuru";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
-import { getGuruById, updateGuru } from "./api_guru";
+import { getAdminById, updateAdmin } from "./api_guru";
 
 const EditGuru = () => {
   const id = localStorage.getItem("id");
 
-  const [guru, setGuru] = useState({
+  const [admin, setAdmin] = useState({
     username: "",
     email: "",
     alamat: "",
@@ -17,55 +17,115 @@ const EditGuru = () => {
   });
 
   useEffect(() => {
-    const fetchGuru = async () => {
+    const fetchAdmin = async () => {
       try {
-        const guruData = await getGuruById(id);
-        setGuru(guruData);
+        const adminData = await getAdminById(id);
+        setAdmin(adminData);
       } catch (error) {
-        console.error("Failed to fetch guru:", error);
+        console.error("Failed to fetch admin:", error);
       }
     };
 
-    fetchGuru();
+    fetchAdmin();
   }, [id]);
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData) {
-      setGuru(userData);
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setGuru((prevGuru) => ({
-      ...prevGuru,
+    setAdmin((prevAdmin) => ({
+      ...prevAdmin,
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await updateGuru(id, guru);
-      // Menampilkan pesan sukses menggunakan Swal
-      Swal.fire({
-        icon: "success",
-        title: "Berhasil",
-        text: "Data Guru berhasil diperbarui",
-        showConfirmButton: false,
-        timer: 2000,
-      }).then(() => {
-        // Setelah berhasil, tidak perlu lagi reload halaman atau login ulang
-        // Cukup set state guru dengan data yang baru
-        setGuru(guru);
-      });
+      const initialAdminData = await getAdminById(id);
+
+      const isUsernameEmailChanged =
+        initialAdminData.username !== admin.username ||
+        initialAdminData.email !== admin.email;
+
+      const isDataChanged =
+        isUsernameEmailChanged ||
+        initialAdminData.alamat !== admin.alamat ||
+        initialAdminData.gender !== admin.gender ||
+        initialAdminData.telepon !== admin.telepon ||
+        initialAdminData.status_nikah !== admin.status_nikah;
+
+      if (!isDataChanged) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Minimal satu data harus diubah",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      if (isUsernameEmailChanged) {
+        Swal.fire({
+          icon: "question",
+          title: "Apakah Anda yakin?",
+          text: "ingin mengubah email atau username?",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Ya",
+          cancelButtonText: "Tidak",
+          reverseButtons: true,
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            await updateAdmin(id, admin);
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil",
+              text: "Data admin berhasil diperbarui",
+              showConfirmButton: false,
+              timer: 2000,
+            }).then(() => {
+              localStorage.removeItem("token");
+              Swal.fire({
+                icon: "info",
+                title: "Anda harus login kembali",
+                text: "Silakan login kembali untuk melanjutkan",
+                showConfirmButton: false,
+                timer: 3000,
+              }).then(() => {
+                window.location.href = "/";
+              });
+            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              icon: "error",
+              title: "Dibatalkan",
+              text: "Perubahan email atau username dibatalkan",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        });
+      } else {
+        await updateAdmin(id, admin);
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Data admin berhasil diperbarui",
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      }
     } catch (error) {
-      console.error("Gagal memperbarui data guru:", error);
+      console.error("Failed to update admin:", error);
       Swal.fire({
         icon: "error",
         title: "Gagal",
-        text: "Gagal memperbarui data guru. Silakan coba lagi.",
+        text: "Gagal memperbarui data admin. Silakan coba lagi.",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -126,7 +186,7 @@ const EditGuru = () => {
                       aria-controls="settings"
                       aria-selected="false"
                     >
-                       Edit Password
+                      Edit Password
                     </button>
                   </Link>
                 </li>
@@ -155,10 +215,10 @@ const EditGuru = () => {
                     <input
                       id="username"
                       name="username"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="text"
                       autoComplete="off"
-                      value={guru.username}
+                      value={admin.username}
                       onChange={handleChange}
                     />
                   </div>
@@ -172,10 +232,10 @@ const EditGuru = () => {
                     <input
                       id="email"
                       name="email"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="email"
                       autoComplete="off"
-                      value={guru.email}
+                      value={admin.email}
                       onChange={handleChange}
                     />
                   </div>
@@ -190,9 +250,9 @@ const EditGuru = () => {
                       id="alamat"
                       name="alamat"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="text"
-                      value={guru.alamat}
+                      value={admin.alamat}
                       onChange={handleChange}
                     />
                   </div>
@@ -207,9 +267,9 @@ const EditGuru = () => {
                       id="telepon"
                       name="telepon"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
-                      type="text"
-                      value={guru.telepon}
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                      type="number"
+                      value={admin.telepon}
                       onChange={handleChange}
                     />
                   </div>
@@ -224,13 +284,19 @@ const EditGuru = () => {
                       id="gender"
                       name="gender"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
-                      value={guru.gender}
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
+                      value={admin.gender}
                       onChange={handleChange}
                     >
-                      <option value="">Pilih Jenis Kelamin</option>
-                      <option value="Laki-laki">Laki-laki</option>
-                      <option value="Perempuan">Perempuan</option>
+                      <option className="text-gray-700" value="">
+                        Pilih Jenis Kelamin
+                      </option>
+                      <option className="text-gray-700" value="Laki-laki">
+                        Laki-laki
+                      </option>
+                      <option className="text-gray-700" value="Perempuan">
+                        Perempuan
+                      </option>
                     </select>
                   </div>
                   <div className="pb-4">
@@ -244,14 +310,22 @@ const EditGuru = () => {
                       id="status_nikah"
                       name="status_nikah"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
-                      value={guru.status_nikah}
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
+                      value={admin.status_nikah}
                       onChange={handleChange}
                     >
-                      <option value="">Pilih Status Nikah</option>
-                      <option value="Belum Menikah">Belum Menikah</option>
-                      <option value="Menikah">Menikah</option>
-                      <option value="Cerai">Cerai</option>
+                      <option className="text-gray-700" value="">
+                        Pilih Status Nikah
+                      </option>
+                      <option className="text-gray-700" value="Belum Menikah">
+                        Belum Menikah
+                      </option>
+                      <option className="text-gray-700" value="Menikah">
+                        Menikah
+                      </option>
+                      <option className="text-gray-700" value="Cerai">
+                        Cerai
+                      </option>
                     </select>
                   </div>
                 </div>

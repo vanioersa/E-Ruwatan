@@ -35,7 +35,7 @@ const TambahPiketan = () => {
     }
   }, [selectedKelas]);
 
-  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
+  const token = localStorage.getItem("token");
 
   const fetchSiswaByKelas = async (kelasId) => {
     try {
@@ -206,14 +206,11 @@ const TambahPiketan = () => {
             </div>
           </form>
 
-          <div
-            style={{ backgroundColor: "white" }}
-            className="my-2 rounded-xl py-4 px-0 sm:px-5 mt-5"
-          >
-            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+          <div className="my-7 px-0 sm:px-3">
+            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
               Daftar Siswa
             </h2>
-            <div className="overflow-x-auto">
+            <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
               <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
@@ -294,11 +291,11 @@ const TambahPiketan = () => {
                     <tr>
                       <td
                         style={{ backgroundColor: "white" }}
-                        className="bg-white border border-gray-200 p-4 text-center"
+                        className="bg-white border border-gray-200 p-3 text-center"
                         colSpan="5"
                       >
                         {selectedKelas
-                          ? "Data yang anda cari tidak ada"
+                          ? "Data yang anda cari tidak ditemukan"
                           : "Silakan pilih kelas untuk melihat siswa."}
                       </td>
                     </tr>

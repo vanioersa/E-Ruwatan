@@ -30,7 +30,6 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    // Simulate fetching the username from localStorage
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);

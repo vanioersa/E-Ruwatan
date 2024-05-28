@@ -167,7 +167,14 @@ const TambahPenilaian = () => {
                 >
                   Nama Siswa
                 </label>
-                {siswaByKelas.length > 0 ? (
+                {siswaByKelas.length === 1 ? (
+                  <input
+                    type="text"
+                    value={siswaByKelas[0].nama_siswa}
+                    readOnly
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                ) : siswaByKelas.length > 1 ? (
                   <select
                     id="siswaId"
                     name="siswaId"
@@ -185,7 +192,7 @@ const TambahPenilaian = () => {
                 ) : (
                   <input
                     type="text"
-                    value="data siswa tidak ditemukan"
+                    value="Data siswa tidak ditemukan"
                     readOnly
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
                   />

@@ -226,7 +226,7 @@ const EditAdmin = () => {
                     <input
                       id="username"
                       name="username"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="text"
                       autoComplete="off"
                       value={admin.username}
@@ -243,7 +243,7 @@ const EditAdmin = () => {
                     <input
                       id="email"
                       name="email"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="email"
                       autoComplete="off"
                       value={admin.email}
@@ -261,7 +261,7 @@ const EditAdmin = () => {
                       id="alamat"
                       name="alamat"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="text"
                       value={admin.alamat}
                       onChange={handleChange}
@@ -278,7 +278,7 @@ const EditAdmin = () => {
                       id="telepon"
                       name="telepon"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
                       type="number"
                       value={admin.telepon}
                       onChange={handleChange}
@@ -295,7 +295,7 @@ const EditAdmin = () => {
                       id="gender"
                       name="gender"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-700"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
                       value={admin.gender}
                       onChange={handleChange}
                     >
@@ -321,7 +321,7 @@ const EditAdmin = () => {
                       id="status_nikah"
                       name="status_nikah"
                       autoComplete="off"
-                      className="border rounded-r px-4 py-2 w-full text-gray-700"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
                       value={admin.status_nikah}
                       onChange={handleChange}
                     >

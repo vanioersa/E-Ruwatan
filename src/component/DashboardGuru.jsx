@@ -3,8 +3,6 @@ import axios from "axios";
 import SidebarGuru from "./SidebarGuru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChalkboardTeacher,
-  faUserGroup,
   faRightLong,
   faCircleArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
@@ -98,13 +96,12 @@ function DashboardGuru() {
     fetchKelas();
   }, []);
 
-  // Fungsi untuk mendapatkan nama kelas berdasarkan kelasId
   const getNamaKelas = (kelasId) => {
     const kelasInfo = kelas.find((k) => k.id === kelasId);
     if (kelasInfo) {
       return `${kelasInfo.kelas} - ${kelasInfo.nama_kelas}`;
     } else {
-      return "Kelas tidak ditemukan"; // Jika kelas tidak ditemukan
+      return "Kelas tidak ditemukan";
     }
   };
 

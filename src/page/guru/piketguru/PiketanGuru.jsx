@@ -153,7 +153,7 @@ function PiketanGuru() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleFilterPDF = () => {
@@ -556,7 +556,7 @@ function PiketanGuru() {
           <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
             <h2 className="text-2xl font-semibold mb-4">Filter Tanggal</h2>
             <select
-              className="border border-gray-400 p-2 w-full mb-4"
+              className="border border-gray-400 p-2 w-full mb-4 text-gray-700"
               value={filteredDate}
               onChange={handleFilterDate}
             >

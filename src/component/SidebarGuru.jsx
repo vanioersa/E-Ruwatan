@@ -6,21 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 
 const SidebarGuru = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
   );
   const [currentTime, setCurrentTime] = useState("");
   const location = useLocation();
-
-  const handleNavigation = (to) => {
-    setLoading(true);
-    setTimeout(() => {
-      window.location.href = to;
-      setLoading(false);
-    }, 1000);
-  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -98,7 +89,6 @@ const SidebarGuru = () => {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      {loading}
       <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
@@ -374,7 +364,7 @@ const SidebarGuru = () => {
             }`}
           />
           <li
-            className={`py-2 px-3 my-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 w-full`}
+            className={`py-2 px-3 my-2 mr-2 mx-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 min-w-60`}
           >
             <button
               onClick={toggleDarkMode}
@@ -416,7 +406,7 @@ const SidebarGuru = () => {
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                      d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
                     />
                   </svg>
                 )}
