@@ -2,15 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faDoorOpen,
-  faHome,
-  faChalkboardTeacher,
-  faRightToBracket,
-  faUserGroup,
   faBarsStaggered,
   faXmark,
   faMoon,
   faSun,
+  faToggleOn,
+  faToggleOff,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import profil from "../asset/profil.png";
@@ -24,6 +21,7 @@ const SidebarAdmin = () => {
     localStorage.getItem("darkMode") === "true"
   );
   const location = useLocation();
+  const [currentTime, setCurrentTime] = useState("");
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -99,6 +97,16 @@ const SidebarAdmin = () => {
       }
     });
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const options = { timeZone: "Asia/Jakarta", hour12: false };
+      const currentTime = new Date().toLocaleTimeString("en-US", options);
+      setCurrentTime(currentTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const backgroundColor = darkMode ? "bg-white" : "bg-gray-800";
 
@@ -247,27 +255,67 @@ const SidebarAdmin = () => {
               </Link>
             </li>
           ))}
+          <div className="ml-6 text-xl font-bold absolute bottom-16 w-full">
+            Waktu : {currentTime}
+          </div>
+          <hr
+            className={`absolute bottom-14 w-60 ${darkMode ? "text-white" : "text-black"
+              }`}
+          />
           <li
-            className={`py-2 px-5 my-2 rounded cursor-pointer ${darkMode
-              ? "hover:text-black hover:bg-gray-400 "
-              : "hover:text-white hover:bg-gray-600"
-              } absolute bottom-0 left-0 right-0 w-full`}
+            className={`py-2 px-3 my-2 mr-2 mx-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 min-w-60`}
           >
-            <Link
-              type="button"
-              className={`${darkMode ? "text-white" : "text-black"
-                } flex items-center w-full`}
+            <button
               onClick={toggleDarkMode}
+              className={`flex items-center w-full ${darkMode ? "text-white" : "text-gray-800"
+                }`}
             >
-              <FontAwesomeIcon icon={darkMode ? faMoon : faSun} size="lg" />{" "}
               <span
-                style={{ fontFamily: "Segoe UI" }}
+                className={`w-7 h-7 mx-2 ${darkMode ? "text-white" : "text-gray-800"
+                  }`}
+              >
+                {darkMode ? (
+                  <svg
+                    className="w-7 h-7 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    data-slot="icon"
+                    fill="none"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-7 h-7 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    data-slot="icon"
+                    fill="none"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                    />
+                  </svg>
+                )}
+              </span>
+              <span
+                style={{ fontFamily: "Poopins", fontWeight: "bold" }}
                 className={`${darkMode ? "text-white" : "text-black"
-                  } mx-3 font-medium`}
+                  } mx-2 font-medium`}
               >
                 {darkMode ? "Gelap" : "Terang"}
               </span>
-            </Link>
+            </button>
           </li>
         </ul>
       </div>
