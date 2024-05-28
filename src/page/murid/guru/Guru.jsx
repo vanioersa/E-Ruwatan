@@ -319,7 +319,7 @@ function Guru() {
                             isHiddenTelepon ? (
                               <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
                             ) : (
-                              <span>{g.telepon}</span>
+                              <span>{g.modifiedTelepon}</span>
                             )
                           ) : (
                             <span

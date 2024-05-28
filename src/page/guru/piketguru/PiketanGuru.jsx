@@ -334,7 +334,7 @@ function PiketanGuru() {
             <input
               type="text"
               placeholder="Cari Piketan"
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
+              className="w-full md:w-1/3 p-2 border border-gray-300 text-gray-700 rounded focus:outline-none focus:border-gray-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -527,7 +527,7 @@ function PiketanGuru() {
                     })
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-sm py-4">
+                    <td colSpan="8" className="text-sm py-4 text-center">
                       Data Piketan tidak tersedia untuk pengguna ini
                     </td>
                   </tr>

@@ -208,7 +208,7 @@ const TambahPiketan = () => {
 
           <div
             style={{ backgroundColor: "white" }}
-            className="my-10 bg-white border border-gray-200 rounded-xl shadow-lg p-6 mt-8"
+            className="my-2 rounded-xl py-4 px-0 sm:px-5 mt-5"
           >
             <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
               Daftar Siswa
@@ -294,7 +294,7 @@ const TambahPiketan = () => {
                     <tr>
                       <td
                         style={{ backgroundColor: "white" }}
-                        className="bg-white border border-gray-200 p-6 text-center"
+                        className="bg-white border border-gray-200 p-4 text-center"
                         colSpan="5"
                       >
                         {selectedKelas
