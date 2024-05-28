@@ -1,8 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../../component/Sidebar";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Setting() {
+  const [passwordLama, setPasswordLama] = useState("");
+  const [passwordBaru, setPasswordBaru] = useState("");
+  const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "passwordLama") {
+      setPasswordLama(value);
+    } else if (name === "passwordBaru") {
+      setPasswordBaru(value);
+    } else if (name === "konfirmasiPassword") {
+      setKonfirmasiPassword(value);
+    }
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (passwordBaru !== konfirmasiPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Kesalahan',
+        text: 'Konfirmasi password tidak sesuai',
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4001/ubah-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+          passwordLama,
+          passwordBaru,
+          konfirmasiPassword
+        })
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil',
+          text: 'Password berhasil diubah',
+        });
+        setPasswordLama("");
+        setPasswordBaru("");
+        setKonfirmasiPassword("");
+      } else {
+        const result = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: result.message || 'Gagal mengubah password',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Terjadi kesalahan. Silakan coba lagi.',
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
@@ -74,45 +147,64 @@ function Setting() {
                 <strong>Setting</strong>
               </h1>{" "}
               <br />
-                <div className="pb-4 pt-2">
+              <form onSubmit={handleSubmit}>
+                <div className="pb-2 pt-2">
                   <label
-                    htmlFor="username"
+                    htmlFor="passwordLama"
                     className="font-semibold text-gray-700 block pb-1"
                   >
                     Password Lama
                   </label>
                   <input
-                    id="username"
-                    className="border rounded-r px-4 py-2 w-full"
-                    type="text"
+                    id="passwordLama"
+                    name="passwordLama"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordLama}
+                    onChange={handleChange}
                   />
                 </div>
-                <div className="pb-4 pt-3">
+                <div className="pb-2 pt-2">
                   <label
-                    htmlFor="email"
+                    htmlFor="passwordBaru"
                     className="font-semibold text-gray-700 block pb-1"
                   >
                     Password Baru
                   </label>
                   <input
-                    id="email"
-                    className="border rounded-r px-4 py-2 w-full"
-                    type="email"
+                    id="passwordBaru"
+                    name="passwordBaru"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordBaru}
+                    onChange={handleChange}
                   />
                 </div>
-                <div className="pb-4 pt-3">
+                <div className="pb-2 pt-2">
                   <label
-                    htmlFor="profilePic"
+                    htmlFor="konfirmasiPassword"
                     className="font-semibold text-gray-700 block pb-1"
                   >
                     Konfirmasi Password
                   </label>
                   <input
-                    type="text"
-                    id="profilePic"
-                    accept="image/*"
-                    className="border rounded-r px-4 py-2 w-full"
+                    id="konfirmasiPassword"
+                    name="konfirmasiPassword"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={konfirmasiPassword}
+                    onChange={handleChange}
                   />
+                </div>
+                <div className="pb-1 pt-1">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox text-blue-500"
+                      onChange={toggleShowPassword}
+                    />
+                    <span className="ml-2 text-gray-700">Lihat Password</span>
+                  </label>
                 </div>
                 <div className="text-center mt-4">
                   <button
@@ -122,6 +214,12 @@ function Setting() {
                     Submit
                   </button>
                 </div>
+                {message && (
+                  <div className="text-center mt-4 text-red-500">
+                    {message}
+                  </div>
+                )}
+              </form>
             </div>
           </div>
         </div>

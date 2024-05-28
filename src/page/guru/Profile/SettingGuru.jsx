@@ -1,25 +1,45 @@
-import React from "react";
-import Sidebar from "../../../component/SidebarGuru";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import SidebarGuru from "../../../component/SidebarGuru";
 
 function Setting() {
+  const [passwordLama, setPasswordLama] = useState("");
+  const [passwordBaru, setPasswordBaru] = useState("");
+  const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "passwordLama") {
+      setPasswordLama(value);
+    } else if (name === "passwordBaru") {
+      setPasswordBaru(value);
+    } else if (name === "konfirmasiPassword") {
+      setKonfirmasiPassword(value);
+    }
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
-      <Sidebar />
+      <SidebarGuru />
       <div className="flex flex-grow items-center justify-center">
         <div className="max-w-4xl w-full">
           <div className="mt-20 md:mt-20">
-            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
               <ul
-                class="flex flex-wrap -mb-px text-sm font-medium text-center"
+                className="flex flex-wrap -mb-px text-sm font-medium text-center"
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
                 role="tablist"
               >
-                <li class="me-2" role="presentation">
+                <li className="me-2" role="presentation">
                   <Link to={"/profile_guru"}>
                     <button
-                      class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="profile-tab"
                       data-tabs-target="#profile"
                       type="button"
@@ -31,10 +51,10 @@ function Setting() {
                     </button>
                   </Link>
                 </li>
-                <li class="me-2" role="presentation">
+                <li className="me-2" role="presentation">
                   <Link to={"/edit_guru"}>
                     <button
-                      class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -46,10 +66,10 @@ function Setting() {
                     </button>
                   </Link>
                 </li>
-                <li class="me-2" role="presentation">
+                <li className="me-2" role="presentation">
                   <Link to={"/setting_guru"}>
                     <button
-                      class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
                       id="settings-tab"
                       data-tabs-target="#settings"
                       type="button"
@@ -74,54 +94,74 @@ function Setting() {
                 <strong>Setting</strong>
               </h1>{" "}
               <br />
-              <div className="pb-4 pt-2">
-                <label
-                  htmlFor="username"
-                  className="font-semibold text-gray-700 block pb-1"
-                >
-                  Password Lama
-                </label>
-                <input
-                  id="username"
-                  className="border rounded-r px-4 py-2 w-full"
-                  type="text"
-                />
-              </div>
-              <div className="pb-4 pt-3">
-                <label
-                  htmlFor="email"
-                  className="font-semibold text-gray-700 block pb-1"
-                >
-                  Password Baru
-                </label>
-                <input
-                  id="email"
-                  className="border rounded-r px-4 py-2 w-full"
-                  type="email"
-                />
-              </div>
-              <div className="pb-4 pt-3">
-                <label
-                  htmlFor="profilePic"
-                  className="font-semibold text-gray-700 block pb-1"
-                >
-                  Konfirmasi Password
-                </label>
-                <input
-                  type="text"
-                  id="profilePic"
-                  accept="image/*"
-                  className="border rounded-r px-4 py-2 w-full"
-                />
-              </div>
-              <div className="text-center mt-4">
-                <button
-                  type="submit"
-                  className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
-                >
-                  Submit
-                </button>
-              </div>
+              {/* <form onSubmit={}> */}
+                <div className="pb-2 pt-2">
+                  <label
+                    htmlFor="passwordLama"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
+                    Password Lama
+                  </label>
+                  <input
+                    id="passwordLama"
+                    name="passwordLama"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordLama}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="pb-2 pt-2">
+                  <label
+                    htmlFor="passwordBaru"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
+                    Password Baru
+                  </label>
+                  <input
+                    id="passwordBaru"
+                    name="passwordBaru"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordBaru}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="pb-2 pt-2">
+                  <label
+                    htmlFor="konfirmasiPassword"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
+                    Konfirmasi Password
+                  </label>
+                  <input
+                    id="konfirmasiPassword"
+                    name="konfirmasiPassword"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type={showPassword ? "text" : "password"}
+                    value={konfirmasiPassword}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="pb-1 pt-1">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox text-blue-500"
+                      onChange={toggleShowPassword}
+                    />
+                    <span className="ml-2 text-gray-700">Lihat Password</span>
+                  </label>
+                </div>
+                <div className="text-center mt-4">
+                  <button
+                    type="submit"
+                    className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
+                  >
+                    Submit
+                  </button>
+                </div>
+              {/* </form> */}
             </div>
           </div>
         </div>
