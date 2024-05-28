@@ -255,7 +255,7 @@ const SidebarAdmin = () => {
               </Link>
             </li>
           ))}
-          <div className="ml-6 text-xl font-bold absolute bottom-16 w-full">
+          <div className={`${darkMode ? "text-white" : "text-gray-800"} ml-6 text-xl font-bold absolute bottom-16 w-full`}>
             Waktu : {currentTime}
           </div>
           <hr
