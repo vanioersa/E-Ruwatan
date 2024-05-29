@@ -488,8 +488,12 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             {currentPage * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{kelasName}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{tanggal}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {kelasName}
+                          </td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {tanggal}
+                          </td>
                           <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Masuk}
                           </td>

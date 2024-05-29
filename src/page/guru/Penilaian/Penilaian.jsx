@@ -53,13 +53,13 @@ function Penilaian() {
       Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("file", excelFile);
-  
+
     // Assuming you have a token stored in local storage or some other secure place
     const token = localStorage.getItem("token");
-  
+
     try {
       const response = await axios.post(
         "http://localhost:4001/panilaian/import",
@@ -78,7 +78,7 @@ function Penilaian() {
       // Log the error object to inspect its properties
       Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
     }
-  };  
+  };
 
   useEffect(() => {
     fetchData();
@@ -269,7 +269,7 @@ function Penilaian() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap justify-center space-y-3">
               <Link to="/TambahPenilaian">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
