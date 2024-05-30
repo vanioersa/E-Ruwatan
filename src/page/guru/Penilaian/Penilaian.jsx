@@ -292,21 +292,21 @@ function Penilaian() {
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
                   <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
                     <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
-                    <div className="flex justify-between mb-4">
+                    <div className="mb-4">
                       <input
                         type="file"
                         accept=".xlsx,.xls"
                         onChange={handleExcelChange}
                         className="border border-gray-400 p-2 w-full mb-4"
                       />
+                    </div>
+                    <div className="flex justify-between">
                       <button
                         onClick={closeImportModal}
                         className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
                       >
                         Batal
                       </button>
-                    </div>
-                    <div className="flex justify-end">
                       <button
                         onClick={importExcell}
                         className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
