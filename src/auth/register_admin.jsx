@@ -62,35 +62,35 @@ function Register_admin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-gray-100">
-      <div className="max-w-screen-xl bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-sky-50">
+      <div className="max-w-screen-lg bg-white border border-gray-300 shadow sm:rounded-lg rounded-lg flex justify-center flex-1">
         <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
-          <div className="m-12 xl:m-16 w-full flex items-center justify-center">
-            <img src={register3} className="w-80 h-80" alt="Komputer" />
+          <div className="m-8 xl:m-12 w-full flex items-center justify-center">
+            <img src={register3} className="w-72 h-72" alt="Komputer" />
           </div>
         </div>
-        <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-16">
+        <div className="lg:w-2/4 xl:w-2/4 p-8 sm:p-10">
           <div className="flex flex-col items-center">
             <div className="text-center">
-              <div className="text-center ">
+              <div className="text-center">
                 <img
-                  className="mx-auto h-32 w-auto"
+                  className="mx-auto h-24 w-auto"
                   src={logobinus}
                   alt="Binus Logo"
                 />
               </div>
-              <h1 className="text-2xl xl:text-4xl font-extrabold text-sky-600 my-4">
+              <h1 className="text-xl xl:text-3xl font-extrabold text-sky-600 my-2">
                 E-RUWATAN
               </h1>
             </div>
-            <div className="w-full mt-10">
+            <div className="w-full md:w-full mt-6">
               <form
-                className="mx-auto max-w-xl md:max-w-full md:w-2/3 flex flex-col gap-4"
+                className="mx-auto max-w-md md:max-w-full md:w-2/3 flex flex-col gap-4"
                 onSubmit={handleRegister}
               >
                 <div>
                   <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                     type="text"
                     placeholder="Masukkan Username"
                     value={username}
@@ -103,7 +103,7 @@ function Register_admin() {
                 </div>
                 <div>
                   <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                     type="email"
                     placeholder="Masukkan Email"
                     value={email}
@@ -116,7 +116,7 @@ function Register_admin() {
                 </div>
                 <div className="relative w-full">
                   <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
+                    className="w-full px-4 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-8"
                     type={passwordType}
                     placeholder="Masukkan Password"
                     value={password}
@@ -136,9 +136,9 @@ function Register_admin() {
                     * Password harus terdiri dari 8 karakter
                   </p>
                 </div>
-                <button className="mt-8 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-3 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
+                <button className="mt-6 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-3 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none">
                   <FontAwesomeIcon icon={faUserPlus} size="1x" />
-                  <span className="ml-3">Daftar</span>
+                  <span className="ml-2">Daftar</span>
                 </button>
               </form>
             </div>
