@@ -39,10 +39,17 @@ function Profile_Guru() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       };
-      const response = await axios.post("http://localhost:4001/upload/image", formData, config);
+      const response = await axios.post(
+        "http://localhost:4001/upload/image",
+        formData,
+        config
+      );
       Swal.fire("Berhasil", "Berhasil mengunggah foto profil", "success");
       setProfilePic(response.data.imageUrl);
-      setAdmin((prevState) => ({ ...prevState, image: response.data.imageUrl }));
+      setAdmin((prevState) => ({
+        ...prevState,
+        image: response.data.imageUrl,
+      }));
     } catch (error) {
       setError("Error uploading profile picture. Please try again later.");
       console.error("Error uploading profile picture:", error);
@@ -142,20 +149,31 @@ function Profile_Guru() {
                   <strong>Profile {admin.username}</strong>
                 </span>
               </div>
-              <div className="w-full p-8 mx-auto flex justify-center">
-                <img
-                  className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                  src={profilePic}
-                  alt="Profile"
-                />
-              </div>
-              <div className="text-center mt-4 text-gray-800">
-                <p>
-                  <strong>Name:</strong> {admin.username}
-                </p>
-                <p>
-                  <strong>Email:</strong> {admin.email}
-                </p>
+              <div className="shadow mt-2 rounded-lg">
+                <div className="w-full p-4 mx-auto flex justify-center">
+                  <img
+                    className="max-w-xs w-64 h-64 object-cover rounded-full border"
+                    src={profilePic}
+                    alt="Profile"
+                  />
+                </div>
+                <div className="text-center px-8 pb-3 pt-2">
+                  <div className="pb-2">
+                    <input
+                      id="image"
+                      className="border px-4 py-2 w-full rounded-lg bg-white text-gray-600"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Upload
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -270,29 +288,6 @@ function Profile_Guru() {
                         />
                       </div>
                     </div>
-                  </div>
-                  <div className="pb-4">
-                    <label
-                      htmlFor="image"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Upload Profile Picture
-                    </label>
-                    <input
-                      id="image"
-                      className="border rounded-r px-4 py-2 w-full text-gray-600"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                  </div>
-                  <div className="pb-4">
-                    <button
-                      type="submit"
-                      className="bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                      Upload
-                    </button>
                   </div>
                   {error && <div className="text-red-500">{error}</div>}
                 </form>

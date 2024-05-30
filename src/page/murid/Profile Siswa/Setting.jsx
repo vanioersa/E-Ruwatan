@@ -38,50 +38,6 @@ function Setting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!passwordLama || !passwordBaru || !konfirmasiPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Kesalahan",
-        text: "Password lama, password baru, dan konfirmasi password harus diisi",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
-
-    if (!passwordLama || !passwordBaru) {
-      Swal.fire({
-        icon: "error",
-        title: "Kesalahan",
-        text: "Password lama, dan password baru harus diisi",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
-
-    if (!passwordLama || !konfirmasiPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Kesalahan",
-        text: "Password lama, dan konfirmasi password harus diisi",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
-
-    if (!passwordBaru || !konfirmasiPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Kesalahan",
-        text: "password baru, dan konfirmasi password harus diisi",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
-
     if (!passwordLama) {
       Swal.fire({
         icon: "error",
