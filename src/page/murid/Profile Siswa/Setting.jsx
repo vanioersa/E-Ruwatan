@@ -25,13 +25,125 @@ function Setting() {
     setShowPassword(!showPassword);
   };
 
+  const validatePasswordLength = (password) => {
+    return password.length >= 8;
+  };
+
+  const validatePasswordContent = (password) => {
+    const hasNumber = /\d/;
+    const hasLetter = /[a-zA-Z]/;
+    return hasNumber.test(password) && hasLetter.test(password);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!passwordLama || !passwordBaru || !konfirmasiPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password lama, password baru, dan konfirmasi password harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!passwordLama || !passwordBaru) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password lama, dan password baru harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!passwordLama || !konfirmasiPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password lama, dan konfirmasi password harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!passwordBaru || !konfirmasiPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "password baru, dan konfirmasi password harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!passwordLama) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password lama harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!passwordBaru) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "password baru harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!konfirmasiPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "konfirmasi password harus diisi",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!validatePasswordLength(passwordBaru)) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password harus minimal 8 karakter",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (!validatePasswordContent(passwordBaru)) {
+      Swal.fire({
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password harus mengandung angka dan huruf",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
     if (passwordBaru !== konfirmasiPassword) {
       Swal.fire({
-        icon: 'error',
-        title: 'Kesalahan',
-        text: 'Konfirmasi password tidak sesuai',
+        icon: "error",
+        title: "Kesalahan",
+        text: "Konfirmasi password tidak sesuai",
+        showConfirmButton: false,
+        timer: 2000,
       });
       return;
     }
@@ -41,20 +153,22 @@ function Setting() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           passwordLama,
           passwordBaru,
-          konfirmasiPassword
-        })
+          konfirmasiPassword,
+        }),
       });
 
       if (response.ok) {
         Swal.fire({
-          icon: 'success',
-          title: 'Berhasil',
-          text: 'Password berhasil diubah',
+          icon: "success",
+          title: "Berhasil",
+          text: "Password berhasil diubah",
+          showConfirmButton: false,
+          timer: 2000,
         });
         setPasswordLama("");
         setPasswordBaru("");
@@ -62,16 +176,18 @@ function Setting() {
       } else {
         const result = await response.json();
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: result.message || 'Gagal mengubah password',
+          icon: "error",
+          title: "Error",
+          text: result.message || "Gagal mengubah password",
         });
       }
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Terjadi kesalahan. Silakan coba lagi.',
+        icon: "error",
+        title: "Kesalahan",
+        text: "Password lama tidak sesuai.",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
@@ -215,9 +331,7 @@ function Setting() {
                   </button>
                 </div>
                 {message && (
-                  <div className="text-center mt-4 text-red-500">
-                    {message}
-                  </div>
+                  <div className="text-center mt-4 text-red-500">{message}</div>
                 )}
               </form>
             </div>
