@@ -21,6 +21,7 @@ function Profile_Guru() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
+  const [previewPic, setPreviewPic] = useState(null); // For image preview
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -31,7 +32,7 @@ function Profile_Guru() {
     }
 
     const formData = new FormData();
-    formData.append("file", image);
+    formData.append("image", image);
 
     try {
       const config = {
@@ -40,31 +41,42 @@ function Profile_Guru() {
           Authorization: `Bearer ${token}`,
         },
       };
-      const response = await axios.post(
-        "http://localhost:4001/upload/image",
+      const response = await axios.put(
+        `http://localhost:4001/edit/image/${id}`,
         formData,
         config
       );
-      Swal.fire("Berhasil", "Berhasil mengunggah foto profil", "success");
+      Swal.fire({
+        title: "Berhasil",
+        text: "Berhasil mengunggah foto profil",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       setProfilePic(response.data.imageUrl);
       setAdmin((prevState) => ({
         ...prevState,
         image: response.data.imageUrl,
       }));
+      setImage(null);  
+      setPreviewPic(null); 
+      window.location.reload()
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setError("Unauthorized: Please log in again.");
-        Swal.fire("Unauthorized", "Please log in again.", "error");
+        setError("Unauthorized: Tolong masuk kembali .");
+        Swal.fire("Unauthorized", "Tolong masuk kembali.", "error");
       } else {
-        setError("Error uploading profile picture. Please try again later.");
-        console.error("Error uploading profile picture:", error);
-        Swal.fire("Error", "Failed to upload profile picture", "error");
+        setError("Terjadi kesalahan ");
+        console.error("Terjadi kesalahan saat mengunggah foto:", error);
+        Swal.fire("Error", "Gagal upload gambar", "error");
       }
     }
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
+    setPreviewPic(URL.createObjectURL(file));
     setError(null);
   };
 
@@ -159,7 +171,7 @@ function Profile_Guru() {
                 <div className="w-full p-4 mx-auto flex justify-center">
                   <img
                     className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                    src={profilePic}
+                    src={previewPic || profilePic}
                     alt="Profile"
                   />
                 </div>
@@ -174,7 +186,7 @@ function Profile_Guru() {
                     />
                   </div>
                   <button
-                    type="submit"
+                    onClick={handleSubmit}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
                     Upload
@@ -192,7 +204,7 @@ function Profile_Guru() {
                   <strong>Data Profile</strong>
                 </h1>{" "}
                 <br />
-                <form onSubmit={handleSubmit}>
+                <form>
                   <div className="pb-4">
                     <div className="flex">
                       <div className="w-1/2 pr-2">
