@@ -7,6 +7,7 @@ import axios from "axios";
 
 function Profile_Guru() {
   const id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
   const [admin, setAdmin] = useState({
     username: "",
     email: "",
@@ -36,7 +37,7 @@ function Profile_Guru() {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       };
       const response = await axios.post(
@@ -51,9 +52,14 @@ function Profile_Guru() {
         image: response.data.imageUrl,
       }));
     } catch (error) {
-      setError("Error uploading profile picture. Please try again later.");
-      console.error("Error uploading profile picture:", error);
-      Swal.fire("Gagal", "Gagal mengunggah foto profil", "error");
+      if (error.response && error.response.status === 401) {
+        setError("Unauthorized: Please log in again.");
+        Swal.fire("Unauthorized", "Please log in again.", "error");
+      } else {
+        setError("Error uploading profile picture. Please try again later.");
+        console.error("Error uploading profile picture:", error);
+        Swal.fire("Error", "Failed to upload profile picture", "error");
+      }
     }
   };
 
