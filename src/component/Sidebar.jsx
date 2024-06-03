@@ -4,10 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBarsStaggered,
   faXmark,
-  faMoon,
-  faSun,
-  faToggleOn,
-  faToggleOff,
 } from "@fortawesome/free-solid-svg-icons";
 import logobinus from "../asset/logobinus.png";
 import profil from "../asset/profil.png";
@@ -15,7 +11,6 @@ import Swal from "sweetalert2";
 
 const SidebarAdmin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
@@ -50,14 +45,6 @@ const SidebarAdmin = () => {
       localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
-
-  const handleNavigation = (to) => {
-    setLoading(true);
-    setTimeout(() => {
-      window.location.href = to;
-      setLoading(false);
-    }, 1000);
-  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -112,7 +99,6 @@ const SidebarAdmin = () => {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      {loading}
       <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
@@ -175,7 +161,7 @@ const SidebarAdmin = () => {
                   Profile
                 </button>
               </Link>
-              <a
+              <button
                 onClick={logout}
                 className={`${darkMode ? "text-white" : "text-gray-700"
                   } block px-4 py-2 text-sm`}
@@ -184,7 +170,7 @@ const SidebarAdmin = () => {
                 id="user-menu-item-2"
               >
                 keluar
-              </a>
+              </button>
             </div>
           )}
         </div>
