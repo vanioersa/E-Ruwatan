@@ -21,19 +21,25 @@ function Profile_Guru() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
-  const [previewPic, setPreviewPic] = useState(null); // For image preview
+  const [previewPic, setPreviewPic] = useState(null); 
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) {
-      setError("Please select an image to upload.");
+      Swal.fire({
+        icon: "error",
+        title: "Upload Gagal",
+        text: "Pilih gambar terlebih dahulu.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("image", image);
-
+  
     try {
       const config = {
         headers: {
@@ -52,26 +58,39 @@ function Profile_Guru() {
         icon: "success",
         timer: 2000,
         showConfirmButton: false,
+      }).then(() => {
+        setProfilePic(response.data.imageUrl);
+        setAdmin((prevState) => ({
+          ...prevState,
+          image: response.data.imageUrl,
+        }));
+        setImage(null);
+        window.location.reload();
+        setPreviewPic(null);
       });
-      setProfilePic(response.data.imageUrl);
-      setAdmin((prevState) => ({
-        ...prevState,
-        image: response.data.imageUrl,
-      }));
-      setImage(null);  
-      setPreviewPic(null); 
-      window.location.reload()
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setError("Unauthorized: Tolong masuk kembali .");
-        Swal.fire("Unauthorized", "Tolong masuk kembali.", "error");
+        setError("Unauthorized: Silakan masuk kembali.");
+        Swal.fire({
+          icon: "error",
+          title: "Login Gagal",
+          text: "Silakan masuk kembali.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
-        setError("Terjadi kesalahan ");
-        console.error("Terjadi kesalahan saat mengunggah foto:", error);
-        Swal.fire("Error", "Gagal upload gambar", "error");
+        setError("Terjadi kesalahan.");
+        console.error("Kesalahan saat mengunggah foto:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Gagal mengunggah gambar.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       }
     }
-  };
+  };  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -99,8 +118,8 @@ function Profile_Guru() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
-      <div className="flex flex-grow items-center justify-center">
-        <div className="max-w-4xl w-full">
+      <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="max-w-4xl w-full space-y-6">
           <div className="mt-20 md:mt-20">
             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
               <ul
@@ -197,7 +216,7 @@ function Profile_Guru() {
 
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
+              className="md:flex-1 p-4 sm:p-6 lg:p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
             >
               <div className="rounded shadow p-6">
                 <h1 className="text-xl font-semibold text-gray-800">
@@ -206,8 +225,8 @@ function Profile_Guru() {
                 <br />
                 <form>
                   <div className="pb-4">
-                    <div className="flex">
-                      <div className="w-1/2 pr-2">
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="w-full sm:w-1/2 pr-2">
                         <label
                           htmlFor="username"
                           className="font-semibold text-gray-700 block pb-1"
@@ -222,7 +241,7 @@ function Profile_Guru() {
                           value={admin.username}
                         />
                       </div>
-                      <div className="w-1/2 pl-2">
+                      <div className="w-full sm:w-1/2 pl-2">
                         <label
                           htmlFor="email"
                           className="font-semibold text-gray-700 block pb-1"
@@ -240,8 +259,8 @@ function Profile_Guru() {
                     </div>
                   </div>
                   <div className="pb-4">
-                    <div className="flex">
-                      <div className="w-1/2 pr-2">
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="w-full sm:w-1/2 pr-2">
                         <label
                           htmlFor="alamat"
                           className="font-semibold text-gray-700 block pb-1"
@@ -256,7 +275,7 @@ function Profile_Guru() {
                           value={admin.alamat}
                         />
                       </div>
-                      <div className="w-1/2 pl-2">
+                      <div className="w-full sm:w-1/2 pl-2">
                         <label
                           htmlFor="gender"
                           className="font-semibold text-gray-700 block pb-1"
@@ -274,8 +293,8 @@ function Profile_Guru() {
                     </div>
                   </div>
                   <div className="pb-4">
-                    <div className="flex">
-                      <div className="w-1/2 pr-2">
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="w-full sm:w-1/2 pr-2">
                         <label
                           htmlFor="telepon"
                           className="font-semibold text-gray-700 block pb-1"
@@ -290,7 +309,7 @@ function Profile_Guru() {
                           value={admin.telepon}
                         />
                       </div>
-                      <div className="w-1/2 pl-2">
+                      <div className="w-full sm:w-1/2 pl-2">
                         <label
                           htmlFor="status_nikah"
                           className="font-semibold text-gray-700 block pb-1"
