@@ -2,13 +2,31 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { updatePiket, getAllPiket, getPiketByClass } from "./api_piket"; // Ensure you have API functions to get all piket data and piket data by class
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const UpdatePiketan = () => {
   const [kelasList, setKelasList] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const [piketan, setPiketan] = useState({ tanggal: "" });
   const [siswaByKelas, setSiswaByKelas] = useState([]);
+  const [tanggal , setTanggal ] = useState("");
+  const [kelasId , setKelasId ] = useState("");
   const [selectedStatus, setSelectedStatus] = useState({});
+  const [piket , setPiket ] = useState([]);
+  const {id} = useParams();
+  
+
+  const getPiketanById = async () => {
+    try {
+     const res = await axios.get(`http://localhost:4001/piket/by-id/${id}`)
+     setPiket(res.data);
+     setTanggal(res.data.tanggal)
+     console.log(res.data);
+    } catch (error){
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     const fetchAllKelas = async () => {
@@ -22,6 +40,7 @@ const UpdatePiketan = () => {
     };
 
     fetchAllKelas();
+    getPiketanById();
   }, []);
 
   useEffect(() => {

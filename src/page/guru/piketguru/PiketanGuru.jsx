@@ -12,7 +12,7 @@ import {
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
-import { deletePiket, getAllPiket, updatePiket } from "./api_piket";
+import { getAllPiket, updatePiket } from "./api_piket";
 import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
@@ -29,6 +29,18 @@ function PiketanGuru() {
   const [piketByDateAndClass, setPiketByDateAndClass] = useState({});
   const [showImportModal, setShowImportModal] = useState(false);
 
+  const getAllPiketan = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4001/piket/all`)
+      console.log(res);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getAllPiketan();
+  }, [])
   const openImportModal = () => {
     setShowImportModal(true);
   };
@@ -44,8 +56,6 @@ function PiketanGuru() {
     try {
       const response = await getAllPiket();
       setData(response);
-
-      // Organize data by date and class
       const groupedData = {};
       response.forEach((item) => {
         const key = `${item.tanggal}_${item.kelasId}`;
@@ -144,10 +154,10 @@ function PiketanGuru() {
     }
   };
 
-  const handleDeletePiket = async (piketId) => {
+  const handleDeletePiket = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4001/piket/hapus/${piketId}`, {
+      await axios.delete(`http://localhost:4001/piket/hapus/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -159,6 +169,7 @@ function PiketanGuru() {
         timer: 1500,
         showConfirmButton: false,
       });
+      window.location.reload();
     } catch (error) {
       console.error("Gagal menghapus piket: ", error);
       Swal.fire({
@@ -204,7 +215,6 @@ function PiketanGuru() {
     };
 
     piketData.forEach((item) => {
-      // Check if item.status is defined before calling toLowerCase
       if (item.status) {
         switch (item.status.toLowerCase()) {
           case "masuk":
@@ -227,11 +237,9 @@ function PiketanGuru() {
 
     return statusCounts;
   };
-
   const pageCount = Math.ceil(
     Object.keys(piketByDateAndClass).length / itemsPerPage
   );
-
   const changePage = ({ selected }) => {
     setCurrentPage(selected);
   };
@@ -266,16 +274,12 @@ function PiketanGuru() {
     }).then((result) => {
       if (result.isConfirmed) {
         const worksheet = xlsx.utils.json_to_sheet(dataToExport);
-
-        // Mengatur lebar kolom
         worksheet["!cols"] = [
-          { wch: 20 }, // Lebar kolom "NamaSiswa"
-          { wch: 15 }, // Lebar kolom "Kelas"
-          { wch: 15 }, // Lebar kolom "Tanggal"
-          { wch: 10 }, // Lebar kolom "Status"
+          { wch: 20 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 10 },
         ];
-
-        // Membuat header kolom menjadi bold
         const headerRange = "A1:D1";
         worksheet[headerRange]?.forEach((cell) => {
           if (cell) {
@@ -286,11 +290,9 @@ function PiketanGuru() {
             };
           }
         });
-
         const workbook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workbook, worksheet, "Data Piket Guru");
         xlsx.writeFile(workbook, "data_piket_guru.xlsx");
-
         Swal.fire({
           title: "Berhasil",
           text: "Data piket guru berhasil diekspor",
@@ -306,10 +308,7 @@ function PiketanGuru() {
   //   setFile(event.target.files[0]);
   // };
 
-  // Tambahkan state baru untuk menangani file Excel yang diunggah
   const [excelFile, setExcelFile] = useState(null);
-
-  // Buat fungsi untuk menangani perubahan pada file Excel yang diunggah
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
@@ -320,7 +319,6 @@ function PiketanGuru() {
       Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
       return;
     }
-
     const formData = new FormData();
     formData.append("file", excelFile);
 
@@ -527,17 +525,14 @@ function PiketanGuru() {
                           </td>
                           <td className="py-2 px-4 text-center">
                             <div className="flex justify-center gap-2">
-                              <button
-                                onClick={() =>
-                                  handleUpdatePiket(filteredPiketData[0].id)
-                                }
-                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                              <a href={"/EditPiketan/" + filteredPiketData[0].idPiket}
+                                   className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
-                              </button>
+                              </a>
                               <button
                                 onClick={() =>
-                                  handleDeletePiket(filteredPiketData[0].id)
+                                  handleDeletePiket(filteredPiketData[0].idPiket)
                                 }
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                               >
