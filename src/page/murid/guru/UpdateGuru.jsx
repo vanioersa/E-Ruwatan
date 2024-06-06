@@ -106,6 +106,22 @@ const UpdateGuru = () => {
     }
   };
 
+  const handleChangey = (e) => {
+    const { name, value } = e.target;
+    setGuru((prevGuru) => {
+      // Logika khusus untuk kolom nomor telepon
+      if (name === "telepon") {
+        // Pastikan angka 08 tetap di depan
+        if (value.startsWith("08")) {
+          return { ...prevGuru, [name]: value };
+        } else {
+          return { ...prevGuru, [name]: "08" };
+        }
+      }
+      return { ...prevGuru, [name]: value };
+    });
+  };
+
   const handleCancel = () => {
     navigate(-1);
   };
@@ -197,10 +213,10 @@ const UpdateGuru = () => {
                 <input
                   id="telepon"
                   name="telepon"
-                  type="text"
+                  type="number"
                   autoComplete="off"
                   value={guru.telepon}
-                  onChange={handleChange}
+                  onChange={handleChangey}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nomor Telepon"
                 />

@@ -57,22 +57,22 @@ const UpdateSiswa = () => {
     const initialMuridData = await getSiswaById(id);
 
     const isDataChanged =
-    initialMuridData.nama_siswa !== siswa.nama_siswa ||
-    initialMuridData.nisn !== siswa.nisn ||
-    initialMuridData.kelasId !== selectedKelasJurusan ||
-    initialMuridData.tempat !== siswa.tempat ||
-    initialMuridData.alamat !== siswa.alamat;
+      initialMuridData.nama_siswa !== siswa.nama_siswa ||
+      initialMuridData.nisn !== siswa.nisn ||
+      initialMuridData.kelasId !== selectedKelasJurusan ||
+      initialMuridData.tempat !== siswa.tempat ||
+      initialMuridData.alamat !== siswa.alamat;
 
-  if (!isDataChanged) {
-    Swal.fire({
-      icon: "error",
-      title: "Gagal",
-      text: "Minimal satu data harus diubah",
-      showConfirmButton: false,
-      timer: 2000,
-    });
-    return;
-  }
+    if (!isDataChanged) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Minimal satu data harus diubah",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
 
     try {
       await updateSiswa(id, siswa);
@@ -102,7 +102,10 @@ const UpdateSiswa = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Update Siswa</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Siswa
           </p>
@@ -129,6 +132,32 @@ const UpdateSiswa = () => {
               </div>
               <div className="relative">
                 <label
+                  htmlFor="kelasId"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Kelas
+                </label>
+                <select
+                  id="kelasId"
+                  name="kelasId"
+                  value={selectedKelasJurusan}
+                  onChange={(e) => setSelectedKelasJurusan(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                  disabled
+                >
+                  <option value="">Pilih Kelas</option>
+                  {kelasJurusan.map((kelas) => (
+                    <option className="text-sm" key={kelas.id} value={kelas.id}>
+                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
                   htmlFor="nisn"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
@@ -145,31 +174,6 @@ const UpdateSiswa = () => {
                   required
                   autoComplete="off"
                 />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-              <label
-                  htmlFor="kelasId"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Kelas
-                </label>
-                <select
-                  id="kelasId"
-                  name="kelasId"
-                  value={selectedKelasJurusan}
-                  onChange={(e) => setSelectedKelasJurusan(e.target.value)}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Pilih Kelas</option>
-                  {kelasJurusan.map((kelas) => (
-                    <option className="text-sm" key={kelas.id} value={kelas.id}>
-                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
-                    </option>
-                  ))}
-                </select>
               </div>
               <div className="relative">
                 <label
