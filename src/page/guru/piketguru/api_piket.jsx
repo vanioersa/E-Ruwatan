@@ -37,6 +37,7 @@ export const getAllPiket = async () => {
   }
 };
 
+
 export const deletePiket = async (id) => {
   try {
     const token = localStorage.getItem("token");
@@ -52,10 +53,10 @@ export const deletePiket = async (id) => {
   }
 };
 
-export const updatePiket = async (id, piketData) => {
+export const updatePiket = async (id, piketDTO) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.put(`${apiUrl}/update/${id}`, piketData, {
+    const response = await axios.put(`${apiUrl}/ubah/${id}`, piketDTO, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
