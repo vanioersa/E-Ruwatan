@@ -31,16 +31,16 @@ function PiketanGuru() {
 
   const getAllPiketan = async () => {
     try {
-      const res = await axios.get(`http://localhost:4001/piket/all`)
+      const res = await axios.get(`http://localhost:4001/piket/all`);
       console.log(res);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getAllPiketan();
-  }, [])
+  }, []);
   const openImportModal = () => {
     setShowImportModal(true);
   };
@@ -156,17 +156,17 @@ function PiketanGuru() {
 
   const handleDeletePiket = async (id) => {
     Swal.fire({
-      title: 'Apakah Anda yakin ingin menghapus piketan?',
+      title: "Apakah Anda yakin ingin menghapus piketan?",
       text: "Data tidak bisa dikembalikan",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, hapus!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const token = localStorage.getItem('token');
+          const token = localStorage.getItem("token");
           await axios.delete(`http://localhost:4001/piket/hapus/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -193,7 +193,6 @@ function PiketanGuru() {
       }
     });
   };
-
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -259,8 +258,9 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-      }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
+      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+    }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -522,8 +522,12 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             {currentPage * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{kelasName}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{tanggal}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {kelasName}
+                          </td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {tanggal}
+                          </td>
                           <td className="py-2 px-4 text-center text-sm">
                             {statusSummary.Masuk}
                           </td>
@@ -538,14 +542,19 @@ function PiketanGuru() {
                           </td>
                           <td className="py-2 px-4 text-center">
                             <div className="flex justify-center gap-2">
-                              <a href={"/EditPiketan/" + filteredPiketData[0].idPiket}
+                              <a
+                                href={
+                                  "/EditPiketan/" + filteredPiketData[0].idPiket
+                                }
                                 className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </a>
                               <button
                                 onClick={() =>
-                                  handleDeletePiket(filteredPiketData[0].idPiket)
+                                  handleDeletePiket(
+                                    filteredPiketData[0].idPiket
+                                  )
                                 }
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                               >
