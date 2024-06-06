@@ -155,32 +155,45 @@ function PiketanGuru() {
   };
 
   const handleDeletePiket = async (id) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4001/piket/hapus/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      Swal.fire({
-        title: "Berhasil",
-        text: "Piketan berhasil dihapus",
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Gagal menghapus piket: ", error);
-      Swal.fire({
-        title: "Gagal",
-        text: "Gagal menghapus piket. Silakan coba lagi.",
-        icon: "error",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    }
+    Swal.fire({
+      title: 'Apakah Anda yakin ingin menghapus piketan?',
+      text: "Data tidak bisa dikembalikan",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('token');
+          await axios.delete(`http://localhost:4001/piket/hapus/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          Swal.fire({
+            title: "Berhasil",
+            text: "Piketan berhasil dihapus",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          window.location.reload();
+        } catch (error) {
+          console.error("Gagal menghapus piket: ", error);
+          Swal.fire({
+            title: "Gagal",
+            text: "Gagal menghapus piket. Silakan coba lagi.",
+            icon: "error",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+      }
+    });
   };
+
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -526,7 +539,7 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <a href={"/EditPiketan/" + filteredPiketData[0].idPiket}
-                                   className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </a>
