@@ -179,7 +179,7 @@ const UpdatePiketan = () => {
               Daftar Siswa
             </h2>
             <div className="overflow-x-auto">
-            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">

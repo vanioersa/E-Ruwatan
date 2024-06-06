@@ -12,7 +12,7 @@ import {
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
-import { deletePiket, getAllPiket } from "./api_piket";
+import { deletePiket, getAllPiket, updatePiket } from "./api_piket";
 import Swal from "sweetalert2";
 import * as xlsx from "xlsx";
 import axios from "axios";
@@ -108,43 +108,67 @@ function PiketanGuru() {
     fetchKelas();
   }, []);
 
-  const handleUpdatePiket = (id) => {
-    // Navigate to the edit page
-    window.location.href = `/EditPiketan/${id}`;
+  const handleUpdatePiket = async (id, piketDTO) => {
+    if (!id) {
+      Swal.fire({
+        title: "Gagal",
+        text: "ID tidak valid",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    try {
+      const updatedPiket = await updatePiket(id, piketDTO);
+      setData((prevData) =>
+        prevData.map((item) => (item.id === id ? updatedPiket : item))
+      );
+      Swal.fire({
+        title: "Berhasil",
+        text: "Data piket berhasil diperbarui",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } catch (error) {
+      console.error("Failed to update piket: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal memperbarui piket",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
   };
 
-  const handleDeletePiket = async (id) => {
-    Swal.fire({
-      title: "Konfirmasi",
-      text: `Anda yakin ingin menghapus data penilaian?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deletePiket(id);
-          setData((prevData) => prevData.filter((item) => item.id !== id));
-          Swal.fire({
-            title: "Berhasil",
-            text: `Data penilaian berhasil dihapus`,
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        } catch (error) {
-          console.error("Failed to delete penilaian: ", error);
-          Swal.fire({
-            title: "Gagal",
-            text: `Gagal menghapus penilaian`,
-            icon: "error",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        }
-      }
-    });
+  const handleDeletePiket = async (piketId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:4001/piket/hapus/${piketId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      Swal.fire({
+        title: "Berhasil",
+        text: "Piketan berhasil dihapus",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Gagal menghapus piket: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal menghapus piket. Silakan coba lagi.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const handleModalOpen = () => {
@@ -214,9 +238,8 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-    }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+      }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -508,7 +531,7 @@ function PiketanGuru() {
                                 onClick={() =>
                                   handleUpdatePiket(filteredPiketData[0].id)
                                 }
-                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
