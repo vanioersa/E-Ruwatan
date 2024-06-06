@@ -221,8 +221,8 @@ const SidebarAdmin = () => {
             <li
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive(item.path)
-                ? `bg-gray-400 dark:bg-gray-600 text-black dark:text-white`
-                : `hover:bg-gray-400 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
+                ? `bg-gray-300 dark:bg-gray-600 text-black dark:text-white`
+                : `hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
                 }`}
             >
               <Link

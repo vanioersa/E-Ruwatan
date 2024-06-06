@@ -539,7 +539,7 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <a href={"/EditPiketan/" + filteredPiketData[0].idPiket}
-                                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </a>
