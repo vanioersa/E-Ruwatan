@@ -190,11 +190,8 @@ const UpdatePiketan = () => {
             </div>
           </form>
 
-          <div
-            style={{ backgroundColor: "white" }}
-            className="my-10 bg-white border border-gray-200 rounded-xl shadow-lg p-6 mt-8"
-          >
-            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+          <div className="my-7 px-0 sm:px-3">
+            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
               Daftar Siswa
             </h2>
             <div className="overflow-x-auto">
@@ -218,7 +215,11 @@ const UpdatePiketan = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-600 text-base font-normal">
+                <tbody
+                  style={{ backgroundColor: "white" }}
+                  className="text-gray-600 text-base font-normal"
+                >
+                  {" "}
                   {siswaByKelas.length > 0 ? (
                     siswaByKelas.map((siswa) => (
                       <tr
