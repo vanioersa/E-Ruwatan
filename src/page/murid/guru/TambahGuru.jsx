@@ -148,6 +148,22 @@ const TambahGuru = () => {
     });
   };
 
+  const handleInputChango = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => {
+      // Logika khusus untuk kolom nomor telepon
+      if (name === "telepon") {
+        // Pastikan angka 08 tetap di depan
+        if (value.startsWith("08")) {
+          return { ...prevFormData, [name]: value };
+        } else {
+          return { ...prevFormData, [name]: "08" };
+        }
+      }
+      return { ...prevFormData, [name]: value };
+    });
+  };
+
   const batal = () => {
     navigate(-1);
   };
@@ -159,7 +175,10 @@ const TambahGuru = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah Guru</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Guru
           </p>
@@ -235,11 +254,11 @@ const TambahGuru = () => {
                   <FontAwesomeIcon icon={faEye} />
                 )}
               </span>
-            {/* Pesan pemberitahuan di bawah field password */}
-            <p className="text-gray-500 text-sm text-center my-5">
-              *Field Alamat, Telepon, Jenis Kelamin, dan Status Nikah boleh
-              kosong
-            </p>
+              {/* Pesan pemberitahuan di bawah field password */}
+              <p className="text-gray-500 text-sm text-center my-5">
+                *Field Alamat, Telepon, Jenis Kelamin, dan Status Nikah boleh
+                kosong
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -268,7 +287,7 @@ const TambahGuru = () => {
                   htmlFor="telepon"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Nomor Telfon
+                  Nomor Telepon
                 </label>
                 <input
                   id="telepon"
@@ -276,7 +295,7 @@ const TambahGuru = () => {
                   type="number"
                   autoComplete="off"
                   value={formData.telepon}
-                  onChange={handleInputChange}
+                  onChange={handleInputChango}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nomor Telepon"
                   // required

@@ -271,19 +271,19 @@ function Penilaian() {
             />
             <div className="flex flex-wrap justify-center space-y-3">
               <Link to="/TambahPenilaian">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 mt-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
                 </button>
               </Link>
               <button
                 onClick={exportToXlsx}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket
               </button>
               <button
                 onClick={openImportModal}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>

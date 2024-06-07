@@ -102,7 +102,10 @@ const TambahSiswa = () => {
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Tambah Siswa</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-8 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Siswa
           </p>
@@ -129,27 +132,6 @@ const TambahSiswa = () => {
               </div>
               <div className="relative">
                 <label
-                  htmlFor="nisn"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  NISN
-                </label>
-                <input
-                  type="number"
-                  id="nisn"
-                  name="nisn"
-                  value={siswa.nisn}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan NISN"
-                  required
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-                <label
                   htmlFor="kelasId"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
@@ -170,6 +152,27 @@ const TambahSiswa = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="nisn"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  NISN
+                </label>
+                <input
+                  type="number"
+                  id="nisn"
+                  name="nisn"
+                  value={siswa.nisn}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan NISN"
+                  required
+                  autoComplete="off"
+                />
               </div>
               <div className="relative">
                 <label

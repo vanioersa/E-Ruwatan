@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
-import { getAdminById, updateAdmin } from "./api_admin";
+import axios from "axios";
 
 const EditAdmin = () => {
   const id = localStorage.getItem("id");
+  const apiUrl = "http://localhost:4001";
 
   const [admin, setAdmin] = useState({
     username: "",
@@ -19,15 +20,20 @@ const EditAdmin = () => {
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const adminData = await getAdminById(id);
-        setAdmin(adminData);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${apiUrl}/users/by-id/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAdmin(response.data);
       } catch (error) {
         console.error("Failed to fetch admin:", error);
       }
     };
 
     fetchAdmin();
-  }, [id]);
+  }, [id, apiUrl]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,106 +46,127 @@ const EditAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const initialAdminData = await getAdminById(id);
-
-    const isUsernameEmailChanged =
-      initialAdminData.username !== admin.username ||
-      initialAdminData.email !== admin.email;
-
-    const isDataChanged =
-      isUsernameEmailChanged ||
-      initialAdminData.alamat !== admin.alamat ||
-      initialAdminData.gender !== admin.gender ||
-      initialAdminData.telepon !== admin.telepon ||
-      initialAdminData.status_nikah !== admin.status_nikah;
-
-    if (!isDataChanged) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal",
-        text: "Minimal satu data harus diubah",
-        showConfirmButton: false,
-        timer: 2000,
+    try {
+      const token = localStorage.getItem("token");
+      const initialResponse = await axios.get(`${apiUrl}/users/by-id/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      return;
-    }
 
-    if (isUsernameEmailChanged) {
-      Swal.fire({
-        icon: "question",
-        title: "Apakah Anda yakin ",
-        text: "ingin mengubah email atau username?",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: "Ya",
-        cancelButtonText: "Tidak",
-        reverseButtons: true,
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await updateAdmin(id, admin);
-            Swal.fire({
-              icon: "success",
-              title: "Berhasil",
-              text: "Data admin berhasil diperbarui",
-              showConfirmButton: false,
-              timer: 2000,
-            }).then(() => {
-              localStorage.removeItem("token");
-              Swal.fire({
-                icon: "info",
-                title: "Anda harus login kembali",
-                text: "Silakan login kembali untuk melanjutkan",
-                showConfirmButton: false,
-                timer: 3000,
-              }).then(() => {
-                window.location.href = "/";
+      const initialAdminData = initialResponse.data;
+
+      const isUsernameEmailChanged =
+        initialAdminData.username !== admin.username ||
+        initialAdminData.email !== admin.email;
+
+      const isDataChanged =
+        isUsernameEmailChanged ||
+        initialAdminData.alamat !== admin.alamat ||
+        initialAdminData.gender !== admin.gender ||
+        initialAdminData.telepon !== admin.telepon ||
+        initialAdminData.status_nikah !== admin.status_nikah;
+
+      if (!isDataChanged) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Minimal satu data harus diubah",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      if (isUsernameEmailChanged) {
+        Swal.fire({
+          icon: "question",
+          title: "Apakah Anda yakin ",
+          text: "ingin mengubah email atau username?",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Ya",
+          cancelButtonText: "Tidak",
+          reverseButtons: true,
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await axios.put(`${apiUrl}/users/update/${id}`, admin, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               });
-            });
-          } catch (error) {
-            console.error("Failed to update admin:", error);
+              Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "Data admin berhasil diperbarui",
+                showConfirmButton: false,
+                timer: 2000,
+              }).then(() => {
+                localStorage.removeItem("token");
+                Swal.fire({
+                  icon: "info",
+                  title: "Anda harus login kembali",
+                  text: "Silakan login kembali untuk melanjutkan",
+                  showConfirmButton: false,
+                  timer: 3000,
+                }).then(() => {
+                  window.location.href = "/";
+                });
+              });
+            } catch (error) {
+              console.error("Failed to update admin:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: "Gagal memperbarui data admin. Silakan coba lagi.",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
               icon: "error",
-              title: "Gagal",
-              text: "Gagal memperbarui data admin. Silakan coba lagi.",
+              title: "Dibatalkan",
+              text: "Perubahan email atau username dibatalkan",
               showConfirmButton: false,
               timer: 2000,
             });
           }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        });
+      } else {
+        try {
+          await axios.put(`${apiUrl}/users/update/${id}`, admin, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data admin berhasil diperbarui",
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          console.error("Failed to update admin:", error);
           Swal.fire({
             icon: "error",
-            title: "Dibatalkan",
-            text: "Perubahan email atau username dibatalkan",
+            title: "Gagal",
+            text: "Gagal memperbarui data admin. Silakan coba lagi.",
             showConfirmButton: false,
             timer: 2000,
           });
         }
-      });
-    } else {
-      try {
-        await updateAdmin(id, admin);
-        Swal.fire({
-          icon: "success",
-          title: "Berhasil",
-          text: "Data admin berhasil diperbarui",
-          showConfirmButton: false,
-          timer: 2000,
-        }).then(() => {
-          window.location.reload();
-        });
-      } catch (error) {
-        console.error("Failed to update admin:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: "Gagal memperbarui data admin. Silakan coba lagi.",
-          showConfirmButton: false,
-          timer: 2000,
-        });
       }
+    } catch (error) {
+      console.error("Failed to fetch initial admin data:", error);
     }
   };
 

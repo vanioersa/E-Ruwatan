@@ -224,8 +224,8 @@ const SidebarGuru = () => {
           <li
             className={`py-2 px-3 my-2 rounded cursor-pointer ${
               isActive("/dashboard_guru")
-                ? `bg-gray-400 text-black`
-                : `hover:bg-gray-400 hover:text-black`
+                ? `bg-gray-300 text-black`
+                : `hover:bg-gray-200 hover:text-black`
             }`}
           >
             <Link to="/dashboard_guru" className="flex items-center w-full">
@@ -256,8 +256,8 @@ const SidebarGuru = () => {
           <li
             className={`py-2 px-3 my-2 rounded cursor-pointer ${
               isActive("/kbm_guru")
-                ? `bg-gray-400 text-black`
-                : `hover:bg-gray-400 hover:text-black`
+                ? `bg-gray-300 text-black`
+                : `hover:bg-gray-200 hover:text-black`
             }`}
           >
             <Link to="/kbm_guru" className="flex items-center w-full">
@@ -290,8 +290,8 @@ const SidebarGuru = () => {
           <li
             className={`py-2 px-3 my-2 rounded cursor-pointer ${
               isActive("/piketan_guru")
-                ? `bg-gray-400 text-black`
-                : `hover:bg-gray-400 hover:text-black`
+                ? `bg-gray-300 text-black`
+                : `hover:bg-gray-200 hover:text-black`
             }`}
           >
             <Link to="/piketan_guru" className="flex items-center w-full">
@@ -324,8 +324,8 @@ const SidebarGuru = () => {
           <li
             className={`py-2 px-3 my-2 rounded cursor-pointer ${
               isActive("/penilaian")
-                ? `bg-gray-400 text-black`
-                : `hover:bg-gray-400 hover:text-black`
+                ? `bg-gray-300 text-black`
+                : `hover:bg-gray-200 hover:text-black`
             }`}
           >
             <Link to="/penilaian" className="flex items-center w-full">

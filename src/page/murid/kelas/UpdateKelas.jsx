@@ -80,31 +80,15 @@ const UpdataKelas = () => {
       </div>
       <div class="content-page max-h-screen container p-8 min-h-screen">
         <h1 className="judul text-3xl font-semibold">Update Kelas</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 bg-white p-5 mr-1 md:ml-8 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Kelas
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-                <label
-                  htmlFor="nama_kelas"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
-                >
-                  Nama Kelas
-                </label>
-                <input
-                  type="text"
-                  id="nama_kelas"
-                  name="nama_kelas"
-                  value={kelas.nama_kelas}
-                  onChange={handleChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  placeholder="Masukan Nama Kelas"
-                  required
-                  autoComplete="off"
-                />
-              </div>
               <div className="relative">
                 <label
                   htmlFor="kelas"
@@ -125,6 +109,25 @@ const UpdataKelas = () => {
                   <option value="11">11</option>
                   <option value="12">12</option>
                 </select>
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="nama_kelas"
+                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900 "
+                >
+                  Nama Kelas
+                </label>
+                <input
+                  type="text"
+                  id="nama_kelas"
+                  name="nama_kelas"
+                  value={kelas.nama_kelas}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder="Masukan Nama Kelas"
+                  required
+                  autoComplete="off"
+                />
               </div>
             </div>
 

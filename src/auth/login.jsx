@@ -101,33 +101,33 @@ function Logins() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-gray-100">
-      <div className="max-w-screen-xl bg-white border border-gray-300 shadow-lg sm:rounded-lg rounded-lg flex justify-center flex-1">
+    <div className="min-h-screen flex items-center justify-center px-5 lg:px-0 bg-gradient-to-r bg-sky-50">
+      <div className="max-w-screen-lg bg-white border border-gray-300 shadow-lg sm:rounded-lg rounded-lg flex justify-center flex-1">
         <div className="hidden md:flex md:flex-1 bg-gray-100 text-center">
-          <div className="m-12 xl:m-16 w-full flex items-center justify-center">
-            <img src={komputer} className='w-80 h-80 rounded-lg' alt="Komputer" />
+          <div className="m-8 xl:m-12 w-full flex items-center justify-center">
+            <img src={komputer} className='w-72 h-72 rounded-lg' alt="Komputer" />
           </div>
         </div>
-        <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-28">
+        <div className="lg:w-2/4 xl:w-2/4 p-8 sm:p-8">
           <div className="flex flex-col items-center">
             <div className="text-center">
               <div className="text-center">
                 <img
-                  className="mx-auto h-32 w-auto"
+                  className="mx-auto h-24 w-auto"
                   src={logobinus}
                   alt="Binus Logo"
                 />
               </div>
-              <h1 className="text-2xl xl:text-4xl font-extrabold text-sky-600 my-4">
+              <h1 className="text-xl xl:text-3xl font-extrabold text-sky-600 my-2">
                 E-RUWATAN
               </h1>
             </div>
-            <div className="w-full mt-10">
-              <form className="mx-auto max-w-xl md:max-w-full md:w-full flex flex-col gap-5" onSubmit={handleLogin}>
+            <div className="w-full md:w-80 mt-6">
+              <form className="mx-auto max-w-md md:max-w-full md:w-full flex flex-col gap-3" onSubmit={handleLogin}>
                 <div>
                   <input
                     id="usernameOrEmail"
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                     type="text"
                     placeholder="Masukkan Email atau Username"
                     autoComplete="off"
@@ -140,7 +140,7 @@ function Logins() {
                   <div className="relative w-full">
                     <input
                       id="password"
-                      className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-10"
+                      className="w-full px-4 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white pr-8"
                       type={passwordType}
                       placeholder="Masukkan Password"
                       autoComplete="off"
@@ -149,19 +149,19 @@ function Logins() {
                       required
                     />
                     <span
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+                      className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-500 cursor-pointer"
                       onClick={togglePasswordVisibility}
                     >
                       <FontAwesomeIcon icon={passwordVisible ? faEye : faEyeSlash} />
                     </span>
                   </div>
                   <p className="text-red-500 text-xs mt-1">
-                    * Password harus terdiri 8 karakter
+                    * Password harus terdiri dari minimal 8 karakter
                   </p>
                 </div>
-                <button className="mt-3 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-3 md:py-3 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none transition duration-300">
+                <button className="mt-3 tracking-wide font-semibold bg-sky-600 text-gray-100 w-full py-2 md:py-2 rounded-lg hover:bg-sky-700 flex items-center justify-center focus:shadow-outline focus:outline-none transition duration-300">
                   <FontAwesomeIcon icon={faUser} size='1x' />
-                  <span className="ml-3">Masuk</span>
+                  <span className="ml-2">Masuk</span>
                 </button>
               </form>
             </div>
