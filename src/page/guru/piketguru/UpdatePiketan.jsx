@@ -2,13 +2,30 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { updatePiket, getAllPiket, getPiketByClass } from "./api_piket"; // Ensure you have API functions to get all piket data and piket data by class
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const UpdatePiketan = () => {
   const [kelasList, setKelasList] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const [piketan, setPiketan] = useState({ tanggal: "" });
   const [siswaByKelas, setSiswaByKelas] = useState([]);
+  const [tanggal, setTanggal] = useState("");
+  const [kelasId, setKelasId] = useState("");
   const [selectedStatus, setSelectedStatus] = useState({});
+  const [piket, setPiket] = useState([]);
+  const { id } = useParams();
+
+  const getPiketanById = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4001/piket/by-id/${id}`);
+      setPiket(res.data);
+      setTanggal(res.data.tanggal);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const fetchAllKelas = async () => {
@@ -22,6 +39,7 @@ const UpdatePiketan = () => {
     };
 
     fetchAllKelas();
+    getPiketanById();
   }, []);
 
   useEffect(() => {
@@ -171,15 +189,12 @@ const UpdatePiketan = () => {
             </div>
           </form>
 
-          <div
-            style={{ backgroundColor: "white" }}
-            className="my-10 bg-white border border-gray-200 rounded-xl shadow-lg p-6 mt-8"
-          >
-            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
+          <div className="my-7 px-0 sm:px-3">
+            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
               Daftar Siswa
             </h2>
             <div className="overflow-x-auto">
-            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                 <thead>
                   <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -199,7 +214,11 @@ const UpdatePiketan = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-600 text-base font-normal">
+                <tbody
+                  style={{ backgroundColor: "white" }}
+                  className="text-gray-600 text-base font-normal"
+                >
+                  {" "}
                   {siswaByKelas.length > 0 ? (
                     siswaByKelas.map((siswa) => (
                       <tr
