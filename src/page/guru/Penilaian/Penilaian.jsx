@@ -53,13 +53,13 @@ function Penilaian() {
       Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("file", excelFile);
-  
+
     // Assuming you have a token stored in local storage or some other secure place
     const token = localStorage.getItem("token");
-  
+
     try {
       const response = await axios.post(
         "http://localhost:4001/panilaian/import",
@@ -78,7 +78,7 @@ function Penilaian() {
       // Log the error object to inspect its properties
       Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
     }
-  };  
+  };
 
   useEffect(() => {
     fetchData();
@@ -269,7 +269,7 @@ function Penilaian() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap justify-center space-y-3">
               <Link to="/TambahPenilaian">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
@@ -292,21 +292,21 @@ function Penilaian() {
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
                   <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
                     <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
-                    <div className="flex justify-between mb-4">
+                    <div className="mb-4">
                       <input
                         type="file"
                         accept=".xlsx,.xls"
                         onChange={handleExcelChange}
                         className="border border-gray-400 p-2 w-full mb-4"
                       />
+                    </div>
+                    <div className="flex justify-between">
                       <button
                         onClick={closeImportModal}
                         className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
                       >
                         Batal
                       </button>
-                    </div>
-                    <div className="flex justify-end">
                       <button
                         onClick={importExcell}
                         className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
