@@ -10,20 +10,19 @@ const UpdatePiketan = () => {
   const [selectedKelas, setSelectedKelas] = useState("");
   const [piketan, setPiketan] = useState({ tanggal: "" });
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [tanggal , setTanggal ] = useState("");
-  const [kelasId , setKelasId ] = useState("");
+  const [tanggal, setTanggal] = useState("");
+  const [kelasId, setKelasId] = useState("");
   const [selectedStatus, setSelectedStatus] = useState({});
-  const [piket , setPiket ] = useState([]);
-  const {id} = useParams();
-  
+  const [piket, setPiket] = useState([]);
+  const { id } = useParams();
 
   const getPiketanById = async () => {
     try {
-     const res = await axios.get(`http://localhost:4001/piket/by-id/${id}`)
-     setPiket(res.data);
-     setTanggal(res.data.tanggal)
-     console.log(res.data);
-    } catch (error){
+      const res = await axios.get(`http://localhost:4001/piket/by-id/${id}`)
+      setPiket(res.data);
+      setTanggal(res.data.tanggal)
+      console.log(res.data);
+    } catch (error) {
       console.log(error);
     }
   }
@@ -87,7 +86,12 @@ const UpdatePiketan = () => {
 
     try {
       await updatePiket(selectedKelas, { siswaStatus });
-
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:4001/piket/ubah/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       Swal.fire({
         title: "Berhasil",
         text: "Piketan berhasil diperbarui",
