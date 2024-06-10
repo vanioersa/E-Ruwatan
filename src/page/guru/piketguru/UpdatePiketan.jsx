@@ -79,35 +79,47 @@ const UpdatePiketan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const siswaStatus = Object.keys(selectedStatus).map((studentId) => ({
-      siswaId: studentId,
-      status: selectedStatus[studentId],
-    }));
+    const confirmation = await Swal.fire({
+      title: "Apakah Anda yakin ingin memperbarui piketan?",
+      text: "Data akan diperbarui",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, perbarui!",
+    });
 
-    try {
-      await updatePiket(selectedKelas, { siswaStatus });
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4001/piket/ubah/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      Swal.fire({
-        title: "Berhasil",
-        text: "Piketan berhasil diperbarui",
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      console.error("Error updating piketan: ", error);
-      Swal.fire({
-        title: "Gagal",
-        text: "Gagal memperbarui piketan. Silakan coba lagi.",
-        icon: "error",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+    if (confirmation.isConfirmed) {
+      const siswaStatus = Object.keys(selectedStatus).map((studentId) => ({
+        siswaId: studentId,
+        status: selectedStatus[studentId],
+      }));
+
+      try {
+        await updatePiket(selectedKelas, { siswaStatus });
+        const token = localStorage.getItem("token");
+        await axios.put(`http://localhost:4001/piket/ubah/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        Swal.fire({
+          title: "Berhasil",
+          text: "Piketan berhasil diperbarui",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Error updating piketan: ", error);
+        Swal.fire({
+          title: "Gagal",
+          text: "Gagal memperbarui piketan. Silakan coba lagi.",
+          icon: "error",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
     }
   };
 
