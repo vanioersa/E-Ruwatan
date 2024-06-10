@@ -22,3 +22,24 @@
     color: white;
   }
   
+  body {
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  body.dark {
+    background-color: #2a2b2e;
+    color: white;
+  }
+
+  .dark nav,
+  .dark .bg-blue-800 {
+    background-color: #43537d;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark .bg-white {
+    background-color: #434752;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }

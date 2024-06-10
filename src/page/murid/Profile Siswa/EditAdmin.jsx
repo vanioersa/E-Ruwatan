@@ -243,10 +243,10 @@ const EditAdmin = () => {
               <br />
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="username"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Username
                     </label>
@@ -260,10 +260,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="email"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Email
                     </label>
@@ -277,10 +277,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="alamat"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Alamat
                     </label>
@@ -294,10 +294,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="telepon"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Telepon
                     </label>
@@ -311,10 +311,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="gender"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Gender
                     </label>
@@ -337,10 +337,10 @@ const EditAdmin = () => {
                       </option>
                     </select>
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-3">
                     <label
                       htmlFor="status_nikah"
-                      className="font-semibold text-gray-700 block pb-1"
+                      className="font-semibold text-gray-700 block pb-3"
                     >
                       Status Nikah
                     </label>

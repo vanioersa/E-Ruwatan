@@ -24,7 +24,7 @@ function Profile_Guru() {
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
   const [previewImage, setPreviewImagepreviewImage] = useState(null);
-  const [editProfil, setEditProfile] = useState(false)
+  const [editProfil, setEditProfile] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -190,16 +190,23 @@ function Profile_Guru() {
                   <strong>Profile {admin.username}</strong>
                 </span>
               </div>
-              <div className="shadow mt-2 rounded-lg">
+              <div className="mt-3 rounded-lg">
                 <div className="w-full p-4 mx-auto flex justify-center">
-                  <label htmlFor="unggahGambar" className="cursor-pointer flex flex-col items-center">
+                  <label
+                    htmlFor="unggahGambar"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
                     <img
                       className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2"
                       src={profilePic}
                       alt="Profile"
                     />
-                    <p className="text-center text-sm font">Disarankan Ukuran Gambar 1:1</p>
-                    <h4 className="text-gray-900 font-bold">Preview Image</h4>
+                    <p className="text-center text-sm">
+                      Disarankan Ukuran Gambar 1:1
+                    </p>
+                    <strong>
+                      <h3 className="text-gray-900">Pratinjau Gambar</h3>
+                    </strong>
                     {editProfil && (
                       <>
                         <img
@@ -233,116 +240,121 @@ function Profile_Guru() {
               style={{ backgroundColor: "white" }}
               className="md:flex-1 p-4 sm:p-6 lg:p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
             >
-              <div className="rounded shadow p-6">
-                <h1 className="text-xl font-semibold text-gray-800">
-                  <strong>Data Profile</strong>
-                </h1>{" "}
-                <br />
-                <form>
-                  <div className="pb-4">
-                    <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 pr-2">
-                        <label
-                          htmlFor="username"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Name
-                        </label>
-                        <input
-                          readOnly
-                          id="username"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="text"
-                          value={admin.username}
-                        />
-                      </div>
-                      <div className="w-full sm:w-1/2 pl-2">
-                        <label
-                          htmlFor="email"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Email
-                        </label>
-                        <input
-                          readOnly
-                          id="email"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="email"
-                          value={admin.email}
-                        />
-                      </div>
-                    </div>
+              <h1 className="text-xl font-semibold text-gray-800">
+                <strong>Data Profile</strong>
+              </h1>{" "}
+              <br />
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="username"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Name
+                    </label>
+                    <input
+                      readOnly
+                      id="username"
+                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      type="text"
+                      value={admin.username}
+                    />
                   </div>
-                  <div className="pb-4">
-                    <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 pr-2">
-                        <label
-                          htmlFor="alamat"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Alamat
-                        </label>
-                        <input
-                          readOnly
-                          id="alamat"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="text"
-                          value={admin.alamat}
-                        />
-                      </div>
-                      <div className="w-full sm:w-1/2 pl-2">
-                        <label
-                          htmlFor="gender"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Gender
-                        </label>
-                        <input
-                          readOnly
-                          id="gender"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="text"
-                          value={admin.gender}
-                        />
-                      </div>
-                    </div>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="email"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      readOnly
+                      id="email"
+                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      type="email"
+                      value={admin.email}
+                    />
                   </div>
-                  <div className="pb-4">
-                    <div className="flex flex-col sm:flex-row">
-                      <div className="w-full sm:w-1/2 pr-2">
-                        <label
-                          htmlFor="telepon"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Telepon
-                        </label>
-                        <input
-                          readOnly
-                          id="telepon"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="text"
-                          value={admin.telepon}
-                        />
-                      </div>
-                      <div className="w-full sm:w-1/2 pl-2">
-                        <label
-                          htmlFor="status_nikah"
-                          className="font-semibold text-gray-700 block pb-1"
-                        >
-                          Status Nikah
-                        </label>
-                        <input
-                          readOnly
-                          id="status_nikah"
-                          className="border rounded-r px-4 py-2 w-full text-gray-600"
-                          type="text"
-                          value={admin.status_nikah}
-                        />
-                      </div>
-                    </div>
+                </div>
+              </div>
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="alamat"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Alamat
+                    </label>
+                    <input
+                      readOnly
+                      id="alamat"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.alamat ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.alamat ? admin.alamat : "Data kosong"}
+                    />
                   </div>
-                  {error && <div className="text-red-500">{error}</div>}
-                </form>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="gender"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Gender
+                    </label>
+                    <input
+                      readOnly
+                      id="gender"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.gender ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.gender ? admin.gender : "Data kosong"}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="telepon"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Telepon
+                    </label>
+                    <input
+                      readOnly
+                      id="telepon"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.telepon ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.telepon ? admin.telepon : "Data kosong"}
+                    />
+                  </div>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="status_nikah"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Status Nikah
+                    </label>
+                    <input
+                      readOnly
+                      id="status_nikah"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.status_nikah ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={
+                        admin.status_nikah ? admin.status_nikah : "Data kosong"
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
