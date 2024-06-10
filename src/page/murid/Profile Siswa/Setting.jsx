@@ -278,7 +278,7 @@ function Setting() {
                     <span className="ml-2 text-gray-700">Lihat Password</span>
                   </label>
                 </div>
-                <div className="text-center mt-4">
+                <div className="flex justify-end mt-4">
                   <button
                     type="submit"
                     className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
