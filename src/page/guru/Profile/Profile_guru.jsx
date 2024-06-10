@@ -4,6 +4,8 @@ import { getAdminById } from "./api_guru";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 function Profile_Guru() {
   const id = localStorage.getItem("id");
@@ -21,7 +23,8 @@ function Profile_Guru() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
-  const [previewPic, setPreviewPic] = useState(null); 
+  const [previewImage, setPreviewImagepreviewImage] = useState(null);
+  const [editProfil, setEditProfile] = useState(false)
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -36,10 +39,10 @@ function Profile_Guru() {
       });
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("image", image);
-  
+
     try {
       const config = {
         headers: {
@@ -64,9 +67,9 @@ function Profile_Guru() {
           ...prevState,
           image: response.data.imageUrl,
         }));
-        setImage(null);
         window.location.reload();
-        setPreviewPic(null);
+        setImage(null);
+        setPreviewImagepreviewImage(null);
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -90,12 +93,13 @@ function Profile_Guru() {
         });
       }
     }
-  };  
+  };
 
   const handleImageChange = (e) => {
+    setEditProfile(true);
     const file = e.target.files[0];
     setImage(file);
-    setPreviewPic(URL.createObjectURL(file));
+    setPreviewImagepreviewImage(URL.createObjectURL(file));
     setError(null);
   };
 
@@ -188,27 +192,38 @@ function Profile_Guru() {
               </div>
               <div className="shadow mt-2 rounded-lg">
                 <div className="w-full p-4 mx-auto flex justify-center">
-                  <img
-                    className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                    src={previewPic || profilePic}
-                    alt="Profile"
-                  />
-                </div>
-                <div className="text-center px-8 pb-3 pt-2">
-                  <div className="pb-2">
+                  <label htmlFor="unggahGambar" className="cursor-pointer flex flex-col items-center">
+                    <img
+                      className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2"
+                      src={profilePic}
+                      alt="Profile"
+                    />
+                    <p className="text-center text-sm font">Disarankan Ukuran Gambar 1:1</p>
+                    <h4 className="text-gray-900 font-bold">Preview Image</h4>
+                    {editProfil && (
+                      <>
+                        <img
+                          className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2 mt-1"
+                          src={previewImage}
+                          alt="Profile"
+                        />
+                      </>
+                    )}
                     <input
-                      id="image"
-                      className="border px-4 py-2 w-full rounded-lg bg-white text-gray-600"
+                      id="unggahGambar"
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
+                      style={{ display: "none" }}
                     />
-                  </div>
+                  </label>
+                </div>
+                <div className="text-center px-8 pb-3 pt-1">
                   <button
                     onClick={handleSubmit}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
-                    Upload
+                    <FontAwesomeIcon icon={faImage} />
                   </button>
                 </div>
               </div>
