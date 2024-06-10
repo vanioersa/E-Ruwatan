@@ -8,7 +8,7 @@ function Setting() {
   const [passwordBaru, setPasswordBaru] = useState("");
   const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const message = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;

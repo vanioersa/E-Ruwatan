@@ -22,6 +22,7 @@ function Guru() {
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
   const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
+  const [selectedGuruId, setSelectedGuruId] = useState(null);
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -109,7 +110,7 @@ function Guru() {
   //   };
   // });
 
-   const modifiedGuru = filteredGuru.map((g, index) => {
+  const modifiedGuru = filteredGuru.map((g, index) => {
     const modifiedTelepon = g.telepon && g.telepon.replace(/^08/, "+62 ");
 
     return {
@@ -203,12 +204,9 @@ function Guru() {
     });
   };
 
-  const handleDoubleClick = (telepon) => {
-    if (isHiddenTelepon) {
-      setIsHiddenTelepon(false);
-    } else {
-      setIsHiddenTelepon(true);
-    }
+  const handleDoubleClick = (id) => {
+    setSelectedGuruId(id);
+    setIsHiddenTelepon((prevState) => !prevState);
   };
 
   return (
@@ -217,7 +215,10 @@ function Guru() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
+        >
           <h1 className="text-3xl font-semibold text-gray-800">Data Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -263,7 +264,10 @@ function Guru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
                 {modifiedGuru.length > 0 ? (
                   modifiedGuru
                     .slice(pagesVisited, pagesVisited + guruPerPage)
@@ -313,13 +317,25 @@ function Guru() {
                         </td>
                         <td
                           className="py-2 px-4 text-center"
-                          onDoubleClick={() => handleDoubleClick(g.telepon)}
+                          onDoubleClick={() => handleDoubleClick(g.id)}
                         >
                           {g.telepon ? (
-                            isHiddenTelepon ? (
-                              <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
+                            g.id === selectedGuruId ? (
+                              isHiddenTelepon ? (
+                                <span>
+                                  {g.modifiedTelepon
+                                    ? g.modifiedTelepon.replace(/.{4}$/, "****")
+                                    : ""}
+                                </span>
+                              ) : (
+                                <span>{g.modifiedTelepon}</span>
+                              )
                             ) : (
-                              <span>{g.modifiedTelepon}</span>
+                              <span>
+                                {g.modifiedTelepon
+                                  ? g.modifiedTelepon.replace(/.{4}$/, "****")
+                                  : ""}
+                              </span>
                             )
                           ) : (
                             <span
@@ -335,6 +351,7 @@ function Guru() {
                             </span>
                           )}
                         </td>
+
                         <td className="py-2 px-4 text-center">
                           {g.status_nikah ? (
                             <span>{g.status_nikah}</span>

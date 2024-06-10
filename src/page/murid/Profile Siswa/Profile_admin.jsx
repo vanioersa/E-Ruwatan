@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../../component/Sidebar";
-import { getAdminById } from "./api_admin"; 
+import { getAdminById } from "./api_admin";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -21,8 +21,9 @@ function Profile_admin() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
-  const [previewPic, setPreviewPic] = useState(null); 
-  const [error, setError] = useState(null);
+  const [previewPic, setPreviewPic] = useState(null);
+
+  const allowedFormats = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,10 +37,21 @@ function Profile_admin() {
       });
       return;
     }
-  
+
+    if (!allowedFormats.includes(image.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Format File Tidak Valid",
+        text: "Harap pilih file dengan format JPEG, JPG, PNG, atau WEBP.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("imageAdmin", image);
-  
+
     try {
       const config = {
         headers: {
@@ -70,7 +82,6 @@ function Profile_admin() {
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setError("Unauthorized: Silakan masuk kembali.");
         Swal.fire({
           icon: "error",
           title: "Login Gagal",
@@ -79,8 +90,6 @@ function Profile_admin() {
           showConfirmButton: false,
         });
       } else {
-        setError("Terjadi kesalahan.");
-        console.error("Kesalahan saat mengunggah foto:", error);
         Swal.fire({
           icon: "error",
           title: "Gagal",
@@ -90,13 +99,12 @@ function Profile_admin() {
         });
       }
     }
-  };  
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
     setPreviewPic(URL.createObjectURL(file));
-    setError(null);
   };
 
   useEffect(() => {
@@ -178,7 +186,13 @@ function Profile_admin() {
 
           <div className="block md:flex">
             <div
-              style={{ backgroundColor: "white" }}
+              style={{
+                backgroundColor: "white",
+                maxHeight: "410px",
+                overflowY: "auto",
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+              }}
               className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
             >
               <div className="text-center flex justify-between items-center">
@@ -186,14 +200,38 @@ function Profile_admin() {
                   <strong>Profile {admin.username}</strong>
                 </span>
               </div>
-              <div className="shadow mt-2 rounded-lg">
-                <div className="w-full p-4 mx-auto flex justify-center">
-                  <img
-                    className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                    src={previewPic || profilePic}
-                    alt="Profile"
-                  />
+              <div className="mt-2 rounded-lg">
+                <div className="flex flex-col items-center">
+                  <div className="p-4">
+                    <a
+                      href={profilePic}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        className="max-w-xs w-64 h-64 object-cover rounded-full border"
+                        src={profilePic}
+                        alt="Profile"
+                      />
+                    </a>
+                  </div>
+                  {previewPic && (
+                    <div className="p-4">
+                      <a
+                        href={previewPic}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          className="max-w-xs w-64 h-64 object-cover rounded-full border"
+                          src={previewPic}
+                          alt="Preview"
+                        />
+                      </a>
+                    </div>
+                  )}
                 </div>
+
                 <div className="text-center px-8 pb-3 pt-2">
                   <div className="pb-2">
                     <input
@@ -202,6 +240,7 @@ function Profile_admin() {
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
+                      style={{ backgroundColor: "white" }}
                     />
                   </div>
                   <button
@@ -214,7 +253,10 @@ function Profile_admin() {
               </div>
             </div>
 
-            <div className="md:flex-1 p-8 lg:ml-4 bg-white shadow-md rounded-tr-xl rounded-br-xl">
+            <div
+              style={{ backgroundColor: "white" }}
+              className="md:flex-1 p-8 lg:ml-4 bg-white shadow-md rounded-tr-xl rounded-br-xl"
+            >
               <div className="rounded shadow p-6">
                 <h1 className="text-xl font-semibold text-gray-800">
                   <strong>Data Profile</strong>
@@ -326,7 +368,7 @@ function Profile_admin() {
             </div>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   );
 }
