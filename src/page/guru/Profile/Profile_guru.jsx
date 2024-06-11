@@ -197,7 +197,7 @@ function Profile_Guru() {
                     className="cursor-pointer flex flex-col items-center"
                   >
                     <img
-                      className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2"
+                      className="max-w-xs w-44 h-44 object-cover rounded-full border mb-2"
                       src={profilePic}
                       alt="Profile"
                     />
@@ -251,12 +251,12 @@ function Profile_Guru() {
                       htmlFor="username"
                       className="font-semibold text-gray-700 block pb-1"
                     >
-                      Name
+                      Username
                     </label>
                     <input
                       readOnly
                       id="username"
-                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-900"
                       type="text"
                       value={admin.username}
                     />
@@ -271,7 +271,7 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="email"
-                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-900"
                       type="email"
                       value={admin.email}
                     />
@@ -290,7 +290,7 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="alamat"
-                      className={`border rounded-xl px-4 py-2 w-full ${
+                      className={`border rounded-lg px-4 py-2 w-full ${
                         !admin.alamat ? "text-gray-400" : "text-gray-900"
                       }`}
                       type="text"
@@ -307,7 +307,7 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="gender"
-                      className={`border rounded-xl px-4 py-2 w-full ${
+                      className={`border rounded-lg px-4 py-2 w-full ${
                         !admin.gender ? "text-gray-400" : "text-gray-900"
                       }`}
                       type="text"
@@ -328,7 +328,7 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="telepon"
-                      className={`border rounded-xl px-4 py-2 w-full ${
+                      className={`border rounded-lg px-4 py-2 w-full ${
                         !admin.telepon ? "text-gray-400" : "text-gray-900"
                       }`}
                       type="text"
@@ -345,7 +345,7 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="status_nikah"
-                      className={`border rounded-xl px-4 py-2 w-full ${
+                      className={`border rounded-lg px-4 py-2 w-full ${
                         !admin.status_nikah ? "text-gray-400" : "text-gray-900"
                       }`}
                       type="text"
