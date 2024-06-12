@@ -31,7 +31,8 @@
     "react-spinners": "^0.13.8",
     "sweetalert2": "^11.10.8",
     "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xlsx-style": "^0.8.13"
   },
   "scripts": {
     "start": "react-scripts start",
