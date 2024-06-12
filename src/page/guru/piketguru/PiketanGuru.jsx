@@ -258,9 +258,8 @@ function PiketanGuru() {
 
   const dataToExport = data.map((item) => ({
     NamaSiswa: siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-    }`,
+    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${kelas.find((k) => k.id === item.kelasId)?.nama_kelas
+      }`,
     Tanggal: item.tanggal,
     Status: item.status,
   }));
@@ -321,37 +320,94 @@ function PiketanGuru() {
   //   setFile(event.target.files[0]);
   // };
 
-  const [excelFile, setExcelFile] = useState(null);
+  const [excel, setExcelFile] = useState(null);
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
 
+// IMPORT EXCEL PIKETAN
   const importExcell = async (e) => {
     e.preventDefault();
-    if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
-      return;
-    }
+
     const formData = new FormData();
-    formData.append("file", excelFile);
+
+    formData.append("file", excel);
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:4001/piket/import",
+        "http://localhost:4001/piket/upload/importPiket",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
           },
         }
       );
       console.log(response.data);
-      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
+      Swal.fire({
+        icon: "success",
+        title: "Sukses!",
+        text: "Berhasil Ditambahkan",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
-      console.error("Error importing file:", error);
-      Swal.fire("Error", "Gagal mengimpor file.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Import Piketan Gagal!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.log(error);
     }
   };
+
+  const exportExcell = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:4001/piket/upload/export-piket",
+        {
+          responseType: 'blob', // Important to handle binary data
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'ExportPiket.xlsx'); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+  
+      Swal.fire({
+        icon: "success",
+        title: "Sukses!",
+        text: "File berhasil diunduh",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Ekspor Piketan Gagal!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.log(error);
+    }
+  };
+  
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -379,7 +435,7 @@ function PiketanGuru() {
                 </button>
               </Link>
               <button
-                onClick={exportToXlsx}
+                onClick={exportExcell}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket
@@ -604,6 +660,18 @@ function PiketanGuru() {
               {dateOptions.map((date) => (
                 <option key={date} value={date}>
                   {date}
+                </option>
+              ))}
+            </select>
+            <select
+              className="border border-gray-400 p-2 w-full mb-4 text-gray-700"
+              value={filteredDate}
+              onChange={handleFilterDate}
+            >
+              <option value="">Pilih Kelas</option>
+              {dateOptions.map((kelas) => (
+                <option key={kelas} value={kelas}>
+                  {kelas}
                 </option>
               ))}
             </select>
