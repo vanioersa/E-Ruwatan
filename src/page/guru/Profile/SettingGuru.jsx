@@ -213,7 +213,7 @@ function Setting() {
           <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md"
+              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md border border-gray-200"
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Setting</strong>

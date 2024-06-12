@@ -69,7 +69,7 @@ const EditGuru = () => {
         Swal.fire({
           icon: "question",
           title: "Apakah Anda yakin?",
-          text: "ingin mengubah email atau username?",
+          text: "ingin mengubah data ini?",
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           showConfirmButton: true,
@@ -197,7 +197,7 @@ const EditGuru = () => {
           <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md"
+              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md border border-gray-200"
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Edit Profile</strong>
@@ -329,7 +329,7 @@ const EditGuru = () => {
                     </select>
                   </div>
                 </div>
-                <div className="text-center mt-4">
+                <div className="float-end mt-4">
                   <button
                     type="submit"
                     className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"

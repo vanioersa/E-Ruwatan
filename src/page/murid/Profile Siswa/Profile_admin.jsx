@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../../component/Sidebar";
+import Sidebar from "../../../component/SidebarGuru";
 import { getAdminById } from "./api_admin";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
-function Profile_admin() {
+function Profile_Admin() {
   const id = localStorage.getItem("id");
   const token = localStorage.getItem("token");
   const [admin, setAdmin] = useState({
@@ -21,9 +23,9 @@ function Profile_admin() {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
-  const [previewPic, setPreviewPic] = useState(null);
-
-  const allowedFormats = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+  const [previewImage, setPreviewImagepreviewImage] = useState(null);
+  const [editProfil, setEditProfile] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,19 +40,8 @@ function Profile_admin() {
       return;
     }
 
-    if (!allowedFormats.includes(image.type)) {
-      Swal.fire({
-        icon: "error",
-        title: "Format File Tidak Valid",
-        text: "Harap pilih file dengan format JPEG, JPG, PNG, atau WEBP.",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
     const formData = new FormData();
-    formData.append("imageAdmin", image);
+    formData.append("image", image);
 
     try {
       const config = {
@@ -60,7 +51,7 @@ function Profile_admin() {
         },
       };
       const response = await axios.put(
-        `http://localhost:4001/edit/image_admin/${id}`,
+        `http://localhost:4001/edit/image/${id}`,
         formData,
         config
       );
@@ -76,12 +67,13 @@ function Profile_admin() {
           ...prevState,
           image: response.data.imageUrl,
         }));
-        setImage(null);
         window.location.reload();
-        setPreviewPic(null);
+        setImage(null);
+        setPreviewImagepreviewImage(null);
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
+        setError("Unauthorized: Silakan masuk kembali.");
         Swal.fire({
           icon: "error",
           title: "Login Gagal",
@@ -90,6 +82,8 @@ function Profile_admin() {
           showConfirmButton: false,
         });
       } else {
+        setError("Terjadi kesalahan.");
+        console.error("Kesalahan saat mengunggah foto:", error);
         Swal.fire({
           icon: "error",
           title: "Gagal",
@@ -102,9 +96,11 @@ function Profile_admin() {
   };
 
   const handleImageChange = (e) => {
+    setEditProfile(true);
     const file = e.target.files[0];
     setImage(file);
-    setPreviewPic(URL.createObjectURL(file));
+    setPreviewImagepreviewImage(URL.createObjectURL(file));
+    setError(null);
   };
 
   useEffect(() => {
@@ -186,13 +182,7 @@ function Profile_admin() {
 
           <div className="block md:flex">
             <div
-              style={{
-                backgroundColor: "white",
-                maxHeight: "410px",
-                overflowY: "auto",
-                msOverflowStyle: "none",
-                scrollbarWidth: "none",
-              }}
+              style={{ backgroundColor: "white" }}
               className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
             >
               <div className="text-center flex justify-between items-center">
@@ -200,54 +190,45 @@ function Profile_admin() {
                   <strong>Profile {admin.username}</strong>
                 </span>
               </div>
-              <div className="mt-2 rounded-lg">
-                <div className="flex flex-col items-center">
-                  <div className="p-4">
-                    <a
-                      href={profilePic}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                        src={profilePic}
-                        alt="Profile"
-                      />
-                    </a>
-                  </div>
-                  {previewPic && (
-                    <div className="p-4">
-                      <a
-                        href={previewPic}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+              <div className="mt-3 rounded-lg">
+                <div className="w-full p-4 mx-auto flex justify-center">
+                  <label
+                    htmlFor="unggahGambar"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <img
+                      className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2"
+                      src={profilePic}
+                      alt="Profile"
+                    />
+                    <p className="text-center text-sm font">
+                      Disarankan Ukuran Gambar 1:1
+                    </p>
+                    <h4 className="text-gray-900 font-bold">Preview Image</h4>
+                    {editProfil && (
+                      <>
                         <img
-                          className="max-w-xs w-64 h-64 object-cover rounded-full border"
-                          src={previewPic}
-                          alt="Preview"
+                          className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2 mt-1"
+                          src={previewImage}
+                          alt="Profile"
                         />
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                <div className="text-center px-8 pb-3 pt-2">
-                  <div className="pb-2">
+                      </>
+                    )}
                     <input
-                      id="image"
-                      className="border px-4 py-2 w-full rounded-lg bg-white text-gray-600"
+                      id="unggahGambar"
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
-                      style={{ backgroundColor: "white" }}
+                      style={{ display: "none" }}
                     />
-                  </div>
+                  </label>
+                </div>
+                <div className="text-center px-8 pb-3 pt-1">
                   <button
                     onClick={handleSubmit}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                   >
-                    Upload
+                    <FontAwesomeIcon icon={faImage} />
                   </button>
                 </div>
               </div>
@@ -255,113 +236,121 @@ function Profile_admin() {
 
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-8 lg:ml-4 bg-white shadow-md rounded-tr-xl rounded-br-xl"
+              className="md:flex-1 p-4 sm:p-6 lg:p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
             >
-              <div className="rounded shadow p-6">
-                <h1 className="text-xl font-semibold text-gray-800">
-                  <strong>Data Profile</strong>
-                </h1>
-                <br />
-                <div className="pb-4">
-                  <div className="flex">
-                    <div className="w-1/2 pr-2">
-                      <label
-                        htmlFor="username"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Name
-                      </label>
-                      <input
-                        readOnly
-                        id="username"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="text"
-                        value={admin.username}
-                      />
-                    </div>
-                    <div className="w-1/2 pl-2">
-                      <label
-                        htmlFor="email"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Email
-                      </label>
-                      <input
-                        readOnly
-                        id="email"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="email"
-                        value={admin.email}
-                      />
-                    </div>
+              <h1 className="text-xl font-semibold text-gray-800">
+                <strong>Data Profile</strong>
+              </h1>{" "}
+              <br />
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="username"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Name
+                    </label>
+                    <input
+                      readOnly
+                      id="username"
+                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      type="text"
+                      value={admin.username}
+                    />
+                  </div>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="email"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Email
+                    </label>
+                    <input
+                      readOnly
+                      id="email"
+                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                      type="email"
+                      value={admin.email}
+                    />
                   </div>
                 </div>
-                <div className="pb-4">
-                  <div className="flex">
-                    <div className="w-1/2 pr-2">
-                      <label
-                        htmlFor="alamat"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Alamat
-                      </label>
-                      <input
-                        readOnly
-                        id="alamat"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="text"
-                        value={admin.alamat}
-                      />
-                    </div>
-                    <div className="w-1/2 pl-2">
-                      <label
-                        htmlFor="gender"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Gender
-                      </label>
-                      <input
-                        readOnly
-                        id="gender"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="text"
-                        value={admin.gender}
-                      />
-                    </div>
+              </div>
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="alamat"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Alamat
+                    </label>
+                    <input
+                      readOnly
+                      id="alamat"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.alamat ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.alamat ? admin.alamat : "Data kosong"}
+                    />
+                  </div>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="gender"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Gender
+                    </label>
+                    <input
+                      readOnly
+                      id="gender"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.gender ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.gender ? admin.gender : "Data kosong"}
+                    />
                   </div>
                 </div>
-                <div className="pb-4">
-                  <div className="flex">
-                    <div className="w-1/2 pr-2">
-                      <label
-                        htmlFor="telepon"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Telepon
-                      </label>
-                      <input
-                        readOnly
-                        id="telepon"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="text"
-                        value={admin.telepon}
-                      />
-                    </div>
-                    <div className="w-1/2 pl-2">
-                      <label
-                        htmlFor="status_nikah"
-                        className="font-semibold text-gray-700 block pb-1"
-                      >
-                        Status Nikah
-                      </label>
-                      <input
-                        readOnly
-                        id="status_nikah"
-                        className="border rounded-r px-4 py-2 w-full text-gray-600"
-                        type="text"
-                        value={admin.status_nikah}
-                      />
-                    </div>
+              </div>
+              <div className="pb-4">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="w-full sm:w-1/2 pr-2">
+                    <label
+                      htmlFor="telepon"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Telepon
+                    </label>
+                    <input
+                      readOnly
+                      id="telepon"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.telepon ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={admin.telepon ? admin.telepon : "Data kosong"}
+                    />
+                  </div>
+                  <div className="w-full sm:w-1/2 pl-2">
+                    <label
+                      htmlFor="status_nikah"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
+                      Status Nikah
+                    </label>
+                    <input
+                      readOnly
+                      id="status_nikah"
+                      className={`border rounded-xl px-4 py-2 w-full ${
+                        !admin.status_nikah ? "text-gray-400" : "text-gray-900"
+                      }`}
+                      type="text"
+                      value={
+                        admin.status_nikah ? admin.status_nikah : "Data kosong"
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -373,4 +362,4 @@ function Profile_admin() {
   );
 }
 
-export default Profile_admin;
+export default Profile_Admin;
