@@ -15,8 +15,6 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { deletePenilaian, getAllPenilaian } from "./api_penilaian";
 import Swal from "sweetalert2";
-import { utils } from "xlsx";
-import * as xlsx from "xlsx";
 
 function Penilaian() {
   const [data, setData] = useState([]);
@@ -25,13 +23,13 @@ function Penilaian() {
   const [dataPerPage] = useState(10);
   const [kelas, setKelas] = useState([]);
   const [siswa, setSiswa] = useState([]);
+  const [users, setUsers] = useState([]);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [excelFile, setExcelFile] = useState(null); // State untuk menyimpan file Excel
+
   const pageCount = Math.ceil(data.length / dataPerPage);
 
-  // Tambahkan state baru untuk menangani file Excel yang diunggah
-  const [excelFile, setExcelFile] = useState(null);
-
-  // Buat fungsi untuk menangani perubahan pada file Excel yang diunggah
+  // Handle perubahan pada file Excel yang diunggah
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
@@ -43,10 +41,12 @@ function Penilaian() {
   const openImportModal = () => {
     setShowImportModal(true);
   };
+
   const closeImportModal = () => {
     setShowImportModal(false);
   };
 
+  // Fungsi untuk impor file Excel
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
@@ -57,25 +57,24 @@ function Penilaian() {
     const formData = new FormData();
     formData.append("file", excelFile);
 
-    // Assuming you have a token stored in local storage or some other secure place
     const token = localStorage.getItem("token");
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/panilaian/import",
+        "http://localhost:4001/penilaian/import", // Sesuaikan dengan endpoint untuk impor file Excel
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Add the token here
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       console.log(response.data);
       Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
+      fetchData(); // Ambil ulang data setelah impor berhasil
     } catch (error) {
       console.error("Error importing file:", error);
-      // Log the error object to inspect its properties
       Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
     }
   };
@@ -166,87 +165,84 @@ function Penilaian() {
     );
   });
 
+  // EXPORT PENILAIAN
   const dataToExport = filteredData.map((item, index) => ({
     No: index + 1,
-    "Nama Siswa": siswa.find((s) => s.id === item.siswaId)?.nama_siswa,
-    Kelas: `${kelas.find((k) => k.id === item.kelasId)?.kelas} - ${
-      kelas.find((k) => k.id === item.kelasId)?.nama_kelas
-    }`,
-    Nilai: item.nilai,
-    Deskripsi: item.deskripsi,
+    "Nama Siswa": siswa.find((s) => s.id === item.siswa_id)?.nama_siswa || "",
+    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas}` || "",
+    Nilai: item.nilai || "",
+    Deskripsi: item.deskripsi || "",
   }));
 
-  const exportToXlsx = () => {
-    if (dataToExport.length === 0) {
+  const exportExcellPenilaian = () => {
+    const storedUsername = localStorage.getItem("username");
+    const currentPenilaian = filteredData.find(
+      (penilaian) => users.find((u) => u.id === penilaian.userId)?.username === storedUsername
+    );
+    if (currentPenilaian) {
+      exportExcell(currentPenilaian.kelasId, currentPenilaian.siswaId);
+    } else {
       Swal.fire({
         title: "Gagal",
-        text: "Tidak ada data penilaian yang diekspor",
+        text: "Tidak ada data Penilaian untuk diekspor",
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
-      return;
     }
+  };
 
+  const exportExcell = async (kelasId, siswaId) => {
     Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengexport data penilaian?",
-      icon: "question",
+      title: 'Konfirmasi',
+      text: 'Anda yakin ingin mengexport data Penilaian?',
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonText: "Ya",
-      cancelButtonText: "Batal",
-    }).then((result) => {
+      confirmButtonText: 'Ya',
+      cancelButtonText: 'Batal',
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const workbook = utils.book_new();
-        const worksheet = utils.json_to_sheet(dataToExport);
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(
+            `http://localhost:4001/panilaian/upload/export-panilaian?kelas_id=${kelasId}&siswa_id=${siswaId}`,
+            {
+              responseType: 'blob',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'ExportPenilaian.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
 
-        const columnWidths = {};
-
-        const columnKeys =
-          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
-
-        columnKeys.forEach((key) => {
-          columnWidths[key] = key.length;
-        });
-
-        dataToExport.forEach((data) => {
-          columnKeys.forEach((key) => {
-            const value = data[key] ? String(data[key]) : "";
-            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses!',
+            text: 'File berhasil diunduh',
+            showConfirmButton: false,
+            timer: 2000,
           });
-        });
-
-        const excelColumns = columnKeys.map((key) => ({
-          wch: columnWidths[key],
-        }));
-
-        worksheet["!cols"] = excelColumns;
-
-        xlsx.utils.book_append_sheet(workbook, worksheet, "Data Penilaian");
-        const xlsxBuffer = xlsx.write(workbook, {
-          bookType: "xlsx",
-          type: "buffer",
-        });
-        const blob = new Blob([xlsxBuffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "data_penilaian.xlsx";
-        link.click();
-        URL.revokeObjectURL(url);
-
-        Swal.fire({
-          title: "Berhasil",
-          text: "Data penilaian berhasil diekspor",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1000,
-        });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Ekspor Penilaian Gagal!',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(error);
+        }
       }
     });
   };
+  // EXPORT PENILAIAN
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -276,7 +272,7 @@ function Penilaian() {
                 </button>
               </Link>
               <button
-                onClick={exportToXlsx}
+                onClick={exportExcellPenilaian}
                 className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Piket

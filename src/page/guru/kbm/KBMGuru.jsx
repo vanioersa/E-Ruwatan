@@ -99,126 +99,102 @@ function KBMGuru() {
 
   // Filter data berdasarkan term pencarian
   const filteredKBMGuru = kbmGuru.filter((kbm) => {
-    const namaGuru = users.find((u) => u.id === kbm.userId)?.username;
-    const kelass = kelas.find((k) => k.id === kbm.kelasId)?.kelas;
-    const namaKelas = kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas;
-
-    const isNamaGuruMatch = namaGuru
-      ? namaGuru.toLowerCase().includes(searchTerm.toLowerCase())
-      : false;
-
-    const isKelasMatch =
-      kelass &&
-      namaKelas &&
-      `${kelass} - ${namaKelas}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-
-    const isMateriMatch = kbm.materi
-      ? kbm.materi.toLowerCase().includes(searchTerm.toLowerCase())
-      : false;
-
-    const isKeteranganMatch = kbm.keterangan
-      ? kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase())
-      : false;
-
-    return (
-      isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch
-    );
+    const namaGuru = users.find((u) => u.id === kbm.userId)?.username?.toLowerCase();
+    const kelass = kelas.find((k) => k.id === kbm.kelasId);
+    const kelasName = kelass?.kelas;
+    const namaKelas = kelass?.nama_kelas;
+    const isNamaGuruMatch = namaGuru && namaGuru.includes(searchTerm.toLowerCase());
+    const isKelasMatch = kelass && namaKelas &&
+      `${kelasName} - ${namaKelas}`.toLowerCase().includes(searchTerm.toLowerCase());
+    const isMateriMatch = kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase());
+    const isKeteranganMatch = kbm.keterangan && kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase());
+    return isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch;
   });
 
   const pageCount = Math.ceil(filteredKBMGuru.length / itemsPerPage);
-  const changePage = ({ selected }) => {
-    setCurrentPage(selected);
-  };
+  const changePage = ({ selected }) => setCurrentPage(selected);
 
   const dataToExport = filteredKBMGuru
-    .filter(
-      (kbm) =>
-        users.find((u) => u.id === kbm.userId)?.username === storedUsername
-    )
+    .filter((kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername)
     .map((kbm) => ({
-      "Nama Guru": users.find((u) => u.id === kbm.userId)?.username,
-      Kelas: `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${
-        kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas
-      }`,
-      "Jam Masuk": kbm.jam_masuk,
-      "Jam Pulang": kbm.jam_pulang,
-      Materi: kbm.materi,
-      Keterangan: kbm.keterangan,
+      "Nama Guru": kbm.userId ? users.find((u) => u.id === kbm.userId)?.username : "",
+      Kelas: kbm.kelasId ? `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}` : "",
+      "Jam Masuk": kbm.jam_masuk || "",
+      "Jam Pulang": kbm.jam_pulang || "",
+      Materi: kbm.materi || "",
+      Keterangan: kbm.keterangan || "",
     }));
 
-  const exportToXlsx = () => {
-    if (dataToExport.length === 0) {
+  // EXPORT KBM
+  const exportExcellKBM = () => {
+    const storedUsername = localStorage.getItem("username");
+    const currentKbm = filteredKBMGuru.find(
+      (kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername
+    );
+    if (currentKbm) {
+      exportExcell(currentKbm.kelasId, currentKbm.userId);
+    } else {
       Swal.fire({
         title: "Gagal",
-        text: "Tidak ada data kbm guru yang diekspor",
+        text: "Tidak ada data KBM untuk diekspor",
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
-      return;
     }
+  };
 
+  const exportExcell = async (kelasId, userId) => {
     Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengexport data kbm guru?",
-      icon: "question",
+      title: 'Konfirmasi',
+      text: 'Anda yakin ingin mengexport data KBM?',
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonText: "Ya",
-      cancelButtonText: "Batal",
-    }).then((result) => {
+      confirmButtonText: 'Ya',
+      cancelButtonText: 'Batal',
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const workbook = utils.book_new();
-        const worksheet = utils.json_to_sheet(dataToExport);
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(
+            `http://localhost:4001/kbm/upload/export-kbm?kelas_id=${kelasId}&user_id=${userId}`,
+            {
+              responseType: 'blob',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        const columnWidths = {};
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'ExportKBM.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
 
-        const columnKeys =
-          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
-
-        columnKeys.forEach((key) => {
-          columnWidths[key] = key.length;
-        });
-
-        dataToExport.forEach((data) => {
-          columnKeys.forEach((key) => {
-            const value = data[key] ? String(data[key]) : "";
-            columnWidths[key] = Math.max(columnWidths[key], value.length);
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses!',
+            text: 'File berhasil diunduh',
+            showConfirmButton: false,
+            timer: 2000,
           });
-        });
-
-        const excelColumns = columnKeys.map((key) => ({
-          wch: columnWidths[key],
-        }));
-
-        worksheet["!cols"] = excelColumns;
-
-        xlsx.utils.book_append_sheet(workbook, worksheet, "Data KBM Guru");
-        const xlsxBuffer = xlsx.write(workbook, {
-          bookType: "xlsx",
-          type: "buffer",
-        });
-        const blob = new Blob([xlsxBuffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "data_kbm_guru.xlsx";
-        link.click();
-        URL.revokeObjectURL(url);
-
-        Swal.fire({
-          title: "Berhasil",
-          text: "Data kbm guru berhasil diekspor",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1000,
-        });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Ekspor KBM Gagal!',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          console.log(error);
+        }
       }
     });
   };
+  // EXPORT KBM
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -246,7 +222,7 @@ function KBMGuru() {
                 </button>
               </Link>
               <button
-                onClick={exportToXlsx}
+                onClick={exportExcellKBM}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export KBM
