@@ -37,7 +37,6 @@ function Siswa() {
     const formData = new FormData();
     formData.append("file", excelFile);
 
-    // Assuming you have a token stored in local storage or some other secure place
     const token = localStorage.getItem("token");
 
     try {
@@ -47,7 +46,7 @@ function Siswa() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Add the token here
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -55,17 +54,14 @@ function Siswa() {
       Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
     } catch (error) {
       console.error("Error importing file:", error);
-      // Log the error object to inspect its properties
       Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
     }
   };
 
-  // Buat fungsi untuk menangani perubahan pada file Excel yang diunggah
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
 
-  // Ambil data siswa dari API
   useEffect(() => {
     const fetchSiswa = async () => {
       try {
@@ -78,7 +74,6 @@ function Siswa() {
     fetchSiswa();
   }, []);
 
-  // Ambil data kelas dari API
   useEffect(() => {
     const fetchKelas = async () => {
       try {
@@ -91,7 +86,6 @@ function Siswa() {
     fetchKelas();
   }, []);
 
-  // Fungsi untuk menghapus siswa
   const handleDelete = async (id, namaSiswa) => {
     Swal.fire({
       title: "Konfirmasi",
@@ -120,7 +114,6 @@ function Siswa() {
     });
   };
 
-  // Filter data berdasarkan term pencarian
   const filteredSiswa = siswa.filter((s) => {
     const kelass = kelas.find((k) => k.id === s.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === s.kelasId)?.nama_kelas;
@@ -138,7 +131,6 @@ function Siswa() {
     );
   });
 
-  // Siapkan data untuk ekspor
   const dataToExport = filteredSiswa.map((s, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Siswa": s.nama_siswa,
@@ -148,7 +140,7 @@ function Siswa() {
     Alamat: s.alamat,
   }));
 
-  const exportToXlsx = () => {
+  const exportExcelSiswa = () => {
     if (dataToExport.length === 0) {
       Swal.fire({
         title: "Gagal",
@@ -162,53 +154,18 @@ function Siswa() {
 
     Swal.fire({
       title: "Konfirmasi",
-      text: "Anda yakin ingin mengexport data siswa?",
+      text: "Anda yakin ingin mengekspor data siswa?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Ya",
-      cancelButtonText: "Batal",
+      cancelButtonText: "Tidak",
     }).then((result) => {
       if (result.isConfirmed) {
-        const workbook = xlsx.utils.book_new();
         const worksheet = xlsx.utils.json_to_sheet(dataToExport);
+        const workbook = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(workbook, worksheet, "Siswa");
 
-        const columnWidths = {};
-
-        const columnKeys =
-          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
-
-        columnKeys.forEach((key) => {
-          columnWidths[key] = key.length;
-        });
-
-        dataToExport.forEach((data) => {
-          columnKeys.forEach((key) => {
-            const value = data[key] ? String(data[key]) : "";
-            columnWidths[key] = Math.max(columnWidths[key], value.length);
-          });
-        });
-
-        const excelColumns = columnKeys.map((key) => ({
-          wch: columnWidths[key],
-        }));
-
-        worksheet["!cols"] = excelColumns;
-
-        xlsx.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
-        const xlsxBuffer = xlsx.write(workbook, {
-          bookType: "xlsx",
-          type: "buffer",
-        });
-        const blob = new Blob([xlsxBuffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "data_siswa.xlsx";
-        link.click();
-        URL.revokeObjectURL(url);
-
+        xlsx.writeFile(workbook, "Data_Siswa.xlsx");
         Swal.fire({
           title: "Berhasil",
           text: "Data siswa berhasil diekspor",
@@ -220,7 +177,6 @@ function Siswa() {
     });
   };
 
-  // Fungsi untuk mengganti halaman
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
@@ -232,9 +188,7 @@ function Siswa() {
     setShowImportModal(false);
   };
 
-  // Jumlah halaman yang dibutuhkan untuk paginasi
   const pageCount = Math.ceil(filteredSiswa.length / siswaPerPage);
-
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -261,7 +215,7 @@ function Siswa() {
                 </button>
               </Link>
               <button
-                onClick={exportToXlsx}
+                onClick={exportExcelSiswa}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Siswa
