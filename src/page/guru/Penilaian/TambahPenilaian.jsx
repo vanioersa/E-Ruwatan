@@ -29,6 +29,7 @@ const TambahPenilaian = () => {
 
   const fetchSiswaByKelas = async (kelasId) => {
     try {
+      const token = localStorage.getItem("token");
       if (kelasId) {
         const response = await axios.get(
           `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
@@ -47,27 +48,9 @@ const TambahPenilaian = () => {
     }
   };
 
-  const handleKelasChange = async (e) => {
+  const handleKelasChange = (e) => {
     const selectedKelasId = e.target.value;
-
     setSelectedKelas(selectedKelasId);
-    if (selectedKelasId) {
-      try {
-        const response = await axios.get(
-          `http://localhost:4001/siswa/by-kelas-id/${selectedKelasId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSiswaByKelas(response.data);
-      } catch (error) {
-        console.error("Gagal mengambil data Siswa: ", error);
-      }
-    } else {
-      setSiswaByKelas([]);
-    }
   };
 
   const handleChange = (e) => {
@@ -80,14 +63,15 @@ const TambahPenilaian = () => {
 
   useEffect(() => {
     fetchKelas();
+  }, []);
+
+  useEffect(() => {
     fetchSiswaByKelas(selectedKelas);
   }, [selectedKelas]);
 
   const batal = () => {
     navigate(-1);
   };
-
-  const token = localStorage.getItem("token"); // Ganti dengan token akses yang valid
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,7 +120,7 @@ const TambahPenilaian = () => {
             Tambah Penilaian Guru
           </p>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 mt-2">
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -158,45 +142,7 @@ const TambahPenilaian = () => {
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div className="relative">
-                <label
-                  htmlFor="siswaId"
-                  className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
-                >
-                  Nama Siswa
-                </label>
-                {siswaByKelas.length === 1 ? (
-                  <input
-                    type="text"
-                    value={siswaByKelas[0].nama_siswa}
-                    readOnly
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  />
-                ) : siswaByKelas.length > 1 ? (
-                  <select
-                    id="siswaId"
-                    name="siswaId"
-                    onChange={(e) => setSelectedStudentId(e.target.value)}
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    required
-                  >
-                    <option value="">Pilih Siswa</option>
-                    {siswaByKelas.map((siswa) => (
-                      <option key={siswa.id} value={siswa.id}>
-                        {siswa.nama_siswa}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value="Data siswa tidak ditemukan"
-                    readOnly
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5"
-                  />
-                )}
+                <p className="text-xs font-bold mt-2">*Pilih Kelas Terlebih dahulu</p>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -236,6 +182,37 @@ const TambahPenilaian = () => {
                 />
               </div>
             </div>
+            <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg mt-4">
+              <thead>
+                <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Nama Siswa
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-600 text-base font-normal">
+                <tr
+                  className="border-b border-gray-200"
+                >
+                  <td className="px-5 py-5">
+                    <select
+                      name="siswaId"
+                      value={selectedStudentId}
+                      onChange={(e) => setSelectedStudentId(e.target.value)}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      required
+                    >
+                      <option value="">Pilih Siswa</option>
+                      {siswaByKelas.map((siswaOption) => (
+                        <option key={siswaOption.id} value={siswaOption.id}>
+                          {siswaOption.nama_siswa}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <div className="flex justify-between mt-6">
               <button
                 type="button"
