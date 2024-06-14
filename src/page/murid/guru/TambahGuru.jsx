@@ -153,15 +153,43 @@ const TambahGuru = () => {
     setFormData((prevFormData) => {
       // Logika khusus untuk kolom nomor telepon
       if (name === "telepon") {
-        // Pastikan angka 08 tetap di depan
-        if (value.startsWith("08")) {
+        if (value.startsWith("0")) {
           return { ...prevFormData, [name]: value };
         } else {
-          return { ...prevFormData, [name]: "08" };
+          return { ...prevFormData, [name]: "0" };
         }
+      }
+      // Validasi panjang nomor telepon maksimal 10 digit
+      if (value.length > 12) {
+        Swal.fire({
+          icon: "error",
+          title: "Nomor telepon terlalu panjang",
+          text: "Nomor telepon harus memiliki maksimal 10 digit.",
+        });
+        return prevFormData;
       }
       return { ...prevFormData, [name]: value };
     });
+  };
+
+  const handleSubmiit = (e) => {
+    e.preventDefault();
+    if (formData.telepon.length < 10) {
+      // Menampilkan SweetAlert jika nomor telepon kurang dari 10 digit
+      Swal.fire({
+        icon: "error",
+        title: "Nomor telepon tidak valid",
+        text: "Nomor telepon harus memiliki minimal 10 digit.",
+      });
+    } else {
+      // Logika untuk submit data yang valid
+      console.log("Data valid:", formData);
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "Data berhasil ditambahkan.",
+      });
+    }
   };
 
   const batal = () => {
@@ -282,25 +310,27 @@ const TambahGuru = () => {
                 />
               </div>
 
-              <div className="relative">
-                <label
-                  htmlFor="telepon"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Nomor Telepon
-                </label>
-                <input
-                  id="telepon"
-                  name="telepon"
-                  type="number"
-                  autoComplete="off"
-                  value={formData.telepon}
-                  onChange={handleInputChango}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Nomor Telepon"
-                  // required
-                />
-              </div>
+              <form onSubmit={handleSubmiit}>
+                <div className="relative">
+                  <label
+                    htmlFor="telepon"
+                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                  >
+                    Nomor Telepon
+                  </label>
+                  <input
+                    id="telepon"
+                    name="telepon"
+                    type="number"
+                    autoComplete="off"
+                    value={formData.telepon}
+                    onChange={handleInputChango}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="Masukkan Nomor Telepon"
+                    // required
+                  />
+                </div>
+              </form>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
