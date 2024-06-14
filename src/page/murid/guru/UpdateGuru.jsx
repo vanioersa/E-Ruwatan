@@ -46,7 +46,7 @@ const UpdateGuru = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmiit = async (e) => {
     e.preventDefault();
 
     const initialGuruData = await getUsersById(id);
@@ -122,6 +122,26 @@ const UpdateGuru = () => {
     });
   };
 
+  const handleSubmite = (e) => {
+    e.preventDefault();
+    if (guru.telepon.length < 10) {
+      // Menampilkan SweetAlert jika nomor telepon kurang dari 10 digit
+      Swal.fire({
+        icon: "error",
+        title: "Nomor telepon tidak valid",
+        text: "Nomor telepon harus memiliki minimal 10 digit.",
+      });
+    } else {
+      // Logika untuk submit data yang valid
+      console.log("Data valid:", guru);
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil!",
+        text: "Data berhasil diperbarui.",
+      });
+    }
+  };
+
   const handleCancel = () => {
     navigate(-1);
   };
@@ -140,7 +160,7 @@ const UpdateGuru = () => {
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Guru
           </p>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmite}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
@@ -203,24 +223,27 @@ const UpdateGuru = () => {
                 />
               </div>
 
-              <div className="relative">
-                <label
-                  htmlFor="telepon"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Nomor Telepon
-                </label>
-                <input
-                  id="telepon"
-                  name="telepon"
-                  type="number"
-                  autoComplete="off"
-                  value={guru.telepon}
-                  onChange={handleChangey}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Nomor Telepon"
-                />
-              </div>
+              <form onSubmit={handleSubmiit}>
+                <div className="relative">
+                  <label
+                    htmlFor="telepon"
+                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                  >
+                    Nomor Telepon
+                  </label>
+                  <input
+                    id="telepon"
+                    name="telepon"
+                    type="number"
+                    autoComplete="off"
+                    value={guru.telepon}
+                    onChange={handleChangey}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="Masukkan Nomor Telepon"
+                    minLength={10}
+                  />
+                </div>
+              </form>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
