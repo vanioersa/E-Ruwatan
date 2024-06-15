@@ -165,7 +165,7 @@ function Penilaian() {
     );
   });
 
-  // EXPORT PENILAIAN
+  /// EXPORT PENILAIAN
   const dataToExport = filteredData.map((item, index) => ({
     No: index + 1,
     "Nama Siswa": siswa.find((s) => s.id === item.siswa_id)?.nama_siswa || "",
@@ -175,12 +175,10 @@ function Penilaian() {
   }));
 
   const exportExcellPenilaian = () => {
-    const storedUsername = localStorage.getItem("username");
-    const currentPenilaian = filteredData.find(
-      (penilaian) => users.find((u) => u.id === penilaian.userId)?.username === storedUsername
-    );
-    if (currentPenilaian) {
-      exportExcell(currentPenilaian.kelasId, currentPenilaian.siswaId);
+    if (dataToExport.length > 0) {
+      const kelasId = filteredData[0].kelasId;
+      const siswaId = filteredData[0].siswaId;
+      exportExcell(kelasId, siswaId);
     } else {
       Swal.fire({
         title: "Gagal",
@@ -205,7 +203,7 @@ function Penilaian() {
         try {
           const token = localStorage.getItem('token');
           const response = await axios.get(
-            `http://localhost:4001/panilaian/upload/export-panilaian?kelas_id=${kelasId}&siswa_id=${siswaId}`,
+            `http://localhost:4001/panilaian/upload/export-penilaian?kelas_id=${kelasId}&siswa_id=${siswaId}`,
             {
               responseType: 'blob',
               headers: {
@@ -243,7 +241,6 @@ function Penilaian() {
   };
   // EXPORT PENILAIAN
 
-
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -275,7 +272,7 @@ function Penilaian() {
                 onClick={exportExcellPenilaian}
                 className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <FontAwesomeIcon icon={faFileExport} /> Export Piket
+                <FontAwesomeIcon icon={faFileExport} /> Export Penilaian
               </button>
               <button
                 onClick={openImportModal}
