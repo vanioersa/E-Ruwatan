@@ -27,10 +27,20 @@ function Siswa() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
 
-  const importExcell = async (e) => {
-    e.preventDefault();
+  // useEffect(() => {
+  //   const { createProxyMiddleware } = require("http-proxy-middleware"); // Memindahkan deklarasi ke dalam useEffect
+  //   const proxy = createProxyMiddleware("/upload/importSiswa", {
+  //     target: "http://localhost:4001",
+  //     changeOrigin: true,
+  //   });
+
+  //   ap.use("/upload/importSiswa", proxy);
+  // }, []); // Menjalankan hanya sekali setelah komponen dirender
+
+  const importExcel = async (event) => {
+    event.preventDefault();
     if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
       return;
     }
 
@@ -41,7 +51,7 @@ function Siswa() {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/siswa/import",
+        "http://localhost:4001/upload/importSiswa",
         formData,
         {
           headers: {
@@ -58,8 +68,8 @@ function Siswa() {
     }
   };
 
-  const handleExcelChange = (e) => {
-    setExcelFile(e.target.files[0]);
+  const handleExcelChange = (event) => {
+    setExcelFile(event.target.files[0]);
   };
 
   useEffect(() => {
@@ -248,7 +258,7 @@ function Siswa() {
                       Batal
                     </button>
                     <button
-                      onClick={importExcell}
+                      onClick={importExcel}
                       className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       Import
