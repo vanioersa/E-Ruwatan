@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { getAllUsers, deleteUsers } from "./api_guru";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
+import axios from "axios";
 
 function Guru() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -129,79 +130,54 @@ function Guru() {
     "Status Pernikahan": g.status_nikah,
   }));
 
-  const excelOptions = {
-    bookType: "xlsx",
-    type: "array",
-  };
+  const exportExcel = async () => {
+    if (dataToExport.length > 0) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          'http://localhost:4001/guru/upload/export-guru',
+          {
+            responseType: 'blob',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const handleExportExcel = () => {
-    if (dataToExport.length === 0) {
-      Swal.fire({
-        title: "Gagal",
-        text: "Tidak ada data guru yang diekspor",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
-
-    Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengexport data guru?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Ya",
-      cancelButtonText: "Batal",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const workbook = XLSX.utils.book_new();
-        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-
-        const columnWidths = {};
-
-        const columnKeys =
-          dataToExport.length > 0 ? Object.keys(dataToExport[0]) : [];
-
-        columnKeys.forEach((key) => {
-          columnWidths[key] = key.length;
-        });
-
-        dataToExport.forEach((data) => {
-          columnKeys.forEach((key) => {
-            const value = data[key] ? String(data[key]) : "";
-            columnWidths[key] = Math.max(columnWidths[key], value.length);
-          });
-        });
-
-        const excelColumns = columnKeys.map((key) => ({
-          wch: columnWidths[key],
-        }));
-
-        worksheet["!cols"] = excelColumns;
-
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-        const excelBuffer = XLSX.write(workbook, excelOptions);
-
-        const excelData = new Blob([excelBuffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const excelUrl = URL.createObjectURL(excelData);
-
-        const link = document.createElement("a");
-        link.href = excelUrl;
-        link.download = "data_guru.xlsx";
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'ExportGuru.xlsx');
+        document.body.appendChild(link);
         link.click();
+        link.parentNode.removeChild(link);
 
         Swal.fire({
-          title: "Berhasil",
-          text: "Data guru berhasil diekspor",
-          icon: "success",
+          icon: 'success',
+          title: 'Sukses!',
+          text: 'File berhasil diunduh',
           showConfirmButton: false,
           timer: 2000,
         });
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Ekspor Guru Gagal!',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        console.error('Ekspor Guru Error:', error);
       }
-    });
+    } else {
+      Swal.fire({
+        title: 'Gagal',
+        text: 'Tidak ada data Guru untuk diekspor',
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
   };
 
   const handleDoubleClick = (id) => {
@@ -235,7 +211,7 @@ function Guru() {
                 </button>
               </Link>
               <button
-                onClick={handleExportExcel}
+                onClick={exportExcel}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Guru
