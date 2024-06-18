@@ -130,45 +130,56 @@ function Guru() {
     "Status Pernikahan": g.status_nikah,
   }));
 
-  const exportExcel = async () => {
+  const exportExcelGuru = async () => {
     if (dataToExport.length > 0) {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(
-          'http://localhost:4001/guru/upload/export-guru',
-          {
-            responseType: 'blob',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Anda yakin ingin mengexport data guru?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+              'http://localhost:4001/guru/upload/export-guru',
+              {
+                responseType: 'blob',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+  
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'ExportGuru.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+  
+            Swal.fire({
+              icon: 'success',
+              title: 'Sukses!',
+              text: 'File berhasil diunduh',
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'Ekspor Guru Gagal!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            console.error('Ekspor Guru Error:', error);
           }
-        );
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'ExportGuru.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Sukses!',
-          text: 'File berhasil diunduh',
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Ekspor Guru Gagal!',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        console.error('Ekspor Guru Error:', error);
-      }
+        }
+      });
     } else {
       Swal.fire({
         title: 'Gagal',
@@ -211,7 +222,7 @@ function Guru() {
                 </button>
               </Link>
               <button
-                onClick={exportExcel}
+                onClick={exportExcelGuru}
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Guru
