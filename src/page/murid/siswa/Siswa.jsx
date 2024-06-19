@@ -27,16 +27,6 @@ function Siswa() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
 
-  // useEffect(() => {
-  //   const { createProxyMiddleware } = require("http-proxy-middleware"); // Memindahkan deklarasi ke dalam useEffect
-  //   const proxy = createProxyMiddleware("/upload/importSiswa", {
-  //     target: "http://localhost:4001",
-  //     changeOrigin: true,
-  //   });
-
-  //   ap.use("/upload/importSiswa", proxy);
-  // }, []); // Menjalankan hanya sekali setelah komponen dirender
-
   const importExcel = async (event) => {
     event.preventDefault();
     if (!excelFile) {
@@ -44,28 +34,48 @@ function Siswa() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", excelFile);
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, impor!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", excelFile);
 
-    const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
-    try {
-      const response = await axios.post(
-        "http://localhost:4001/upload/importSiswa",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
+        try {
+          const response = await axios.post(
+            `http://localhost:4001/siswa/upload/import-siswa`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Sukses!",
+            text: "Berhasil Ditambahkan",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+          window.location.reload()
+        } catch (error) {
+          console.error("Error importing file:", error);
+          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
         }
-      );
-      console.log(response.data);
-      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
-    } catch (error) {
-      console.error("Error importing file:", error);
-      Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
-    }
+      }
+    });
   };
 
   const handleExcelChange = (event) => {
@@ -175,7 +185,7 @@ function Siswa() {
         const workbook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workbook, worksheet, "Siswa");
 
-        xlsx.writeFile(workbook, "Data_Siswa.xlsx");
+        xlsx.writeFile(workbook, "ExportSiswa.xlsx");
         Swal.fire({
           title: "Berhasil",
           text: "Data siswa berhasil diekspor",
