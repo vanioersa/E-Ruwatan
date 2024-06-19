@@ -330,7 +330,11 @@ function Profile_Admin() {
                         !admin.telepon ? "text-gray-400" : "text-gray-900"
                       }`}
                       type="text"
-                      value={admin.telepon ? admin.telepon : "Data kosong"}
+                      value={
+                        admin.telepon
+                          ? admin.telepon.replace(/^08/, "+62 ")
+                          : "Data kosong"
+                      }
                     />
                   </div>
                   <div className="w-full sm:w-1/2 pl-2">

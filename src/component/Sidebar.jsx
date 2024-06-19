@@ -186,7 +186,7 @@ const SidebarAdmin = () => {
                 onClick={logout}
                 className={`${
                   darkMode ? "text-white" : "text-gray-700"
-                } block px-4 py-2 text-sm`}
+                } block px-4 py-2 text-sm w-full text-left`}
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-2"
@@ -399,29 +399,6 @@ const SidebarAdmin = () => {
           sidebarOpen ? "md:ml-0" : "-md:ml-64"
         }`}
       />
-      {/* <style>{`
-        body {
-          background-color: white;
-          color: black;
-          transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        body.dark {
-          background-color: #2a2b2e;
-          color: white;
-        }
-
-        .dark nav,
-        .dark .bg-blue-800 {
-          background-color: #43537d;
-          transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .dark .bg-white {
-          background-color: #434752;
-          transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        `}</style> */}
     </div>
   );
 };
