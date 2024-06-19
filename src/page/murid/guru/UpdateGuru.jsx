@@ -125,13 +125,6 @@ const UpdateGuru = () => {
   const handleSubmite = (e) => {
     e.preventDefault();
     if (guru.telepon.length < 10) {
-      // Menampilkan SweetAlert jika nomor telepon kurang dari 10 digit
-      Swal.fire({
-        icon: "error",
-        title: "Nomor telepon tidak valid",
-        text: "Nomor telepon harus memiliki minimal 10 digit.",
-      });
-    } else {
       // Logika untuk submit data yang valid
       console.log("Data valid:", guru);
       Swal.fire({
