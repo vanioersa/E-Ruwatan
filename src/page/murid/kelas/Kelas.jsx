@@ -9,6 +9,7 @@ import {
   faFileExport,
   faArrowLeft,
   faArrowRight,
+  faUpload,
   // faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -24,48 +25,60 @@ function Kelas() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const kelasPerPage = 10;
   const pagesVisited = pageNumber * kelasPerPage;
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // State untuk menyimpan file yang dipilih
 
   const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]);
+    setSelectedFile(event.target.files[0]); // Update state dengan file yang dipilih
   };
 
-  const handleImportData = () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      importKelas(formData)
-        .then((response) => {
-          Swal.fire({
-            title: "Berhasil",
-            text: "Data kelas berhasil diimport",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            window.location.reload();
-          });
-        })
-        .catch((error) => {
-          console.error("Error importing data:", error);
-          Swal.fire({
-            title: "Error",
-            text: "Gagal mengimpor data",
-            icon: "error",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        });
-    } else {
-      Swal.fire({
-        title: "Error",
-        text: "Mohon pilih file untuk diimpor",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+  const handleImportData = async (event) => {
+    event.preventDefault();
+    if (!selectedFile) { // Periksa apakah file sudah dipilih
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
+      return;
     }
+
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, impor!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", selectedFile); // Menggunakan selectedFile yang sudah diupdate
+
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.post(
+            `http://localhost:4001/kelas/upload/import`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Sukses!",
+            text: "Berhasil Ditambahkan",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+          window.location.reload(); // Refresh halaman setelah berhasil impor
+        } catch (error) {
+          console.error("Error importing file:", error);
+          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+        }
+      }
+    });
   };
 
   // Fetch data for Kelas from the API
@@ -158,7 +171,7 @@ function Kelas() {
                 },
               }
             );
-  
+
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -166,7 +179,7 @@ function Kelas() {
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
-  
+
             Swal.fire({
               icon: 'success',
               title: 'Sukses!',
@@ -237,40 +250,6 @@ function Kelas() {
     });
   };
 
-  // const handleExportById = (kelas) => {
-  //   const dataToExport = [
-  //     {
-  //       No: 1,
-  //       "Nama Kelas": kelas.nama_kelas,
-  //       Kelas: kelas.kelas,
-  //     },
-  //   ];
-  //   const workbook = XLSX.utils.book_new();
-  //   const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  //   const excelBuffer = XLSX.write(workbook, {
-  //     bookType: "xlsx",
-  //     type: "array",
-  //   });
-  //   const excelData = new Blob([excelBuffer], {
-  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //   });
-  //   const excelUrl = URL.createObjectURL(excelData);
-
-  //   const link = document.createElement("a");
-  //   link.href = excelUrl;
-  //   link.download = `data_kelas_${kelas.kelas}-${kelas.nama_kelas}.xlsx`;
-  //   link.click();
-
-  //   Swal.fire({
-  //     title: "Berhasil",
-  //     text: `Data kelas ${kelas.kelas} ${kelas.nama_kelas} berhasil diekspor`,
-  //     icon: "success",
-  //     showConfirmButton: false,
-  //     timer: 2000,
-  //   });
-  // };
-
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
@@ -304,6 +283,12 @@ function Kelas() {
                 className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export Kelas
+              </button>
+              <button
+                onClick={() => setIsModalOpen(true)} // Buka modal untuk import data
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>
             </div>
           </div>
@@ -348,12 +333,6 @@ function Kelas() {
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
-                            {/* <button
-                              onClick={() => handleExportById(k)}
-                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                            >
-                              <FontAwesomeIcon icon={faFileExport} /> Export
-                            </button> */}
                           </div>
                         </td>
                       </tr>
