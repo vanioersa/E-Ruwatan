@@ -312,59 +312,68 @@ const EditAdmin = () => {
                     />
                   </div>
                   <div className="pb-3">
-                    <label
-                      htmlFor="gender"
-                      className="font-semibold text-gray-700 block pb-3"
-                    >
+                    <label className="font-semibold text-gray-700 block pb-3">
                       Gender
                     </label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
-                      value={admin.gender}
-                      onChange={handleChange}
-                    >
-                      <option className="text-gray-700" value="">
-                        Pilih Jenis Kelamin
-                      </option>
-                      <option className="text-gray-700" value="Laki-laki">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="male"
+                        name="gender"
+                        value="Laki-laki"
+                        checked={admin.gender === "Laki-laki"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="male" className="text-gray-700 mr-4">
                         Laki-laki
-                      </option>
-                      <option className="text-gray-700" value="Perempuan">
+                      </label>
+
+                      <input
+                        type="radio"
+                        id="female"
+                        name="gender"
+                        value="Perempuan"
+                        checked={admin.gender === "Perempuan"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="female" className="text-gray-700">
                         Perempuan
-                      </option>
-                    </select>
+                      </label>
+                    </div>
                   </div>
                   <div className="pb-3">
-                    <label
-                      htmlFor="status_nikah"
-                      className="font-semibold text-gray-700 block pb-3"
-                    >
+                    <label className="font-semibold text-gray-700 block pb-3">
                       Status Nikah
                     </label>
-                    <select
-                      id="status_nikah"
-                      name="status_nikah"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
-                      value={admin.status_nikah}
-                      onChange={handleChange}
-                    >
-                      <option className="text-gray-700" value="">
-                        Pilih Status Nikah
-                      </option>
-                      <option className="text-gray-700" value="Belum Menikah">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="single"
+                        name="status_nikah"
+                        value="Belum Menikah"
+                        checked={admin.status_nikah === "Belum Menikah"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="single" className="text-gray-700 mr-4">
                         Belum Menikah
-                      </option>
-                      <option className="text-gray-700" value="Menikah">
+                      </label>
+
+                      <input
+                        type="radio"
+                        id="married"
+                        name="status_nikah"
+                        value="Menikah"
+                        checked={admin.status_nikah === "Menikah"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="married" className="text-gray-700">
                         Menikah
-                      </option>
-                      <option className="text-gray-700" value="Cerai">
-                        Cerai
-                      </option>
-                    </select>
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <div className="text-center mt-4">
