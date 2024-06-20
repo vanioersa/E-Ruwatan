@@ -61,7 +61,7 @@ function Penilaian() {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/penilaian/import", // Sesuaikan dengan endpoint untuk impor file Excel
+        "http://localhost:4001/panilaian/upload/importPenilaian", // Sesuaikan dengan endpoint untuk impor file Excel
         formData,
         {
           headers: {
@@ -168,17 +168,78 @@ function Penilaian() {
   /// EXPORT PENILAIAN
   const dataToExport = filteredData.map((item, index) => ({
     No: index + 1,
-    "Nama Siswa": siswa.find((s) => s.id === item.siswa_id)?.nama_siswa || "",
-    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas}` || "",
-    Nilai: item.nilai || "",
-    Deskripsi: item.deskripsi || "",
+    "Siswa ID": item.siswaId || "", // Menyimpan siswa_id
+    "Nama Siswa": (siswa.find((s) => s.id === item.siswaId) || {}).nama_siswa || "", // Menampilkan nama_siswa jika ada
+    "Kelas ID": item.kelasId || "", // Menyimpan kelas_id
+    Kelas: `${item.kelas || ""} - ${item.nama_kelas || ""}`, // Menampilkan kelas dan nama_kelas jika ada
+    Nilai: item.nilai || "", // Menampilkan nilai jika ada
+    Deskripsi: item.deskripsi || "", // Menampilkan deskripsi jika ada
   }));
+  
+
+  const exportExcell = async (kelasId, siswaId) => {
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengexport data Penilaian?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // try {
+        //   const token = localStorage.getItem("token");
+        //   const response = await axios.get(
+        //     `http://localhost:4001/panilaian/upload/export-penilaian`,
+        //     {
+        //       params: {
+        //         kelas_id: kelasId,
+        //         siswa_id: siswaId,
+        //       },
+        //       responseType: "blob",
+        //       headers: {
+        //         Authorization: `Bearer ${token}`,
+        //       },
+        //     }
+        //   );
+        //   const url = window.URL.createObjectURL(new Blob([response.data]));
+        //   const link = document.createElement("a");
+        //   link.href = url;
+        //   link.setAttribute("download", "ExportPenilaian.xlsx");
+        //   document.body.appendChild(link);
+        //   link.click();
+        //   link.parentNode.removeChild(link);
+
+        //   Swal.fire({
+        //     icon: "success",
+        //     title: "Sukses!",
+        //     text: "File berhasil diunduh",
+        //     showConfirmButton: false,
+        //     timer: 2000,
+        //   });
+        // } catch (error) {
+        //   Swal.fire({
+        //     icon: "error",
+        //     title: "Error!",
+        //     text: "Ekspor Penilaian Gagal!",
+        //     showConfirmButton: false,
+        //     timer: 1500,
+        //   });
+        //   console.log(error);
+        // }
+        console.log("kelas" + kelasId);
+        console.log("siswa" + siswaId);
+      }
+    });
+  };
 
   const exportExcellPenilaian = () => {
     if (dataToExport.length > 0) {
-      const kelasId = filteredData[0].kelasId;
-      const siswaId = filteredData[0].siswaId;
-      exportExcell(kelasId, siswaId);
+      // const kelasId = filteredData[0].kelasId;
+      // const siswaId = filteredData[0].siswaId;
+      // exportExcell(kelasId, siswaId);
+
+      console.log(dataToExport);
     } else {
       Swal.fire({
         title: "Gagal",
@@ -190,55 +251,6 @@ function Penilaian() {
     }
   };
 
-  const exportExcell = async (kelasId, siswaId) => {
-    Swal.fire({
-      title: 'Konfirmasi',
-      text: 'Anda yakin ingin mengexport data Penilaian?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Ya',
-      cancelButtonText: 'Batal',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get(
-            `http://localhost:4001/panilaian/upload/export-penilaian?kelas_id=${kelasId}&siswa_id=${siswaId}`,
-            {
-              responseType: 'blob',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'ExportPenilaian.xlsx');
-          document.body.appendChild(link);
-          link.click();
-          link.parentNode.removeChild(link);
-
-          Swal.fire({
-            icon: 'success',
-            title: 'Sukses!',
-            text: 'File berhasil diunduh',
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Ekspor Penilaian Gagal!',
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          console.log(error);
-        }
-      }
-    });
-  };
   // EXPORT PENILAIAN
 
   return (
@@ -348,11 +360,10 @@ function Penilaian() {
                           {index + 1 + currentPage * dataPerPage}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {siswa.find((s) => s.id === item.siswaId)?.nama_siswa}
+                          {item.siswa.nama_siswa}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {kelas.find((k) => k.id === item.kelasId)?.kelas} -{" "}
-                          {kelas.find((k) => k.id === item.kelasId)?.nama_kelas}
+                          {`${item.kelas.kelas} ${item.kelas.nama_kelas}`}
                         </td>
                         <td className="py-2 px-4 text-center">{item.nilai}</td>
                         <td className="py-2 px-4 text-center">
