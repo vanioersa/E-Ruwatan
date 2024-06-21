@@ -201,7 +201,7 @@ function Profile_Guru() {
                       src={profilePic}
                       alt="Profile"
                     />
-                    <p className="text-center text-sm">
+                    <p className="text-center text-sm text-gray-900">
                       Disarankan Ukuran Gambar 1:1
                     </p>
                     <strong>

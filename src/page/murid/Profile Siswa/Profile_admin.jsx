@@ -201,7 +201,7 @@ function Profile_Admin() {
                       src={profilePic}
                       alt="Profile"
                     />
-                    <p className="text-center text-sm font">
+                    <p className="text-center text-sm font text-gray-900">
                       Disarankan Ukuran Gambar 1:1
                     </p>
                     <h4 className="text-gray-900 font-bold">Preview Image</h4>
