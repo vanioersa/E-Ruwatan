@@ -215,10 +215,7 @@ function Siswa() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div
-          style={{ backgroundColor: "white" }}
-          className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
-        >
+        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
           <h1 className="text-3xl font-semibold text-gray-800">Data Siswa</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -228,56 +225,59 @@ function Siswa() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4">
-              <Link to="/TambahSiswa">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
+            <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
+              <div className="flex flex-row gap-2 md:gap-4">
+                <Link to="/TambahSiswa">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <FontAwesomeIcon icon={faPlus} /> Tambah Siswa
+                  </button>
+                </Link>
+                <button
+                  onClick={exportExcelSiswa}
+                  className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faFileExport} /> Export Siswa
                 </button>
-              </Link>
-              <button
-                onClick={exportExcelSiswa}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <FontAwesomeIcon icon={faFileExport} /> Export Siswa
-              </button>
+              </div>
               <button
                 onClick={openImportModal}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>
             </div>
+          </div>
 
-            {showImportModal && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-                <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
-                  <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
-                  <div className="mb-4">
-                    <input
-                      type="file"
-                      accept=".xlsx,.xls"
-                      onChange={handleExcelChange}
-                      className="border border-gray-400 p-2 w-full mb-4"
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <button
-                      onClick={closeImportModal}
-                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={importExcel}
-                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Import
-                    </button>
-                  </div>
+          {showImportModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+              <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+                <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
+                <div className="mb-4">
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls"
+                    onChange={handleExcelChange}
+                    className="border border-gray-400 p-2 w-full mb-4"
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={closeImportModal}
+                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={importExcel}
+                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Import
+                  </button>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>

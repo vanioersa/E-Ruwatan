@@ -272,21 +272,23 @@ function Kelas() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex">
-              <Link to="/TambahKelas">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah Kelas
+            <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
+              <div className="flex flex-row gap-2 md:gap-4">
+                <Link to="/TambahKelas">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <FontAwesomeIcon icon={faPlus} /> Tambah Kelas
+                  </button>
+                </Link>
+                <button
+                  onClick={exportExcelKelas}
+                  className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faFileExport} /> Export Kelas
                 </button>
-              </Link>
-              <button
-                onClick={exportExcelKelas}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <FontAwesomeIcon icon={faFileExport} /> Export Kelas
-              </button>
+              </div>
               <button
                 onClick={() => setIsModalOpen(true)} // Buka modal untuk import data
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>
