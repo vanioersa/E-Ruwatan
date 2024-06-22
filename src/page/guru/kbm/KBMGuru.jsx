@@ -9,19 +9,21 @@ import {
   faArrowLeft,
   faArrowRight,
   faFileExport,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import { getAllKbms, deleteKbm } from "./api_kbm";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-import { utils } from "xlsx";
-import * as xlsx from "xlsx";
 
 function KBMGuru() {
+  const [data, setData] = useState([]);
   const [kbmGuru, setKbmGuru] = useState([]);
   const [users, setUsers] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [excelFile, setExcelFile] = useState(null); // State untuk menyimpan file Excel
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const itemsPerPage = 10;
@@ -65,6 +67,85 @@ function KBMGuru() {
     };
     fetchKelas();
   }, []);
+
+  const openImportModal = () => {
+    setShowImportModal(true);
+  };
+
+  const closeImportModal = () => {
+    setShowImportModal(false);
+  };
+
+  const handleExcelChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+
+  //IMPORT EXCEL KBM
+  const importExcell = async (e) => {
+    e.preventDefault();
+    if (!excelFile) {
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      return;
+    }
+  
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, impor!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", excelFile);
+  
+        const token = localStorage.getItem("token");
+  
+        try {
+          const response = await axios.post(
+            `http://localhost:4001/kbm/upload/import-KBM`, // Sesuaikan dengan endpoint untuk impor file Excel
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Sukses!",
+            text: "Berhasil Ditambahkan",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+          window.location.reload(); // Refresh halaman setelah berhasil impor
+        } catch (error) {
+          console.error("Error importing file:", error);
+          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+        }
+      }
+    });
+  };
+  
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await getAllKbms();
+      setData(response.reverse());
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setData([]);
+    }
+  };
 
   // Fungsi untuk menghapus KBM Guru
   const handleDeleteKBM = async (id) => {
@@ -227,8 +308,45 @@ function KBMGuru() {
               >
                 <FontAwesomeIcon icon={faFileExport} /> Export KBM
               </button>
+              <button
+                onClick={openImportModal}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <FontAwesomeIcon icon={faUpload} /> Import Data
+              </button>
             </div>
           </div>
+
+          {showImportModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+              <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+                <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
+                <div className="mb-4">
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls"
+                    onChange={handleExcelChange}
+                    className="border border-gray-400 p-2 w-full mb-4"
+                  />
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={closeImportModal}
+                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={importExcell}
+                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Import
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
