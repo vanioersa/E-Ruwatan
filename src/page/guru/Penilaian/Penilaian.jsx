@@ -172,9 +172,8 @@ function Penilaian() {
     "Nama Siswa":
       (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "", // Menampilkan nama_siswa jika ada
     "Kelas ID": item.kelas_id || "", // Menggunakan properti kelas_id dari item
-    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${
-      kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
-    }`, // Menampilkan kelas dan nama_kelas jika ada
+    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
+      }`, // Menampilkan kelas dan nama_kelas jika ada
     Nilai: item.nilai || "", // Menampilkan nilai jika ada
     Deskripsi: item.deskripsi || "", // Menampilkan deskripsi jika ada
   }));
@@ -246,7 +245,7 @@ function Penilaian() {
       // Mengumpulkan semua kelasId dan siswaId yang ada di filteredData
       const kelasIds = filteredData.map(item => item.kelas_id);
       const siswaIds = filteredData.map(item => item.siswa_id);
-  
+
       // Memanggil fungsi exportExcell dengan parameter kelasIds dan siswaIds
       exportExcell(kelasIds, siswaIds);
     } else {
@@ -259,7 +258,7 @@ function Penilaian() {
       });
     }
   };
-  
+
 
   // EXPORT PENILAIAN
 
@@ -279,26 +278,28 @@ function Penilaian() {
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Cari Penilaian"
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
+              placeholder="Cari KBM"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4">
-              <Link to="/TambahPenilaian">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah Penilaian
+            <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 w-full md:w-auto">
+              <div className="flex space-x-2 w-full md:w-auto">
+                <Link to={`/tambahkbm`} className="w-full md:w-auto">
+                  <button className="w-full md:w-auto bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <FontAwesomeIcon icon={faPlus} /> Tambah Nilai
+                  </button>
+                </Link>
+                <button
+                  onClick={exportExcellPenilaian}
+                  className="w-full md:w-auto bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faFileExport} /> Export Nilai
                 </button>
-              </Link>
-              <button
-                onClick={exportExcellPenilaian}
-                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <FontAwesomeIcon icon={faFileExport} /> Export Penilaian
-              </button>
+              </div>
               <button
                 onClick={openImportModal}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>
