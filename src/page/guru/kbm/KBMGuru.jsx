@@ -87,7 +87,7 @@ function KBMGuru() {
       Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
       return;
     }
-  
+
     Swal.fire({
       title: 'Apakah Anda yakin?',
       text: "Anda akan mengimpor data dari file ini.",
@@ -101,9 +101,9 @@ function KBMGuru() {
       if (result.isConfirmed) {
         const formData = new FormData();
         formData.append("file", excelFile);
-  
+
         const token = localStorage.getItem("token");
-  
+
         try {
           const response = await axios.post(
             `http://localhost:4001/kbm/upload/import-KBM`, // Sesuaikan dengan endpoint untuk impor file Excel
@@ -131,7 +131,7 @@ function KBMGuru() {
       }
     });
   };
-  
+
 
   useEffect(() => {
     fetchData();
@@ -296,18 +296,20 @@ function KBMGuru() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex">
-              <Link to={`/tambahkbm`}>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah KBM
+            <div className="flex flex-col space-y-2">
+              <div className="flex space-x-2">
+                <Link to={`/tambahkbm`}>
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <FontAwesomeIcon icon={faPlus} /> Tambah KBM
+                  </button>
+                </Link>
+                <button
+                  onClick={exportExcellKBM}
+                  className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faFileExport} /> Export KBM
                 </button>
-              </Link>
-              <button
-                onClick={exportExcellKBM}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <FontAwesomeIcon icon={faFileExport} /> Export KBM
-              </button>
+              </div>
               <button
                 onClick={openImportModal}
                 className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
