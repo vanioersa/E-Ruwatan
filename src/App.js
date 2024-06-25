@@ -1,4 +1,7 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { DateTime } from "luxon";
+import { jwtDecode } from "jwt-decode";
 import Login from "./auth/login";
 import RegisterAdmin from "./auth/register_admin";
 import DashboardSiswa from "./component/Dashboard";
@@ -31,11 +34,61 @@ import EditGuru from "./page/guru/Profile/EditGuru";
 import SettingGuru from "./page/guru/Profile/SettingGuru";
 
 function App() {
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
+
+  const clearToken = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loggedInUser");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = DateTime.now().setZone("Asia/Jakarta");
+      if (now.hour === 0 && now.minute === 0 && now.second === 0) {
+        clearToken();
+      }
+    }, 1000); // cek setiap detik
+
+    // Contoh pengaturan role setelah login
+    const token = localStorage.getItem("token");
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (token && loggedInUser) {
+      setUserRole(JSON.parse(loggedInUser).role);
+    }
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const decodeToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const handleLogin = (user) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setUserRole(user.role);
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      navigate(user.role === "ADMIN" ? "/dashboard_admin" : "/dashboard_guru");
+    }
+  };
+
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={<Login onLogin={(user) => handleLogin(user)} />}
+        />
         <Route path="/register_admin" element={<RegisterAdmin />} />
+        {userRole === "ADMIN" && <Navigate to="/dashboard_admin" />}
+        {userRole === "GURU" && <Navigate to="/dashboard_guru" />}
         <Route element={<PrivateRoute role="ADMIN" />}>
           <Route path="/dashboard_admin" element={<DashboardSiswa />} />
           <Route path="/siswa" element={<Siswa />} />
