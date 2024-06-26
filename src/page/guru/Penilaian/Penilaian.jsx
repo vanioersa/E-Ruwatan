@@ -79,7 +79,7 @@ function Penilaian() {
     }
   };
 
-// ghdghfghfhjghjghghghjg
+  // ghdghfghfhjghjghghghjg
 
   useEffect(() => {
     fetchData();
@@ -174,8 +174,9 @@ function Penilaian() {
     "Nama Siswa":
       (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "", // Menampilkan nama_siswa jika ada
     "Kelas ID": item.kelas_id || "", // Menggunakan properti kelas_id dari item
-    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
-      }`, // Menampilkan kelas dan nama_kelas jika ada
+    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${
+      kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
+    }`, // Menampilkan kelas dan nama_kelas jika ada
     Nilai: item.nilai || "", // Menampilkan nilai jika ada
     Deskripsi: item.deskripsi || "", // Menampilkan deskripsi jika ada
   }));
@@ -245,8 +246,8 @@ function Penilaian() {
   const exportExcellPenilaian = () => {
     if (filteredData.length > 0) {
       // Mengumpulkan semua kelasId dan siswaId yang ada di filteredData
-      const kelasIds = filteredData.map(item => item.kelas_id);
-      const siswaIds = filteredData.map(item => item.siswa_id);
+      const kelasIds = filteredData.map((item) => item.kelas_id);
+      const siswaIds = filteredData.map((item) => item.siswa_id);
 
       // Memanggil fungsi exportExcell dengan parameter kelasIds dan siswaIds
       exportExcell(kelasIds, siswaIds);
@@ -261,8 +262,16 @@ function Penilaian() {
     }
   };
 
-
   // EXPORT PENILAIAN
+
+   const downloadTemplate = () => {
+    const link = document.createElement('a');
+    link.href = '/download/template-penilaian'; // Replace with your backend endpoint
+    link.download = 'Template.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -332,6 +341,12 @@ function Penilaian() {
                     className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     Import
+                  </button>
+                  <button
+                    onClick={downloadTemplate}
+                    className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    Download Template
                   </button>
                 </div>
               </div>
