@@ -210,44 +210,43 @@ function Kelas() {
     }
   };
 
-  const handleDownloadTemplate = () => {
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet([
-      ["NAMA KELAS", "KELAS"],
-      [null, null, null], // Dummy row to set widths
-    ]);
-
-    // Set column widths
-    const columnWidths = [{ wch: 15 }, { wch: 10 }];
-
-    worksheet["!cols"] = columnWidths;
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    // Export workbook to XLSX file
-    const excelBuffer = XLSX.write(workbook, {
-      type: "array",
-      bookType: "xlsx",
+  const downloadFormat = async (e) => {
+    e.preventDefault();
+  
+    const isConfirmed = await Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengunduh template ini!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, unduh!'
     });
-    const excelData = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const excelUrl = URL.createObjectURL(excelData);
-
-    const link = document.createElement("a");
-    link.href = excelUrl;
-    link.download = "template_kelas.xlsx";
-    link.click();
-
-    Swal.fire({
-      title: "Berhasil",
-      text: "Template kelas berhasil diunduh",
-      icon: "success",
-      showConfirmButton: false,
-      timer: 2000,
-    }).then(() => {
-      window.location.reload();
-    });
+  
+    if (!isConfirmed.isConfirmed) {
+      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+    }
+  
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4001/kelas/download/template', {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+  
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Template_Kelas.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error saat mengunduh file:', error);
+    }
   };
 
   return (
@@ -390,7 +389,7 @@ function Kelas() {
                   Import
                 </button>
                 <button
-                  onClick={handleDownloadTemplate}
+                  onClick={downloadFormat}
                   className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded"
                 >
                   Unduh Templat
