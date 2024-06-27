@@ -174,8 +174,9 @@ function Penilaian() {
     "Nama Siswa":
       (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "", // Menampilkan nama_siswa jika ada
     "Kelas ID": item.kelas_id || "", // Menggunakan properti kelas_id dari item
-    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
-      }`, // Menampilkan kelas dan nama_kelas jika ada
+    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${
+      kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
+    }`, // Menampilkan kelas dan nama_kelas jika ada
     Nilai: item.nilai || "", // Menampilkan nilai jika ada
     Deskripsi: item.deskripsi || "", // Menampilkan deskripsi jika ada
   }));
@@ -245,8 +246,8 @@ function Penilaian() {
   const exportExcellPenilaian = () => {
     if (filteredData.length > 0) {
       // Mengumpulkan semua kelasId dan siswaId yang ada di filteredData
-      const kelasIds = filteredData.map(item => item.kelas_id);
-      const siswaIds = filteredData.map(item => item.siswa_id);
+      const kelasIds = filteredData.map((item) => item.kelas_id);
+      const siswaIds = filteredData.map((item) => item.siswa_id);
 
       // Memanggil fungsi exportExcell dengan parameter kelasIds dan siswaIds
       exportExcell(kelasIds, siswaIds);
@@ -261,7 +262,6 @@ function Penilaian() {
     }
   };
   // EXPORT PENILAIAN
-
   const downloadFormat = async (e) => {
     e.preventDefault();
 
@@ -298,6 +298,49 @@ function Penilaian() {
       link.parentNode.removeChild(link);
     } catch (error) {
       console.error('Error saat mengunduh file:', error);
+    }
+  };
+
+  // EXPORT PENILAIAN
+  const downloadTemplate = async () => {
+    const token = localStorage.getItem("authToken");
+    console.log("Auth Token:", token); // Log token untuk memastikan token ada
+
+    if (!token) {
+      console.error("No auth token found.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/download/template-penilaian", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized access - invalid token.");
+        } else {
+          throw new Error("Network response was not ok");
+        }
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Template.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
     }
   };
 
@@ -357,18 +400,26 @@ function Penilaian() {
                     className="border border-gray-400 p-2 w-full mb-4"
                   />
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
+                  <div className="flex">
+                    <button
+                      onClick={closeImportModal}
+                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={importExcell}
+                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Import
+                    </button>
+                  </div>
                   <button
-                    onClick={closeImportModal}
-                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    onClick={downloadTemplate}
+                    className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 ml-auto"
                   >
-                    Batal
-                  </button>
-                  <button
-                    onClick={importExcell}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Import
+                    Unduh Template
                   </button>
                   <button
                     onClick={downloadFormat}
