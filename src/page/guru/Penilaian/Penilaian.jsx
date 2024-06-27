@@ -264,13 +264,46 @@ function Penilaian() {
 
   // EXPORT PENILAIAN
 
-   const downloadTemplate = () => {
-    const link = document.createElement('a');
-    link.href = '/download/template-penilaian'; // Replace with your backend endpoint
-    link.download = 'Template.xlsx';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadTemplate = async () => {
+    const token = localStorage.getItem("authToken");
+    console.log("Auth Token:", token); // Log token untuk memastikan token ada
+
+    if (!token) {
+      console.error("No auth token found.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/download/template-penilaian", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized access - invalid token.");
+        } else {
+          throw new Error("Network response was not ok");
+        }
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Template.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    }
   };
 
   return (
@@ -329,24 +362,26 @@ function Penilaian() {
                     className="border border-gray-400 p-2 w-full mb-4"
                   />
                 </div>
-                <div className="flex justify-between">
-                  <button
-                    onClick={closeImportModal}
-                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={importExcell}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Import
-                  </button>
+                <div className="flex justify-between items-center">
+                  <div className="flex">
+                    <button
+                      onClick={closeImportModal}
+                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={importExcell}
+                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Import
+                    </button>
+                  </div>
                   <button
                     onClick={downloadTemplate}
-                    className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 ml-auto"
                   >
-                    Download Template
+                    Unduh Template
                   </button>
                 </div>
               </div>
