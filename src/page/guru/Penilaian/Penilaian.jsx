@@ -261,9 +261,47 @@ function Penilaian() {
       });
     }
   };
+  // EXPORT PENILAIAN
+  const downloadFormat = async (e) => {
+    e.preventDefault();
+
+    const isConfirmed = await Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengunduh template ini!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, unduh!'
+    });
+
+    if (!isConfirmed.isConfirmed) {
+      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4001/panilaian/download/template-penilaian', {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Template_Siswa.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error saat mengunduh file:', error);
+    }
+  };
 
   // EXPORT PENILAIAN
-
   const downloadTemplate = async () => {
     const token = localStorage.getItem("authToken");
     console.log("Auth Token:", token); // Log token untuk memastikan token ada
@@ -382,6 +420,12 @@ function Penilaian() {
                     className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 ml-auto"
                   >
                     Unduh Template
+                  </button>
+                  <button
+                    onClick={downloadFormat}
+                    className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                  >
+                    Unduh Templat
                   </button>
                 </div>
               </div>

@@ -277,6 +277,44 @@ function KBMGuru() {
   };
   // EXPORT KBM
 
+  const downloadFormat = async (e) => {
+    e.preventDefault();
+
+    const isConfirmed = await Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda akan mengunduh template ini!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, unduh!'
+    });
+
+    if (!isConfirmed.isConfirmed) {
+      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4001/kbm/download/template-kbm', {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Template_Siswa.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error saat mengunduh file:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">
@@ -343,6 +381,12 @@ function KBMGuru() {
                     className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     Import
+                  </button>
+                  <button
+                    onClick={downloadFormat}
+                    className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                  >
+                    Unduh Templat
                   </button>
                 </div>
               </div>
@@ -471,7 +515,7 @@ function KBMGuru() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
