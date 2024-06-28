@@ -300,49 +300,7 @@ function Penilaian() {
       console.error('Error saat mengunduh file:', error);
     }
   };
-
   // EXPORT PENILAIAN
-  const downloadTemplate = async () => {
-    const token = localStorage.getItem("authToken");
-    console.log("Auth Token:", token); // Log token untuk memastikan token ada
-
-    if (!token) {
-      console.error("No auth token found.");
-      return;
-    }
-
-    try {
-      const response = await fetch("/download/template-penilaian", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Unauthorized access - invalid token.");
-        } else {
-          throw new Error("Network response was not ok");
-        }
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "Template.xlsx";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
-    }
-  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -415,12 +373,6 @@ function Penilaian() {
                       Import
                     </button>
                   </div>
-                  <button
-                    onClick={downloadTemplate}
-                    className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 ml-auto"
-                  >
-                    Unduh Template
-                  </button>
                   <button
                     onClick={downloadFormat}
                     className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
