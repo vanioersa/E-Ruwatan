@@ -151,7 +151,8 @@ function Setting() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-start justify-center mt-10 sm:mt-5 sm:pt-5 lg:mt-20 lg:pt-20">
+      {/* <div className="flex flex-grow items-center justify-center"> */}
         <div className="max-w-4xl w-full">
           <div className="mt-20 md:mt-20">
             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">

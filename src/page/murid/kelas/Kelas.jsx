@@ -33,20 +33,21 @@ function Kelas() {
 
   const handleImportData = async (event) => {
     event.preventDefault();
-    if (!selectedFile) { // Periksa apakah file sudah dipilih
+    if (!selectedFile) {
+      // Periksa apakah file sudah dipilih
       Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
       return;
     }
 
     Swal.fire({
-      title: 'Apakah Anda yakin?',
+      title: "Apakah Anda yakin?",
       text: "Anda akan mengimpor data dari file ini.",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, impor!',
-      cancelButtonText: 'Batal'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, impor!",
+      cancelButtonText: "Batal",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const formData = new FormData();
@@ -152,20 +153,20 @@ function Kelas() {
   const exportExcelKelas = async () => {
     if (dataToExport.length > 0) {
       Swal.fire({
-        title: 'Konfirmasi',
-        text: 'Anda yakin ingin mengexport data kelas?',
-        icon: 'question',
+        title: "Konfirmasi",
+        text: "Anda yakin ingin mengexport data kelas?",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Ya',
-        cancelButtonText: 'Batal',
+        confirmButtonText: "Ya",
+        cancelButtonText: "Batal",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.get(
-              'http://localhost:4001/kelas/upload/export-kelas',
+              "http://localhost:4001/kelas/upload/export-kelas",
               {
-                responseType: 'blob',
+                responseType: "blob",
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
@@ -173,37 +174,37 @@ function Kelas() {
             );
 
             const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.href = url;
-            link.setAttribute('download', 'ExportKelas.xlsx');
+            link.setAttribute("download", "ExportKelas.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
 
             Swal.fire({
-              icon: 'success',
-              title: 'Sukses!',
-              text: 'File berhasil diunduh',
+              icon: "success",
+              title: "Sukses!",
+              text: "File berhasil diunduh",
               showConfirmButton: false,
               timer: 2000,
             });
           } catch (error) {
             Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'Ekspor Kelas Gagal!',
+              icon: "error",
+              title: "Error!",
+              text: "Ekspor Kelas Gagal!",
               showConfirmButton: false,
               timer: 1500,
             });
-            console.error('Ekspor Kelas Error:', error);
+            console.error("Ekspor Kelas Error:", error);
           }
         }
       });
     } else {
       Swal.fire({
-        title: 'Gagal',
-        text: 'Tidak ada data Kelas untuk diekspor',
-        icon: 'error',
+        title: "Gagal",
+        text: "Tidak ada data Kelas untuk diekspor",
+        icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -212,48 +213,52 @@ function Kelas() {
 
   const downloadFormat = async (e) => {
     e.preventDefault();
-  
+
     const isConfirmed = await Swal.fire({
-      title: 'Apakah Anda yakin?',
+      title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, unduh!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, unduh!",
     });
-  
+
     if (!isConfirmed.isConfirmed) {
       return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
     }
-  
+
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4001/kelas/download/template', {
-        responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:4001/kelas/download/template",
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
-  
-      const link = document.createElement('a');
+
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'Template_Kelas.xlsx');
+      link.setAttribute("download", "Template_Kelas.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (error) {
-      console.error('Error saat mengunduh file:', error);
+      console.error("Error saat mengunduh file:", error);
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
-        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${isModalOpen ? "bg-gray-100" : ""
-          }`}
+        className={`sidebar w-full md:w-64 bg-gray-100 shadow-lg ${
+          isModalOpen ? "bg-gray-100" : ""
+        }`}
         style={{
           backgroundColor: isModalOpen ? "#F3F4F6" : "",
         }}
@@ -261,7 +266,10 @@ function Kelas() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
+        >
           <h1 className="text-3xl font-semibold text-gray-800">Data Kelas</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
@@ -305,7 +313,10 @@ function Kelas() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
                 {filteredKelas.length > 0 ? (
                   filteredKelas
                     .slice(pagesVisited, pagesVisited + kelasPerPage)
@@ -318,7 +329,9 @@ function Kelas() {
                           {index + 1 + pagesVisited}
                         </td>
                         <td className="py-2 px-4 text-center">{k.kelas}</td>
-                        <td className="py-2 px-4 text-center">{k.nama_kelas}</td>
+                        <td className="py-2 px-4 text-center">
+                          {k.nama_kelas}
+                        </td>
                         <td className="py-2 px-4 text-center">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditKelas/${k.id}`}>
@@ -367,34 +380,36 @@ function Kelas() {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
-            <h2 className="text-xl font-semibold mb-4">Import Data Kelas</h2>
-            <input
-              className="border border-gray-400 p-2 w-full mb-4"
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileSelect}
-            />
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
-              >
-                Tutup
-              </button>
-              <div>
+            <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
+            <div className="mb-4">
+              <input
+                type="file"
+                accept=".csv, .xlsx"
+                onChange={handleFileSelect}
+                className="border border-gray-400 p-2 w-full mb-4"
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                >
+                  Batal
+                </button>
                 <button
                   onClick={handleImportData}
-                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 mr-3 md:mr-2 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Import
                 </button>
-                <button
-                  onClick={downloadFormat}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded"
-                >
-                  Unduh Templat
-                </button>
               </div>
+              <button
+                onClick={downloadFormat}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              >
+                Unduh Templat
+              </button>
             </div>
           </div>
         </div>
