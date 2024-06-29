@@ -2,6 +2,17 @@ import axios from "axios";
 
 const apiUrl = "http://localhost:4001";
 
+export const importGuru = (FormData) => {
+  return axios
+    .post(`${apiUrl}/import`, FormData)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const getAllUsers = async () => {
   try {
     const response = await axios.get(`${apiUrl}/users`);

@@ -9,6 +9,7 @@ import {
   faFileExport,
   faArrowLeft,
   faArrowRight,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { getAllUsers, deleteUsers } from "./api_guru";
@@ -22,8 +23,65 @@ function Guru() {
   const guruPerPage = 10;
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
   const [selectedGuruId, setSelectedGuruId] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // State untuk menyimpan file yang dipilih
+
+  const handleFileSelect = (event) => {
+    setSelectedFile(event.target.files[0]); // Update state dengan file yang dipilih
+  };
+
+  const handleImportData = async (event) => {
+    event.preventDefault();
+    if (!selectedFile) {
+      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
+      return;
+    }
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, impor!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", selectedFile); // Menggunakan selectedFile yang sudah diupdate
+
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.post(
+            `http://localhost:4001/guru/upload/import`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Sukses!",
+            text: "Berhasil Ditambahkan",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+          setIsModalOpen(false); // Tutup modal setelah impor
+          // fetchGuru(); // Memanggil kembali fetchGuru untuk memuat data baru
+        } catch (error) {
+          console.error("Error importing file:", error);
+          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     const fetchGuru = async () => {
@@ -133,58 +191,58 @@ function Guru() {
   const exportExcelGuru = async () => {
     if (dataToExport.length > 0) {
       Swal.fire({
-        title: 'Konfirmasi',
-        text: 'Anda yakin ingin mengexport data guru?',
-        icon: 'question',
+        title: "Konfirmasi",
+        text: "Anda yakin ingin mengexport data guru?",
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Ya',
-        cancelButtonText: 'Batal',
+        confirmButtonText: "Ya",
+        cancelButtonText: "Batal",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.get(
-              'http://localhost:4001/guru/upload/export-guru',
+              "http://localhost:4001/guru/upload/export-guru",
               {
-                responseType: 'blob',
+                responseType: "blob",
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               }
             );
-  
+
             const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.href = url;
-            link.setAttribute('download', 'ExportGuru.xlsx');
+            link.setAttribute("download", "ExportGuru.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
-  
+
             Swal.fire({
-              icon: 'success',
-              title: 'Sukses!',
-              text: 'File berhasil diunduh',
+              icon: "success",
+              title: "Sukses!",
+              text: "File berhasil diunduh",
               showConfirmButton: false,
               timer: 2000,
             });
           } catch (error) {
             Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'Ekspor Guru Gagal!',
+              icon: "error",
+              title: "Error!",
+              text: "Ekspor Guru Gagal!",
               showConfirmButton: false,
               timer: 1500,
             });
-            console.error('Ekspor Guru Error:', error);
+            console.error("Ekspor Guru Error:", error);
           }
         }
       });
     } else {
       Swal.fire({
-        title: 'Gagal',
-        text: 'Tidak ada data Guru untuk diekspor',
-        icon: 'error',
+        title: "Gagal",
+        text: "Tidak ada data Guru untuk diekspor",
+        icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -194,6 +252,48 @@ function Guru() {
   const handleDoubleClick = (id) => {
     setSelectedGuruId(id);
     setIsHiddenTelepon((prevState) => !prevState);
+  };
+
+  const downloadFormat = async (e) => {
+    e.preventDefault();
+
+    const isConfirmed = await Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda akan mengunduh template ini!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, unduh!",
+    });
+
+    if (!isConfirmed.isConfirmed) {
+      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:4001/guru/download/template-guru",
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Template_Guru.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error saat mengunduh file:", error);
+    }
   };
 
   return (
@@ -215,17 +315,25 @@ function Guru() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
-            <div className="flex">
-              <Link to="/TambahGuru">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <FontAwesomeIcon icon={faPlus} /> Tambah Guru
+            <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
+              <div className="flex flex-row gap-2 md:gap-4">
+                <Link to="/TambahGuru">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white px-1 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <FontAwesomeIcon icon={faPlus} /> Tambah Guru
+                  </button>
+                </Link>
+                <button
+                  onClick={exportExcelGuru}
+                  className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faFileExport} /> Export Guru
                 </button>
-              </Link>
+              </div>
               <button
-                onClick={exportExcelGuru}
-                className="bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                onClick={() => setIsModalOpen(true)} // Buka modal untuk import data
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
-                <FontAwesomeIcon icon={faFileExport} /> Export Guru
+                <FontAwesomeIcon icon={faUpload} /> Import Data
               </button>
             </div>
           </div>
@@ -399,6 +507,42 @@ function Guru() {
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+            <h2 className="text-xl font-semibold mb-4">Import Data Kelas</h2>
+            <input
+              className="border border-gray-400 p-2 w-full mb-4"
+              type="file"
+              accept=".csv, .xlsx"
+              onChange={handleFileSelect}
+            />
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
+              >
+                Tutup
+              </button>
+              <div>
+                <button
+                  onClick={handleImportData}
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 mr-3 md:mr-2 rounded"
+                >
+                  Import
+                </button>
+                <button
+                  onClick={downloadFormat}
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded"
+                >
+                  Unduh Templat
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
