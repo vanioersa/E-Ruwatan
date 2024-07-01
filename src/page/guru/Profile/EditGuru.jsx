@@ -136,7 +136,7 @@ const EditGuru = () => {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center">
-        <div className="max-w-4xl w-full">
+        <div className="max-w-4xl w-96 md:w-full">
           <div className="mt-20 md:mt-20">
             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
               <ul
@@ -205,7 +205,7 @@ const EditGuru = () => {
               <br />
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="username"
                       className="font-semibold text-gray-700 block pb-1"
@@ -222,7 +222,7 @@ const EditGuru = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="email"
                       className="font-semibold text-gray-700 block pb-1"
@@ -239,7 +239,7 @@ const EditGuru = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="alamat"
                       className="font-semibold text-gray-700 block pb-1"
@@ -256,7 +256,7 @@ const EditGuru = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="telepon"
                       className="font-semibold text-gray-700 block pb-1"
@@ -273,7 +273,7 @@ const EditGuru = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="gender"
                       className="font-semibold text-gray-700 block pb-1"
@@ -299,7 +299,7 @@ const EditGuru = () => {
                       </option>
                     </select>
                   </div>
-                  <div className="pb-4">
+                  <div className="pb-1">
                     <label
                       htmlFor="status_nikah"
                       className="font-semibold text-gray-700 block pb-1"

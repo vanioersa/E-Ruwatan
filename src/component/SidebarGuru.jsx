@@ -180,7 +180,7 @@ const SidebarGuru = () => {
             >
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">Open user menu</span>
-              <img className="h-10 w-10 rounded-full" src={profilePic} alt="" />
+              <img className="h-9 w-h-9 rounded-full" src={profilePic} alt="" />
             </button>
           </div>
 
