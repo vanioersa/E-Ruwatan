@@ -131,7 +131,7 @@ function Profile_Guru() {
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
               >
-                <li className="me-2">
+                <li className="mr-2">
                   <Link to={"/profile_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -146,7 +146,7 @@ function Profile_Guru() {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2">
+                <li className="mr-2">
                   <Link to={"/edit_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -161,7 +161,7 @@ function Profile_Guru() {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2">
+                <li className="mr-2">
                   <Link to={"/setting_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -290,9 +290,8 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="alamat"
-                      className={`border rounded-lg px-4 py-2 w-full ${
-                        !admin.alamat ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${!admin.alamat ? "text-gray-400" : "text-gray-900"
+                        }`}
                       type="text"
                       value={admin.alamat ? admin.alamat : "Data kosong"}
                     />
@@ -307,9 +306,8 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="gender"
-                      className={`border rounded-lg px-4 py-2 w-full ${
-                        !admin.gender ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${!admin.gender ? "text-gray-400" : "text-gray-900"
+                        }`}
                       type="text"
                       value={admin.gender ? admin.gender : "Data kosong"}
                     />
@@ -328,9 +326,8 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="telepon"
-                      className={`border rounded-lg px-4 py-2 w-full ${
-                        !admin.telepon ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${!admin.telepon ? "text-gray-400" : "text-gray-900"
+                        }`}
                       type="text"
                       value={
                         admin.telepon
@@ -349,9 +346,8 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="status_nikah"
-                      className={`border rounded-lg px-4 py-2 w-full ${
-                        !admin.status_nikah ? "text-gray-400" : "text-gray-900"
-                      }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${!admin.status_nikah ? "text-gray-400" : "text-gray-900"
+                        }`}
                       type="text"
                       value={
                         admin.status_nikah ? admin.status_nikah : "Data kosong"

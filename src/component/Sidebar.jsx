@@ -191,7 +191,7 @@ const SidebarAdmin = () => {
                 tabIndex="-1"
                 id="user-menu-item-2"
               >
-                keluar
+                Keluar
               </button>
             </div>
           )}
@@ -300,7 +300,7 @@ const SidebarAdmin = () => {
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${
                 isActive(item.path)
-                  ? `bg-gray-300 dark:bg-gray-600 text-black dark:text-white`
+                  ? `bg-gray-500 dark:bg-gray-600 text-black dark:text-white`
                   : `hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
               }`}
             >
