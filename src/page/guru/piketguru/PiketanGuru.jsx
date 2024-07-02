@@ -325,7 +325,7 @@ function PiketanGuru() {
     setExcelFile(e.target.files[0]);
   };
 
-// IMPORT EXCEL PIKETAN
+  // IMPORT EXCEL PIKETAN
   const importExcell = async (e) => {
     e.preventDefault();
 
@@ -380,7 +380,7 @@ function PiketanGuru() {
           },
         }
       );
-  
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -388,7 +388,7 @@ function PiketanGuru() {
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-  
+
       Swal.fire({
         icon: "success",
         title: "Sukses!",
@@ -407,7 +407,7 @@ function PiketanGuru() {
       console.log(error);
     }
   };
-  
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -525,50 +525,27 @@ function PiketanGuru() {
               >
                 {Object.keys(piketByDateAndClass).length > 0 ? (
                   Object.keys(piketByDateAndClass)
-                    .slice(
-                      currentPage * itemsPerPage,
-                      (currentPage + 1) * itemsPerPage
-                    )
+                    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
                     .map((key, index) => {
                       const [tanggal, kelasId] = key.split("_");
-                      const kelasData = kelas.find(
-                        (k) => k.id === parseInt(kelasId)
-                      );
-                      const kelasName = kelasData
-                        ? `${kelasData.kelas} ${kelasData.nama_kelas}`
-                        : "";
-                      const statusSummary = getStatusSummaryByDateAndClass(
-                        tanggal,
-                        parseInt(kelasId)
-                      );
+                      const kelasData = kelas.find((k) => k.id === parseInt(kelasId));
+                      const kelasName = kelasData ? `${kelasData.kelas} ${kelasData.nama_kelas}` : "";
+                      const statusSummary = getStatusSummaryByDateAndClass(tanggal, parseInt(kelasId));
 
-                      const filteredPiketData = piketByDateAndClass[key].filter(
-                        (item) => {
-                          const kelasNama = kelasData ? kelasData.kelas : "";
-                          const namaKelas = kelasData
-                            ? kelasData.nama_kelas
-                            : "";
-                          const tanggalItem = item.tanggal
-                            ? item.tanggal.toLowerCase()
-                            : "";
-                          const searchTermLower = searchTerm.toLowerCase();
+                      const filteredPiketData = piketByDateAndClass[key].filter((item) => {
+                        const kelasNama = kelasData ? kelasData.kelas : "";
+                        const namaKelas = kelasData ? kelasData.nama_kelas : "";
+                        const tanggalItem = typeof item.tanggal === 'string' ? item.tanggal.toLowerCase() : "";
+                        const searchTermLower = searchTerm.toLowerCase();
 
-                          return (
-                            (kelasNama
-                              .toLowerCase()
-                              .includes(searchTermLower) ||
-                              namaKelas
-                                .toLowerCase()
-                                .includes(searchTermLower) ||
-                              tanggalItem.includes(searchTermLower)) &&
-                            (filteredDate === "" ||
-                              (item.status &&
-                                item.status
-                                  .toLowerCase()
-                                  .includes(filteredDate.toLowerCase())))
-                          );
-                        }
-                      );
+                        return (
+                          (kelasNama.toLowerCase().includes(searchTermLower) ||
+                            namaKelas.toLowerCase().includes(searchTermLower) ||
+                            tanggalItem.includes(searchTermLower)) &&
+                          (filteredDate === "" ||
+                            (item.status && item.status.toLowerCase().includes(filteredDate.toLowerCase())))
+                        );
+                      });
 
                       return (
                         <tr
@@ -599,19 +576,13 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <a
-                                href={
-                                  "/EditPiketan/" + filteredPiketData[0].idPiket
-                                }
+                                href={"/EditPiketan/" + filteredPiketData[0].idPiket}
                                 className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
                               </a>
                               <button
-                                onClick={() =>
-                                  handleDeletePiket(
-                                    filteredPiketData[0].idPiket
-                                  )
-                                }
+                                onClick={() => handleDeletePiket(filteredPiketData[0].idPiket)}
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
