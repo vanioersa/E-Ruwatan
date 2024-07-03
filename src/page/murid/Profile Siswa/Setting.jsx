@@ -8,7 +8,7 @@ function Setting() {
   const [passwordBaru, setPasswordBaru] = useState("");
   const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const message = useState("");
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -152,7 +152,7 @@ function Setting() {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-full space-y-6">
+        <div className="max-w-4xl w-full sm:w-96 md:w-full">
           <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
             <ul
               className="flex flex-wrap -mb-px text-sm font-medium text-center"
@@ -215,7 +215,7 @@ function Setting() {
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Setting</strong>
-              </h1>{" "}
+              </h1>
               <br />
               <form onSubmit={handleSubmit}>
                 <div className="pb-2 pt-2">
