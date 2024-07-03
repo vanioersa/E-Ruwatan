@@ -174,7 +174,7 @@ const EditAdmin = () => {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center">
-        <div className="max-w-4xl w-full">
+        <div className="max-w-4xl w-96 md:w-full">
           <div className="mt-20 md:mt-20">
             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
               <ul
@@ -235,7 +235,7 @@ const EditAdmin = () => {
           <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md"
+              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md border border-gray-200"
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Edit Profile</strong>
@@ -243,10 +243,10 @@ const EditAdmin = () => {
               <br />
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="pb-3">
+                  <div className="pb-1">
                     <label
                       htmlFor="username"
-                      className="font-semibold text-gray-700 block pb-3"
+                      className="font-semibold text-gray-700 block pb-1"
                     >
                       Username
                     </label>
@@ -260,10 +260,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-3">
+                  <div className="pb-1">
                     <label
                       htmlFor="email"
-                      className="font-semibold text-gray-700 block pb-3"
+                      className="font-semibold text-gray-700 block pb-1"
                     >
                       Email
                     </label>
@@ -277,10 +277,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-3">
+                  <div className="pb-1">
                     <label
                       htmlFor="alamat"
-                      className="font-semibold text-gray-700 block pb-3"
+                      className="font-semibold text-gray-700 block pb-1"
                     >
                       Alamat
                     </label>
@@ -294,10 +294,10 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-3">
+                  <div className="pb-1">
                     <label
                       htmlFor="telepon"
-                      className="font-semibold text-gray-700 block pb-3"
+                      className="font-semibold text-gray-700 block pb-1"
                     >
                       Telepon
                     </label>
@@ -311,72 +311,63 @@ const EditAdmin = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="pb-3">
-                    <label className="font-semibold text-gray-700 block pb-3">
+                  <div className="pb-1">
+                    <label
+                      htmlFor="gender"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
                       Gender
                     </label>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="male"
-                        name="gender"
-                        value="Laki-laki"
-                        checked={admin.gender === "Laki-laki"}
-                        onChange={handleChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="male" className="text-gray-700 mr-4">
+                    <select
+                      id="gender"
+                      name="gender"
+                      autoComplete="off"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
+                      value={admin.gender}
+                      onChange={handleChange}
+                    >
+                      <option className="text-gray-700" value="">
+                        Pilih Jenis Kelamin
+                      </option>
+                      <option className="text-gray-700" value="Laki-laki">
                         Laki-laki
-                      </label>
-
-                      <input
-                        type="radio"
-                        id="female"
-                        name="gender"
-                        value="Perempuan"
-                        checked={admin.gender === "Perempuan"}
-                        onChange={handleChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="female" className="text-gray-700">
+                      </option>
+                      <option className="text-gray-700" value="Perempuan">
                         Perempuan
-                      </label>
-                    </div>
+                      </option>
+                    </select>
                   </div>
-                  <div className="pb-3">
-                    <label className="font-semibold text-gray-700 block pb-3">
+                  <div className="pb-1">
+                    <label
+                      htmlFor="status_nikah"
+                      className="font-semibold text-gray-700 block pb-1"
+                    >
                       Status Nikah
                     </label>
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="single"
-                        name="status_nikah"
-                        value="Belum Menikah"
-                        checked={admin.status_nikah === "Belum Menikah"}
-                        onChange={handleChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="single" className="text-gray-700 mr-4">
+                    <select
+                      id="status_nikah"
+                      name="status_nikah"
+                      autoComplete="off"
+                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
+                      value={admin.status_nikah}
+                      onChange={handleChange}
+                    >
+                      <option className="text-gray-700" value="">
+                        Pilih Status Nikah
+                      </option>
+                      <option className="text-gray-700" value="Belum Menikah">
                         Belum Menikah
-                      </label>
-
-                      <input
-                        type="radio"
-                        id="married"
-                        name="status_nikah"
-                        value="Menikah"
-                        checked={admin.status_nikah === "Menikah"}
-                        onChange={handleChange}
-                        className="mr-2"
-                      />
-                      <label htmlFor="married" className="text-gray-700">
+                      </option>
+                      <option className="text-gray-700" value="Menikah">
                         Menikah
-                      </label>
-                    </div>
+                      </option>
+                      <option className="text-gray-700" value="Cerai">
+                        Cerai
+                      </option>
+                    </select>
                   </div>
                 </div>
-                <div className="text-right mt-4">
+                <div className="float-end mt-4">
                   <button
                     type="submit"
                     className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
