@@ -1,133 +1,145 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import SidebarGuru from "../../../component/SidebarGuru";
-import { updatePiket, getAllPiket, getPiketByClass } from "./api_piket"; // Ensure you have API functions to get all piket data and piket data by class
-import { useParams } from "react-router-dom";
 import axios from "axios";
+import SidebarGuru from "../../../component/SidebarGuru";
 
-const UpdatePiketan = () => {
-  const [kelasList, setKelasList] = useState([]);
+const UpdatePiketan = ({ id }) => {
+  const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
-  const [piketan, setPiketan] = useState({ tanggal: "" });
   const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [tanggal, setTanggal] = useState("");
-  const [kelasId, setKelasId] = useState("");
   const [selectedStatus, setSelectedStatus] = useState({});
-  const [piket, setPiket] = useState([]);
-  const { id } = useParams();
-
-  const getPiketanById = async () => {
-    try {
-      const res = await axios.get(`http://localhost:4001/piket/by-id/${id}`)
-      setPiket(res.data);
-      setTanggal(res.data.tanggal)
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const [tanggal, setTanggal] = useState(new Date().toISOString().slice(0, 16));
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAllKelas = async () => {
-      try {
-        const response = await getAllPiket(); // Fetch all piket data
-        setKelasList(response);
-      } catch (error) {
-        console.error("Error fetching all piket data: ", error);
-        Swal.fire("Error", "Failed to fetch kelas data", "error");
-      }
-    };
-
-    fetchAllKelas();
-    getPiketanById();
+    fetchKelas();
   }, []);
 
-  useEffect(() => {
-    const fetchPiketByClass = async () => {
-      if (selectedKelas) {
-        try {
-          const response = await getPiketByClass(selectedKelas); // Fetch piket data by class
-          const piketData = response;
-
-          setPiketan({ tanggal: piketData.tanggal });
-          setSiswaByKelas(piketData.siswa); // Assuming piketData includes student data
-          const statusMap = piketData.siswa.reduce((acc, student) => {
-            acc[student.id] = student.status;
-            return acc;
-          }, {});
-          setSelectedStatus(statusMap);
-        } catch (error) {
-          console.error("Error fetching piket data: ", error);
-          Swal.fire("Error", "Failed to fetch piket data", "error");
-        }
-      }
-    };
-
-    fetchPiketByClass();
-  }, [selectedKelas]);
-
-  const handleKelasChange = (event) => {
-    setSelectedKelas(event.target.value);
+  const fetchKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/kelas/all");
+      setKelas(response.data);
+    } catch (error) {
+      console.error("Gagal mengambil data Kelas: ", error);
+    }
   };
 
-  const handleStudentCheckboxChange = (studentId, status) => {
+  useEffect(() => {
+    if (selectedKelas) {
+      fetchSiswaByKelas(selectedKelas);
+    }
+  }, [selectedKelas]);
+
+  const token = localStorage.getItem("token");
+
+  const fetchSiswaByKelas = async (kelasId) => {
+    try {
+      if (kelasId) {
+        const response = await axios.get(
+          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSiswaByKelas(response.data);
+        // Reset selectedStatus
+        const initialStatus = {};
+        response.data.forEach((siswa) => {
+          initialStatus[siswa.id] = ""; // Set initial status to empty string
+        });
+        setSelectedStatus(initialStatus);
+      } else {
+        setSiswaByKelas([]);
+        setSelectedStatus({});
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data Siswa: ", error);
+    }
+  };
+
+  const handleKelasChange = async (e) => {
+    const selectedKelasId = e.target.value;
+    setSelectedKelas(selectedKelasId);
+    if (selectedKelasId) {
+      try {
+        await fetchSiswaByKelas(selectedKelasId);
+      } catch (error) {
+        console.error("Gagal mengambil data Siswa: ", error);
+      }
+    } else {
+      setSiswaByKelas([]);
+      setSelectedStatus({});
+    }
+  };
+
+  const handleStatusChange = (studentId, status) => {
     setSelectedStatus((prev) => ({
       ...prev,
-      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
+      [studentId]: status,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const confirmation = await Swal.fire({
-      title: "Apakah Anda yakin ingin memperbarui piketan?",
-      text: "Data akan diperbarui",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, perbarui!",
-    });
 
-    if (confirmation.isConfirmed) {
-      const siswaStatus = Object.keys(selectedStatus).map((studentId) => ({
-        siswaId: studentId,
-        status: selectedStatus[studentId],
-      }));
+    const selectedStudents = Object.keys(selectedStatus);
+    if (selectedStudents.length === 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Silakan pilih setidaknya satu siswa.",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
 
-      try {
-        await updatePiket(selectedKelas, { siswaStatus });
-        const token = localStorage.getItem("token");
-        await axios.put(`http://localhost:4001/piket/ubah/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        Swal.fire({
-          title: "Berhasil",
-          text: "Piketan berhasil diperbarui",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error("Error updating piketan: ", error);
-        Swal.fire({
-          title: "Gagal",
-          text: "Gagal memperbarui piketan. Silakan coba lagi.",
-          icon: "error",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      }
+    const siswaStatusList = selectedStudents.map((studentId) => ({
+      siswaId: parseInt(studentId),
+      statusList: [selectedStatus[studentId]], // Convert status to array
+    }));
+
+    const data = {
+      id: parseInt(id), // ID piket yang akan diperbarui
+      kelasId: parseInt(selectedKelas),
+      siswaStatusList,
+      tanggal,
+    };
+
+    try {
+      await axios.put(`http://localhost:4001/piket/ubah/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      Swal.fire({
+        title: "Berhasil",
+        text: "Piketan berhasil diperbarui",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        navigate(-1);
+      });
+    } catch (error) {
+      console.error("Gagal memperbarui piketan: ", error);
+      Swal.fire({
+        title: "Gagal",
+        text: "Gagal memperbarui piketan. Silakan coba lagi.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     }
   };
 
   const batal = () => {
-    setSelectedKelas("");
-    setPiketan({ tanggal: "" });
-    setSiswaByKelas([]);
-    setSelectedStatus({});
+    navigate(-1);
   };
 
   return (
@@ -137,10 +149,7 @@ const UpdatePiketan = () => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Update Piketan</h1>
-        <div
-          style={{ backgroundColor: "white" }}
-          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
-        >
+        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Piketan
           </p>
@@ -161,12 +170,15 @@ const UpdatePiketan = () => {
                   required
                 >
                   <option value="">Pilih Kelas</option>
-                  {kelasList.map((item) => (
+                  {kelas.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.kelas} - {item.nama_kelas}
                     </option>
                   ))}
                 </select>
+                {error && !selectedKelas && (
+                  <p className="text-red-500 text-sm mt-1">{error}</p>
+                )}
               </div>
 
               <div className="relative">
@@ -177,130 +189,87 @@ const UpdatePiketan = () => {
                   Tanggal
                 </label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   name="tanggal"
-                  value={piketan.tanggal}
-                  onChange={handleKelasChange}
+                  value={tanggal.slice(0, 16)}
+                  onChange={(e) => setTanggal(e.target.value)}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Tanggal"
                   required
-                  readOnly
                 />
               </div>
             </div>
 
-            <div className="flex justify-between mt-6">
+            <div className="my-7 px-0 sm:px-3">
+              <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
+                Daftar Siswa
+              </h2>
+              <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
+                <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
+                  <thead>
+                    <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Nama Siswa
+                      </th>
+                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y-2 divide-gray-200">
+                    {siswaByKelas.length === 0 ? (
+                      <tr>
+                        <td colSpan="2" className="text-center py-4">
+                          {selectedKelas
+                            ? "Tidak ada siswa yang tersedia untuk kelas ini."
+                            : "Silakan pilih kelas terlebih dahulu."}
+                        </td>
+                      </tr>
+                    ) : (
+                      siswaByKelas.map((siswa) => (
+                        <tr key={siswa.id}>
+                          <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {siswa.nama_siswa}
+                          </td>
+                          <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <select
+                              value={selectedStatus[siswa.id] || ""}
+                              onChange={(e) =>
+                                handleStatusChange(siswa.id, e.target.value)
+                              }
+                              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                              required
+                            >
+                              <option value="">Pilih Status</option>
+                              <option value="Masuk">Masuk</option>
+                              <option value="Izin">Izin</option>
+                              <option value="Sakit">Sakit</option>
+                              <option value="Alpha">Alpha</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6 sm:mt-7">
               <button
                 type="button"
                 onClick={batal}
-                className="w-24 rounded-lg text-black border border-red-500 py-2 text-sm font-medium"
+                className="mr-4 sm:mr-7 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 sm:px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="w-24 rounded-lg text-black border border-blue-700 py-2 text-sm font-medium"
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
               >
                 Simpan
               </button>
             </div>
           </form>
-
-          <div className="my-7 px-0 sm:px-3">
-            <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
-              Daftar Siswa
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Nama Siswa
-                    </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Masuk
-                    </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Izin
-                    </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Sakit
-                    </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Alpha
-                    </th>
-                  </tr>
-                </thead>
-                <tbody
-                  style={{ backgroundColor: "white" }}
-                  className="text-gray-600 text-base font-normal"
-                >
-                  {" "}
-                  {siswaByKelas.length > 0 ? (
-                    siswaByKelas.map((siswa) => (
-                      <tr
-                        key={siswa.id}
-                        className="px-5 py-5 border-b border-gray-200"
-                      >
-                        <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                          {siswa.nama_siswa}
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 text-left">
-                          <input
-                            type="radio"
-                            name={`status-${siswa.id}`}
-                            onChange={() =>
-                              handleStudentCheckboxChange(siswa.id, "masuk")
-                            }
-                            checked={selectedStatus[siswa.id] === "masuk"}
-                          />
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 text-left">
-                          <input
-                            type="radio"
-                            name={`status-${siswa.id}`}
-                            onChange={() =>
-                              handleStudentCheckboxChange(siswa.id, "izin")
-                            }
-                            checked={selectedStatus[siswa.id] === "izin"}
-                          />
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 text-left">
-                          <input
-                            type="radio"
-                            name={`status-${siswa.id}`}
-                            onChange={() =>
-                              handleStudentCheckboxChange(siswa.id, "sakit")
-                            }
-                            checked={selectedStatus[siswa.id] === "sakit"}
-                          />
-                        </td>
-                        <td className="px-5 py-5 border-b border-gray-200 text-left">
-                          <input
-                            type="radio"
-                            name={`status-${siswa.id}`}
-                            onChange={() =>
-                              handleStudentCheckboxChange(siswa.id, "alpha")
-                            }
-                            checked={selectedStatus[siswa.id] === "alpha"}
-                          />
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="5"
-                        className="px-5 py-5 border-b border-gray-200 text-center"
-                      >
-                        Tidak ada data siswa.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </div>
     </div>

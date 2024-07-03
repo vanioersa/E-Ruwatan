@@ -422,7 +422,7 @@ function Penilaian() {
                           {item.siswa.nama_siswa}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {`${item.kelas.kelas} ${item.kelas.nama_kelas}`}
+                          {`${item.kelas.kelas} - ${item.kelas.nama_kelas}`}
                         </td>
                         <td className="py-2 px-4 text-center">{item.nilai}</td>
                         <td className="py-2 px-4 text-center">

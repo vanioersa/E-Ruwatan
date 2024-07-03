@@ -1,7 +1,6 @@
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import { jwtDecode } from "jwt-decode";
 import Login from "./auth/login";
 import RegisterAdmin from "./auth/register_admin";
 import DashboardSiswa from "./component/Dashboard";
@@ -46,12 +45,11 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = DateTime.now().setZone("Asia/Jakarta");
-      if (now.hour === 0 && now.minute === 0 && now.second === 0) {
+      if (now.hour === 23 && now.minute === 59 && now.second === 59) {
         clearToken();
       }
-    }, 1000); // cek setiap detik
+    }, 1000);
 
-    // Contoh pengaturan role setelah login
     const token = localStorage.getItem("token");
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (token && loggedInUser) {
@@ -61,30 +59,12 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const decodeToken = (token) => {
-    try {
-      const decodedToken = jwtDecode(token);
-      return decodedToken;
-    } catch (error) {
-      return null;
-    }
-  };
-
-  const handleLogin = (user) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUserRole(user.role);
-      localStorage.setItem("loggedInUser", JSON.stringify(user));
-      navigate(user.role === "ADMIN" ? "/dashboard_admin" : "/dashboard_guru");
-    }
-  };
-
   return (
     <div className="App">
       <Routes>
         <Route
           path="/"
-          element={<Login onLogin={(user) => handleLogin(user)} />}
+          element={<Login />}
         />
         <Route path="/register_admin" element={<RegisterAdmin />} />
         {userRole === "ADMIN" && <Navigate to="/dashboard_admin" />}
@@ -120,7 +100,7 @@ function App() {
           <Route path="/setting_guru" element={<SettingGuru />} />
         </Route>
         <Route element={<PrivateRoute />}>
-          <Route path="/pdf" element={<PDFpiket />} />
+          <Route path="/pdf/page" element={<PDFpiket />} />
         </Route>
       </Routes>
     </div>
