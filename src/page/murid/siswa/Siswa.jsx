@@ -160,41 +160,65 @@ function Siswa() {
     Alamat: s.alamat,
   }));
 
-  const exportExcelSiswa = () => {
-    if (dataToExport.length === 0) {
+  const exportExcelSiswa = async () => {
+    if (dataToExport.length > 0) {
+      Swal.fire({
+        title: "Konfirmasi",
+        text: "Anda yakin ingin mengexport data siswa?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Ya",
+        cancelButtonText: "Batal",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(
+              "http://localhost:4001/siswa/upload/export-siswa",
+              {
+                responseType: "blob",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "ExportSiswa.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+
+            Swal.fire({
+              icon: "success",
+              title: "Sukses!",
+              text: "File berhasil diunduh",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: "Ekspor Siswa Gagal!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            console.error("Ekspor Siswa Error:", error);
+          }
+        }
+      });
+    } else {
       Swal.fire({
         title: "Gagal",
-        text: "Tidak ada data siswa yang diekspor",
+        text: "Tidak ada data Siswa untuk diekspor",
         icon: "error",
         showConfirmButton: false,
         timer: 2000,
       });
-      return;
     }
-
-    Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengekspor data siswa?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const worksheet = xlsx.utils.json_to_sheet(dataToExport);
-        const workbook = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(workbook, worksheet, "Siswa");
-
-        xlsx.writeFile(workbook, "ExportSiswa.xlsx");
-        Swal.fire({
-          title: "Berhasil",
-          text: "Data siswa berhasil diekspor",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
-    });
   };
 
   const changePage = ({ selected }) => {
