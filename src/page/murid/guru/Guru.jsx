@@ -56,7 +56,7 @@ function Guru() {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.post(
-            `http://localhost:4001/guru/upload/import`,
+            `http://localhost:4001/guru/upload/importGuru`,
             formData,
             {
               headers: {
@@ -74,6 +74,7 @@ function Guru() {
             timer: 2500,
           });
           setIsModalOpen(false); // Tutup modal setelah impor
+          window.location.reload();
           // fetchGuru(); // Memanggil kembali fetchGuru untuk memuat data baru
         } catch (error) {
           console.error("Error importing file:", error);

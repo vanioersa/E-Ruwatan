@@ -323,9 +323,6 @@ const EditGuru = () => {
                       <option className="text-gray-700" value="Menikah">
                         Menikah
                       </option>
-                      <option className="text-gray-700" value="Cerai">
-                        Cerai
-                      </option>
                     </select>
                   </div>
                 </div>
