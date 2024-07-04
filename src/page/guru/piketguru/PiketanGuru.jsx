@@ -93,13 +93,32 @@ function PiketanGuru() {
     }
   };
 
-  const openImportModal = () => {
-    setShowImportModal(true);
-  };
+  // const handleImport = async (event) => {
+  //   const file = event.target.files[0];
+  //   const formData = new FormData();
+  //   formData.append("file", file);
 
-  const closeImportModal = () => {
-    setShowImportModal(false);
-  };
+  //   try {
+  //     await axios.post("/piket/import", formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     fetchPiketan();
+  //     closeImportModal();
+  //   } catch (error) {
+  //     console.error("Error importing data", error);
+  //   }
+  // };
+
+  // const openImportModal = () => {
+  //   setShowImportModal(true);
+  // };
+
+  // const closeImportModal = () => {
+  //   setShowImportModal(false);
+  // };
 
   const openPDFModal = () => {
     setShowPDFModal(true);
@@ -107,41 +126,50 @@ function PiketanGuru() {
 
   const closePDFModal = () => {
     setShowPDFModal(false);
-    window.location.reload()
+    window.location.reload();
   };
 
-  const handleDeletePiketByDateAndClass = async (tanggal, kelasId) => {
-    try {
-      const response = await axios.delete(
-        `/piket/hapus-tanggal?tanggal=${tanggal}&kelasId=${kelasId}`,
-        {
+  const handleDeletePiketById = async (id) => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Konfirmasi",
+      text: "Anda yakin ingin menghapus piket ini?",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`/piket/delete/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-      if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Piket berhasil dihapus",
-          showConfirmButton: false,
-          timer: 1500,
         });
-        fetchPiketan();
-      } else {
+        if (response.status === 200) {
+          Swal.fire({
+            title: "Berhasil",
+            text: `Data piket berhasil dihapus`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          fetchPiketan();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Gagal menghapus piket!",
+          });
+        }
+      } catch (error) {
+        console.error("Error deleting piket", error);
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Gagal menghapus piket!",
+          text: "Terjadi kesalahan saat menghapus piket!",
         });
       }
-    } catch (error) {
-      console.error("Error deleting piket", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Terjadi kesalahan saat menghapus piket!",
-      });
     }
   };
 
@@ -152,7 +180,7 @@ function PiketanGuru() {
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
-          // text: "File PDF berhasil diunduh",
+          text: "File PDF berhasil diunduh",
           showConfirmButton: false,
           timer: 1500,
         }).then(() => {
@@ -165,6 +193,8 @@ function PiketanGuru() {
           icon: "error",
           title: "Oops...",
           text: "Gagal mengekspor PDF!",
+          showConfirmButton: false,
+          timer: 2000,
         });
       }
     } else {
@@ -172,10 +202,12 @@ function PiketanGuru() {
         icon: "error",
         title: "Peringatan",
         text: "Silakan pilih tanggal dan kelas terlebih dahulu!",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
-  
+
   // Function to format tanggal
   const formatTanggal = (date) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -214,12 +246,18 @@ function PiketanGuru() {
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export Piket
                 </button>
-                <button
+                {/* <button
                   onClick={openPDFModal}
                   className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <FontAwesomeIcon icon={faUpload} /> Export PDF
-                </button>
+                </button> */}
+                {/* <button
+                  onClick={openImportModal}
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <FontAwesomeIcon icon={faUpload} /> Import Data
+                </button> */}
               </div>
             </div>
 
@@ -278,6 +316,33 @@ function PiketanGuru() {
                 </div>
               </div>
             )}
+
+            {/* {showImportModal && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+                <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
+                  <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
+                  <div className="mb-4">
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls"
+                      onChange={handleImport}
+                      className="border border-gray-400 p-2 w-full mb-4"
+                    />
+                  </div>
+                  <div className="flex justify-between">
+                    <button
+                      onClick={closeImportModal}
+                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      Batal
+                    </button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      Import
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )} */}
           </div>
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
@@ -359,20 +424,15 @@ function PiketanGuru() {
                           <td className="py-2 px-4">{statusCounts["Alpha"]}</td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
-                              <Link
+                              {/* <Link
                                 to={`/editpiketan/${piket.id}`}
                                 className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                                 title="Edit"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
-                              </Link>
+                              </Link> */}
                               <button
-                                onClick={() =>
-                                  handleDeletePiketByDateAndClass(
-                                    piket.tanggal,
-                                    piket.kelasId
-                                  )
-                                }
+                                onClick={() => handleDeletePiketById(piket.id)}
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                                 title="Hapus"
                               >

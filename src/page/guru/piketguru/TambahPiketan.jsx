@@ -202,22 +202,6 @@ const TambahPiketan = () => {
               </div>
             </div>
 
-<div className="flex justify-between mt-7">
-  <button
-    type="button"
-    onClick={batal}
-     className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
-  >
-    Batal
-  </button>
-  <button
-    type="submit"
-    className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
-  >
-    Simpan
-  </button>
-</div>
-
             <div className="my-7 px-0 sm:px-3">
               <h2 className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-3 sm:ml-3">
                 Daftar Siswa
@@ -276,6 +260,22 @@ const TambahPiketan = () => {
                   <p className="text-red-500 text-sm mt-2 sm:mt-1">{error}</p>
                 )}
               </div>
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={batal}
+                 className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
+              >
+                Simpan
+              </button>
             </div>
           </form>
         </div>

@@ -4,10 +4,8 @@ import { useLocation } from "react-router-dom";
 import { getAllPiket } from "../page/guru/piketguru/api_piket";
 import axios from "axios";
 
-// Register Poppins font
 Font.register({ family: "Poppins", src: "../fonts/Poppins-Regular.ttf" });
 
-// Create and register styles
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
@@ -74,7 +72,6 @@ const styles = StyleSheet.create({
     borderRightColor: "#ccc",
   },
   cell2: {
-    // For headers, mirroring `cell` styles
     padding: 6,
     flex: 1,
     fontSize: 12,
@@ -82,7 +79,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   lastCell: {
-    borderRightWidth: 0, // Ensure no right border for the last cell
+    borderRightWidth: 0,
   },
   smkText: {
     fontSize: 18,
