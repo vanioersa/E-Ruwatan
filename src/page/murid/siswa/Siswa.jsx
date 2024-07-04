@@ -318,24 +318,26 @@ function Siswa() {
                 <div className="mb-4">
                   <input
                     type="file"
-                    accept=".xlsx,.xls"
+                    accept=".csv, .xlsx"
                     onChange={handleExcelChange}
                     className="border border-gray-400 p-2 w-full mb-4"
                   />
                 </div>
-                <div className="flex justify-between space-x-4">
-                  <button
-                    onClick={closeImportModal}
-                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={importExcel}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Import
-                  </button>
+                <div className="flex justify-between items-center">
+                  <div className="flex">
+                    <button
+                      onClick={closeImportModal}
+                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={importExcel}
+                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Import
+                    </button>
+                  </div>
                   <button
                     onClick={downloadFormat}
                     className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -346,6 +348,7 @@ function Siswa() {
               </div>
             </div>
           )}
+
 
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
