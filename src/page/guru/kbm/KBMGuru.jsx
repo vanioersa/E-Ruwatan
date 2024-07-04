@@ -364,24 +364,26 @@ function KBMGuru() {
                 <div className="mb-4">
                   <input
                     type="file"
-                    accept=".xlsx,.xls"
+                    accept=".csv, .xlsx"
                     onChange={handleExcelChange}
                     className="border border-gray-400 p-2 w-full mb-4"
                   />
                 </div>
-                <div className="flex justify-between">
-                  <button
-                    onClick={closeImportModal}
-                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={importExcell}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Import
-                  </button>
+                <div className="flex justify-between items-center">
+                  <div className="flex">
+                    <button
+                      onClick={closeImportModal}
+                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={importExcell}
+                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Import
+                    </button>
+                  </div>
                   <button
                     onClick={downloadFormat}
                     className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
