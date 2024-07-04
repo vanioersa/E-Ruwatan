@@ -511,34 +511,36 @@ function Guru() {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
-            <h2 className="text-xl font-semibold mb-4">Import Data Kelas</h2>
-            <input
-              className="border border-gray-400 p-2 w-full mb-4"
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileSelect}
-            />
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
-              >
-                Tutup
-              </button>
-              <div>
+            <h2 className="text-2xl font-semibold mb-4">Import Data Kelas</h2>
+            <div className="mb-4">
+              <input
+                type="file"
+                accept=".csv, .xlsx"
+                onChange={handleFileSelect}
+                className="border border-gray-400 p-2 w-full mb-4"
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                >
+                  Tutup
+                </button>
                 <button
                   onClick={handleImportData}
-                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 mr-3 md:mr-2 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Import
                 </button>
-                <button
-                  onClick={downloadFormat}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded"
-                >
-                  Unduh Templat
-                </button>
               </div>
+              <button
+                onClick={downloadFormat}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              >
+                Unduh Templat
+              </button>
             </div>
           </div>
         </div>
