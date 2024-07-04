@@ -151,7 +151,7 @@ const TambahPiketan = () => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Tambah Piketan</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Piketan
           </p>
@@ -218,7 +218,7 @@ const TambahPiketan = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y-2 divide-gray-200">
+                  <tbody style={{ backgroundColor: "white" }} className="divide-y-2 divide-gray-200">
                     {siswaByKelas.length === 0 ? (
                       <tr>
                         <td colSpan="2" className="text-center py-4">

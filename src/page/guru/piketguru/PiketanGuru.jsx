@@ -246,12 +246,12 @@ function PiketanGuru() {
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export Piket
                 </button>
-                {/* <button
+                <button
                   onClick={openPDFModal}
-                  className="bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <FontAwesomeIcon icon={faUpload} /> Export PDF
-                </button> */}
+                </button>
                 {/* <button
                   onClick={openImportModal}
                   className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -361,7 +361,7 @@ function PiketanGuru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-600 text-base font-normal">
+              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
                 {piketan.length === 0 ? (
                   <tr>
                     <td colSpan="9" className="py-4 px-6 text-center">
