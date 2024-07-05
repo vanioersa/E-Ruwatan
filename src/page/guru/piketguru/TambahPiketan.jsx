@@ -221,7 +221,7 @@ const TambahPiketan = () => {
                   <tbody style={{ backgroundColor: "white" }} className="divide-y-2 divide-gray-200">
                     {siswaByKelas.length === 0 ? (
                       <tr>
-                        <td colSpan="2" className="text-center py-4">
+                        <td colSpan="2" className="text-center text-gray-900 py-4">
                           {selectedKelas
                             ? "Tidak ada siswa yang tersedia untuk kelas ini."
                             : "Silakan pilih kelas terlebih dahulu."}

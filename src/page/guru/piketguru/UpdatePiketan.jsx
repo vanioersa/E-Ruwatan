@@ -100,18 +100,18 @@ const UpdatePiketan = ({ id }) => {
 
     const siswaStatusList = selectedStudents.map((studentId) => ({
       siswaId: parseInt(studentId),
-      statusList: [selectedStatus[studentId]], // Convert status to array
+      statusList: [selectedStatus[studentId]],
     }));
 
     const data = {
-      id: parseInt(id), // ID piket yang akan diperbarui
+      id: parseInt(id),
       kelasId: parseInt(selectedKelas),
       siswaStatusList,
       tanggal,
     };
 
     try {
-      await axios.put(`http://localhost:4001/piket/ubah/${id}`, data, {
+      await axios.put(`http://localhost:4001/piket/edit/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -149,7 +149,7 @@ const UpdatePiketan = ({ id }) => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Update Piketan</h1>
-        <div className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Piketan
           </p>
@@ -215,10 +215,10 @@ const UpdatePiketan = ({ id }) => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y-2 divide-gray-200">
+                  <tbody style={{ backgroundColor: "white" }} className="divide-y-2 divide-gray-200">
                     {siswaByKelas.length === 0 ? (
                       <tr>
-                        <td colSpan="2" className="text-center py-4">
+                        <td colSpan="2" className="text-center text-gray-900 py-4">
                           {selectedKelas
                             ? "Tidak ada siswa yang tersedia untuk kelas ini."
                             : "Silakan pilih kelas terlebih dahulu."}
@@ -254,17 +254,17 @@ const UpdatePiketan = ({ id }) => {
               </div>
             </div>
 
-            <div className="flex justify-end mt-6 sm:mt-7">
+            <div className="flex justify-between">
               <button
                 type="button"
                 onClick={batal}
-                className="mr-4 sm:mr-7 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 sm:px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+                 className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan
               </button>

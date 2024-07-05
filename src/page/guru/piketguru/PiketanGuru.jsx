@@ -8,9 +8,12 @@ import {
   faPlus,
   faUpload,
   faEdit,
+  faArrowLeft,
+  faArrowRight,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
 
 function PiketanGuru() {
   const [showImportModal, setShowImportModal] = useState(false);
@@ -20,6 +23,8 @@ function PiketanGuru() {
   const [kelas, setKelas] = useState([]);
   const [selectedTanggal, setSelectedTanggal] = useState("");
   const [selectedKelasId, setSelectedKelasId] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -49,6 +54,14 @@ function PiketanGuru() {
       console.error("Failed to fetch Kelas: ", error);
     }
   };
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
+  const offset = currentPage * itemsPerPage;
+  const currentPiketan = piketan.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(piketan.length / itemsPerPage);
 
   const handleExport = async () => {
     const result = await Swal.fire({
@@ -120,14 +133,14 @@ function PiketanGuru() {
   //   setShowImportModal(false);
   // };
 
-  const openPDFModal = () => {
-    setShowPDFModal(true);
-  };
+  // const openPDFModal = () => {
+  //   setShowPDFModal(true);
+  // };
 
-  const closePDFModal = () => {
-    setShowPDFModal(false);
-    window.location.reload();
-  };
+  // const closePDFModal = () => {
+  //   setShowPDFModal(false);
+  //   window.location.reload();
+  // };
 
   const handleDeletePiketById = async (id) => {
     const result = await Swal.fire({
@@ -261,7 +274,7 @@ function PiketanGuru() {
               </div>
             </div>
 
-            {showPDFModal && (
+            {/* {showPDFModal && (
               <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
                 <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
                   <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
@@ -315,7 +328,7 @@ function PiketanGuru() {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* {showImportModal && (
               <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
@@ -351,25 +364,25 @@ function PiketanGuru() {
                   <th className="py-2 px-4 text-left">No</th>
                   <th className="py-2 px-4">Tanggal</th>
                   <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jumlah Siswa
                   </th>
-                  <th className="py-2 px-4 text-left">Masuk</th>
-                  <th className="py-2 px-4 text-left">Izin</th>
-                  <th className="py-2 px-4 text-left">Sakit</th>
-                  <th className="py-2 px-4 text-left">Alpha</th>
+                  <th className="py-2 px-4 text-center">Masuk</th>
+                  <th className="py-2 px-4 text-center">Izin</th>
+                  <th className="py-2 px-4 text-center">Sakit</th>
+                  <th className="py-2 px-4 text-center">Alpha</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
-                {piketan.length === 0 ? (
+                {currentPiketan.length === 0 ? (
                   <tr>
                     <td colSpan="9" className="py-4 px-6 text-center">
                       Tidak ada data piketan yang ditemukan.
                     </td>
                   </tr>
                 ) : (
-                  piketan
+                  currentPiketan
                     .filter((piket) =>
                       String(piket.tanggal)
                         .toLowerCase()
@@ -404,24 +417,24 @@ function PiketanGuru() {
                           key={piket.id}
                           className="border-b border-gray-200 hover:bg-gray-100"
                         >
-                          <td className="py-2 px-4">{index + 1}</td>
+                          <td className="py-2 px-4">{index + 1 + currentPage * itemsPerPage}</td>
                           <td className="py-2 px-4">
                             {formatTanggal(piket.tanggal)}
                           </td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 whitespace-nowrap">
                             {kelas.find((k) => k.id === piket.kelasId)?.kelas} -{" "}
                             {
                               kelas.find((k) => k.id === piket.kelasId)
                                 ?.nama_kelas
                             }
                           </td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center">
                             {piket.siswaStatusList.length}
                           </td>
-                          <td className="py-2 px-4">{statusCounts["Masuk"]}</td>
-                          <td className="py-2 px-4">{statusCounts["Izin"]}</td>
-                          <td className="py-2 px-4">{statusCounts["Sakit"]}</td>
-                          <td className="py-2 px-4">{statusCounts["Alpha"]}</td>
+                          <td className="py-2 px-4 text-center">{statusCounts["Masuk"]}</td>
+                          <td className="py-2 px-4 text-center">{statusCounts["Izin"]}</td>
+                          <td className="py-2 px-4 text-center">{statusCounts["Sakit"]}</td>
+                          <td className="py-2 px-4 text-center">{statusCounts["Alpha"]}</td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               {/* <Link
@@ -446,6 +459,20 @@ function PiketanGuru() {
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="mt-3">
+            <ReactPaginate
+              previousLabel={<FontAwesomeIcon icon={faArrowLeft} />}
+              nextLabel={<FontAwesomeIcon icon={faArrowRight} />}
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              subContainerClassName={"pages pagination"}
+              containerClassName="pagination flex justify-center items-center gap-2"
+              previousLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              nextLinkClassName="py-2 px-4 bg-gray-200 text-gray-600 hover:bg-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              disabledClassName="paginationDisabled"
+              activeClassName="paginationActive py-2 px-4 bg-blue-600 text-white rounded"
+            />
           </div>
         </div>
       </div>
