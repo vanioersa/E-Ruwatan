@@ -50,7 +50,13 @@ function Penilaian() {
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Anda belum memilih file untuk diimport!.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
 
@@ -61,7 +67,7 @@ function Penilaian() {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/panilaian/upload/importPenilaian", // Sesuaikan dengan endpoint untuk impor file Excel
+        "http://localhost:4001/panilaian/upload/importPenilaian",
         formData,
         {
           headers: {
@@ -71,11 +77,23 @@ function Penilaian() {
         }
       );
       console.log(response.data);
-      Swal.fire("Sukses!", "Berhasil Ditambahkan.", "success");
-      fetchData(); // Ambil ulang data setelah impor berhasil
+      Swal.fire({
+        icon: "success",
+        title: "Sukses!",
+        text: "Berhasil Ditambahkan.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      fetchData();
     } catch (error) {
       console.error("Error importing file:", error);
-      Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Gagal mengimpor file. " + error.message,
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
 
@@ -301,6 +319,8 @@ function Penilaian() {
     }
   };
   // EXPORT PENILAIAN
+
+ 
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
