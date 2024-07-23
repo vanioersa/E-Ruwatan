@@ -412,11 +412,11 @@ function Penilaian() {
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Siswa
                   </th>
-                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nilai Siswa
                   </th>
-                  <th className="py-2 px-4 text-center">Deskripsi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Deskripsi</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -444,8 +444,8 @@ function Penilaian() {
                         <td className="py-2 px-4 text-center whitespace-nowrap">
                           {`${item.kelas.kelas} - ${item.kelas.nama_kelas}`}
                         </td>
-                        <td className="py-2 px-4 text-center">{item.nilai}</td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{item.nilai}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {item.deskripsi ? (
                             <span>{item.deskripsi}</span>
                           ) : (

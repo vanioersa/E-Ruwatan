@@ -306,7 +306,7 @@ function Kelas() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Kelas
                   </th>
@@ -328,8 +328,8 @@ function Kelas() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4 text-center">{k.kelas}</td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{k.kelas}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {k.nama_kelas}
                         </td>
                         <td className="py-2 px-4 text-center">

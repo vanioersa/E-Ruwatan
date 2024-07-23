@@ -251,9 +251,9 @@ function Dashboard() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No.</th>
-                      <th className="py-2 px-4 text-center">Nama Guru</th>
-                      <th className="py-2 px-4 text-center">Email</th>
-                      <th className="py-2 px-4 text-center">Nomor Telepon</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Email</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Nomor Telepon</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -265,13 +265,13 @@ function Dashboard() {
                           className="bg-white border-b hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.username}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.email}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.telepon.startsWith("08")
                               ? "+62" +
                                 " " +
@@ -314,9 +314,9 @@ function Dashboard() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No.</th>
-                      <th className="py-2 px-4 text-center">Nama Siswa</th>
-                      <th className="py-2 px-4 text-center">NISN</th>
-                      <th className="py-2 px-4 text-center">Tempat Lahir</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Siswa</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">NISN</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Tempat Lahir</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -328,11 +328,11 @@ function Dashboard() {
                           className="bg-white border-b hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.nama_siswa}
                           </td>
-                          <td className="py-2 px-4 text-center">{item.nisn}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{item.nisn}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.tempat}
                           </td>
                         </tr>

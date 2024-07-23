@@ -342,15 +342,15 @@ function Guru() {
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4">No</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Guru
                   </th>
-                  <th className="py-2 px-4 text-center">Email</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Email</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jenis Kelamin
                   </th>
-                  <th className="py-2 px-4 text-center">Alamat</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nomor Telepon
                   </th>
@@ -375,9 +375,9 @@ function Guru() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4">{g.username}</td>
-                        <td className="py-2 px-4">{g.email}</td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.username}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.email}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {g.gender ? (
                             <span>{g.gender}</span>
                           ) : (
@@ -394,7 +394,7 @@ function Guru() {
                             </span>
                           )}
                         </td>
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {g.alamat ? (
                             <span>{g.alamat}</span>
                           ) : (
@@ -412,7 +412,7 @@ function Guru() {
                           )}
                         </td>
                         <td
-                          className="py-2 px-4 text-center"
+                          className="py-2 px-4 text-center whitespace-nowrap"
                           onDoubleClick={() => handleDoubleClick(g.id)}
                         >
                           {g.telepon ? (
@@ -448,7 +448,7 @@ function Guru() {
                           )}
                         </td>
 
-                        <td className="py-2 px-4 text-center">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {g.status_nikah ? (
                             <span>{g.status_nikah}</span>
                           ) : (

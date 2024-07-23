@@ -303,9 +303,9 @@ function DashboardGuru() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-center">Nama Guru</th>
-                      <th className="py-2 px-4 text-center">Jam Masuk</th>
-                      <th className="py-2 px-4 text-center">Jam Keluar</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Jam Masuk</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Jam Keluar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -323,13 +323,13 @@ function DashboardGuru() {
                           style={{ backgroundColor: "white" }}
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {user.find((u) => u.id === item.userId)?.username}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.jam_masuk}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.jam_pulang}
                           </td>
                         </tr>
@@ -372,9 +372,9 @@ function DashboardGuru() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-center">Nama Guru</th>
-                      <th className="py-2 px-4 text-center">Tanggal</th>
-                      <th className="py-2 px-4 text-center">Status</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Tanggal</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -392,13 +392,13 @@ function DashboardGuru() {
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {getNamaKelas(item.kelasId)}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.tanggal}
                           </td>
-                          <td className="py-2 px-4 text-center">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.status}
                           </td>
                         </tr>
