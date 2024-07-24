@@ -87,11 +87,11 @@ const SidebarGuru = () => {
 
   return (
     <div>
-      <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
+      <nav className="fixed top-0 z-50 w-full bg-lime-700 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
-            className="text-black focus:outline-none md:hidden mx-3"
+            className="text-white focus:outline-none md:hidden mx-3"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
@@ -132,7 +132,7 @@ const SidebarGuru = () => {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_guru">
-            <span className="text-black text-3xl font-medium ml-2">
+            <span className="text-white text-3xl font-medium ml-2">
               E-RUWATAN
             </span>
           </a>
@@ -157,7 +157,7 @@ const SidebarGuru = () => {
 
           {userMenuOpen && (
             <div
-              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-mdpy-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white"
+              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 bg-white"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
@@ -187,20 +187,18 @@ const SidebarGuru = () => {
       </nav>
 
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
         <ul className="mt-6 text-xl mx-2">
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${
-              isActive("/dashboard_guru")
-                ? `bg-gray-300 text-black`
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/dashboard_guru")
+                ? `bg-gray-100 text-black`
                 : `hover:bg-gray-200 hover:text-black`
-            }`}
+              }`}
           >
             <Link to="/dashboard_guru" className="flex items-center w-full">
               <svg
@@ -228,11 +226,10 @@ const SidebarGuru = () => {
             </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${
-              isActive("/kbm_guru")
-                ? `bg-gray-300 text-black`
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/kbm_guru")
+                ? `bg-gray-100 text-black`
                 : `hover:bg-gray-200 hover:text-black`
-            }`}
+              }`}
           >
             <Link to="/kbm_guru" className="flex items-center w-full">
               <svg
@@ -260,11 +257,10 @@ const SidebarGuru = () => {
             </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${
-              isActive("/piketan_guru")
-                ? `bg-gray-300 text-black`
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/piketan_guru")
+                ? `bg-gray-100 text-black`
                 : `hover:bg-gray-200 hover:text-black`
-            }`}
+              }`}
           >
             <Link to="/piketan_guru" className="flex items-center w-full">
               <svg
@@ -292,11 +288,10 @@ const SidebarGuru = () => {
             </Link>
           </li>
           <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${
-              isActive("/penilaian")
-                ? `bg-gray-300 text-black`
+            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/penilaian")
+                ? `bg-gray-100 text-black`
                 : `hover:bg-gray-200 hover:text-black`
-            }`}
+              }`}
           >
             <Link to="/penilaian" className="flex items-center w-full">
               <svg
@@ -335,9 +330,8 @@ const SidebarGuru = () => {
         </ul>
       </div>
       <div
-        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "md:ml-0" : "-md:ml-64"
-        }`}
+        className={`ml-0 md:ml-64 transition-transform duration-300 ease-in-out ${sidebarOpen ? "md:ml-0" : "-md:ml-64"
+          }`}
       />
     </div>
   );
