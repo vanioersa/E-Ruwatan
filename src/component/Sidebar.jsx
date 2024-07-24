@@ -97,11 +97,11 @@ const SidebarAdmin = () => {
 
   return (
     <>
-      <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
+      <nav className="fixed top-0 z-50 w-full bg-lime-700 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
-            className="text-black dark:text-white focus:outline-none md:hidden mx-3"
+            className="text-white dark:text-white focus:outline-none md:hidden mx-3"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
@@ -112,7 +112,7 @@ const SidebarAdmin = () => {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_admin">
-            <span className="text-3xl font-medium ml-2">E-RUWATAN</span>
+            <span className="text-3xl font-medium ml-2 text-white">E-RUWATAN</span>
           </a>
         </div>
 
@@ -265,7 +265,7 @@ const SidebarAdmin = () => {
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${
                 isActive(item.path)
-                  ? `bg-gray-300 text-black`
+                  ? `bg-gray-100 text-black`
                   : `hover:bg-gray-200 hover:text-black`
               }`}
             >

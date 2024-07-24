@@ -310,7 +310,7 @@ function Penilaian() {
 
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'Template_Siswa.xlsx');
+      link.setAttribute('download', 'Template_Penilaian.xlsx');
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
