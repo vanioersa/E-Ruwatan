@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileExport,
   faPlus,
-  faUpload,
+  // faUpload,
   faEdit,
   faArrowLeft,
   faArrowRight,
@@ -16,13 +16,13 @@ import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 
 function PiketanGuru() {
-  const [showImportModal, setShowImportModal] = useState(false);
-  const [showPDFModal, setShowPDFModal] = useState(false);
+  // const [showImportModal, setShowImportModal] = useState(false);
+  // const [showPDFModal, setShowPDFModal] = useState(false);
   const [piketan, setPiketan] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [kelas, setKelas] = useState([]);
-  const [selectedTanggal, setSelectedTanggal] = useState("");
-  const [selectedKelasId, setSelectedKelasId] = useState("");
+  // const [selectedTanggal, setSelectedTanggal] = useState("");
+  // const [selectedKelasId, setSelectedKelasId] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const token = localStorage.getItem("token");
@@ -186,40 +186,40 @@ function PiketanGuru() {
     }
   };
 
-  const handleExportPDF = async () => {
-    if (selectedTanggal && selectedKelasId) {
-      try {
-        setShowPDFModal(false);
-        Swal.fire({
-          icon: "success",
-          title: "Berhasil!",
-          text: "File PDF berhasil diunduh",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          // Redirect to PDF page
-          window.location.href = `/pdf/page?tanggal=${selectedTanggal}&kelasId=${selectedKelasId}`;
-        });
-      } catch (error) {
-        console.error("Error exporting PDF", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Gagal mengekspor PDF!",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Peringatan",
-        text: "Silakan pilih tanggal dan kelas terlebih dahulu!",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-    }
-  };
+  // const handleExportPDF = async () => {
+  //   if (selectedTanggal && selectedKelasId) {
+  //     try {
+  //       setShowPDFModal(false);
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Berhasil!",
+  //         text: "File PDF berhasil diunduh",
+  //         showConfirmButton: false,
+  //         timer: 1500,
+  //       }).then(() => {
+  //         // Redirect to PDF page
+  //         window.location.href = `/pdf/page?tanggal=${selectedTanggal}&kelasId=${selectedKelasId}`;
+  //       });
+  //     } catch (error) {
+  //       console.error("Error exporting PDF", error);
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: "Gagal mengekspor PDF!",
+  //         showConfirmButton: false,
+  //         timer: 2000,
+  //       });
+  //     }
+  //   } else {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Peringatan",
+  //       text: "Silakan pilih tanggal dan kelas terlebih dahulu!",
+  //       showConfirmButton: false,
+  //       timer: 2000,
+  //     });
+  //   }
+  // };
 
   // Function to format tanggal
   const formatTanggal = (date) => {
@@ -361,9 +361,9 @@ function PiketanGuru() {
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4">Tanggal</th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
+                  <th className="py-2 px-4">No</th>
+                  <th className="py-2 px-4 text-center">Tanggal</th>
+                  <th className="py-2 px-4 text-center">Kelas</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jumlah Siswa
                   </th>
@@ -418,10 +418,10 @@ function PiketanGuru() {
                           className="border-b border-gray-200 hover:bg-gray-100"
                         >
                           <td className="py-2 px-4">{index + 1 + currentPage * itemsPerPage}</td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center ">
                             {formatTanggal(piket.tanggal)}
                           </td>
-                          <td className="py-2 px-4 whitespace-nowrap">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {kelas.find((k) => k.id === piket.kelasId)?.kelas} -{" "}
                             {
                               kelas.find((k) => k.id === piket.kelasId)
@@ -437,13 +437,13 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">{statusCounts["Alpha"]}</td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
-                              {/* <Link
+                              <Link
                                 to={`/editpiketan/${piket.id}`}
                                 className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                                 title="Edit"
                               >
                                 <FontAwesomeIcon icon={faEdit} />
-                              </Link> */}
+                              </Link>
                               <button
                                 onClick={() => handleDeletePiketById(piket.id)}
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"

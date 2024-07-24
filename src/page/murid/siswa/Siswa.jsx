@@ -354,16 +354,16 @@ function Siswa() {
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4">No</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Siswa
                   </th>
-                  <th className="py-2 px-4 text-left">NISN</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center whitespace-nowrap">NISN</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Tempat Lahir
                   </th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left">Alamat</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -382,14 +382,14 @@ function Siswa() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4">{s.nama_siswa}</td>
-                        <td className="py-2 px-4">{s.nisn}</td>
-                        <td className="py-2 px-4">{s.tempat}</td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.nama_siswa}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.nisn}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.tempat}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
                           {kelas.find((k) => k.id === s.kelasId)?.kelas} -{" "}
                           {kelas.find((k) => k.id === s.kelasId)?.nama_kelas}
                         </td>
-                        <td className="py-2 px-4">{s.alamat}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.alamat}</td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditSiswa/${s.id}`}>

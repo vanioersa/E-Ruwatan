@@ -1,142 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import axios from "axios";
+import React from "react";
 import SidebarGuru from "../../../component/SidebarGuru";
+import { useNavigate } from "react-router-dom";
 
-const UpdatePiketan = ({ id }) => {
-  const [kelas, setKelas] = useState([]);
-  const [selectedKelas, setSelectedKelas] = useState("");
-  const [siswaByKelas, setSiswaByKelas] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState({});
-  const [tanggal, setTanggal] = useState(new Date().toISOString().slice(0, 16));
-  const [error, setError] = useState("");
+function UpdatePiketan() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchKelas();
-  }, []);
-
-  const fetchKelas = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data);
-    } catch (error) {
-      console.error("Gagal mengambil data Kelas: ", error);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedKelas) {
-      fetchSiswaByKelas(selectedKelas);
-    }
-  }, [selectedKelas]);
-
-  const token = localStorage.getItem("token");
-
-  const fetchSiswaByKelas = async (kelasId) => {
-    try {
-      if (kelasId) {
-        const response = await axios.get(
-          `http://localhost:4001/siswa/by-kelas-id/${kelasId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSiswaByKelas(response.data);
-        // Reset selectedStatus
-        const initialStatus = {};
-        response.data.forEach((siswa) => {
-          initialStatus[siswa.id] = ""; // Set initial status to empty string
-        });
-        setSelectedStatus(initialStatus);
-      } else {
-        setSiswaByKelas([]);
-        setSelectedStatus({});
-      }
-    } catch (error) {
-      console.error("Gagal mengambil data Siswa: ", error);
-    }
-  };
-
-  const handleKelasChange = async (e) => {
-    const selectedKelasId = e.target.value;
-    setSelectedKelas(selectedKelasId);
-    if (selectedKelasId) {
-      try {
-        await fetchSiswaByKelas(selectedKelasId);
-      } catch (error) {
-        console.error("Gagal mengambil data Siswa: ", error);
-      }
-    } else {
-      setSiswaByKelas([]);
-      setSelectedStatus({});
-    }
-  };
-
-  const handleStatusChange = (studentId, status) => {
-    setSelectedStatus((prev) => ({
-      ...prev,
-      [studentId]: status,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const selectedStudents = Object.keys(selectedStatus);
-    if (selectedStudents.length === 0) {
-      Swal.fire({
-        title: "Error",
-        text: "Silakan pilih setidaknya satu siswa.",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    const siswaStatusList = selectedStudents.map((studentId) => ({
-      siswaId: parseInt(studentId),
-      statusList: [selectedStatus[studentId]],
-    }));
-
-    const data = {
-      id: parseInt(id),
-      kelasId: parseInt(selectedKelas),
-      siswaStatusList,
-      tanggal,
-    };
-
-    try {
-      await axios.put(`http://localhost:4001/piket/edit/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      Swal.fire({
-        title: "Berhasil",
-        text: "Piketan berhasil diperbarui",
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      }).then(() => {
-        navigate(-1);
-      });
-    } catch (error) {
-      console.error("Gagal memperbarui piketan: ", error);
-      Swal.fire({
-        title: "Gagal",
-        text: "Gagal memperbarui piketan. Silakan coba lagi.",
-        icon: "error",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    }
-  };
 
   const batal = () => {
     navigate(-1);
@@ -149,11 +16,14 @@ const UpdatePiketan = ({ id }) => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Update Piketan</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Update Piketan
           </p>
-          <form onSubmit={handleSubmit}>
+          <form action="">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
@@ -162,23 +32,12 @@ const UpdatePiketan = ({ id }) => {
                 >
                   Kelas
                 </label>
-                <select
-                  name="kelasId"
-                  value={selectedKelas}
-                  onChange={handleKelasChange}
+                <input
+                  type="text"
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  readOnly
                   required
-                >
-                  <option value="">Pilih Kelas</option>
-                  {kelas.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.kelas} - {item.nama_kelas}
-                    </option>
-                  ))}
-                </select>
-                {error && !selectedKelas && (
-                  <p className="text-red-500 text-sm mt-1">{error}</p>
-                )}
+                />
               </div>
 
               <div className="relative">
@@ -189,11 +48,9 @@ const UpdatePiketan = ({ id }) => {
                   Tanggal
                 </label>
                 <input
-                  type="datetime-local"
-                  name="tanggal"
-                  value={tanggal.slice(0, 16)}
-                  onChange={(e) => setTanggal(e.target.value)}
+                  type="text"
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  readOnly
                   required
                 />
               </div>
@@ -215,40 +72,14 @@ const UpdatePiketan = ({ id }) => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody style={{ backgroundColor: "white" }} className="divide-y-2 divide-gray-200">
-                    {siswaByKelas.length === 0 ? (
-                      <tr>
-                        <td colSpan="2" className="text-center text-gray-900 py-4">
-                          {selectedKelas
-                            ? "Tidak ada siswa yang tersedia untuk kelas ini."
-                            : "Silakan pilih kelas terlebih dahulu."}
-                        </td>
-                      </tr>
-                    ) : (
-                      siswaByKelas.map((siswa) => (
-                        <tr key={siswa.id}>
-                          <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {siswa.nama_siswa}
-                          </td>
-                          <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <select
-                              value={selectedStatus[siswa.id] || ""}
-                              onChange={(e) =>
-                                handleStatusChange(siswa.id, e.target.value)
-                              }
-                              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                              required
-                            >
-                              <option value="">Pilih Status</option>
-                              <option value="Masuk">Masuk</option>
-                              <option value="Izin">Izin</option>
-                              <option value="Sakit">Sakit</option>
-                              <option value="Alpha">Alpha</option>
-                            </select>
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                  <tbody
+                    style={{ backgroundColor: "white" }}
+                    className="divide-y-2 divide-gray-200"
+                  >
+                    <tr>
+                      <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
+                      <td className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -258,7 +89,7 @@ const UpdatePiketan = ({ id }) => {
               <button
                 type="button"
                 onClick={batal}
-                 className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>
@@ -274,6 +105,6 @@ const UpdatePiketan = ({ id }) => {
       </div>
     </div>
   );
-};
+}
 
 export default UpdatePiketan;

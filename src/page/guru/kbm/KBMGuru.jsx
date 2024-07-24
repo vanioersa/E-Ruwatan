@@ -399,20 +399,20 @@ function KBMGuru() {
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                  <th className="py-2 px-4 text-left">No</th>
+                  <th className="py-2 px-4">No</th>
                   <th className="py-2 px-4 text-left whitespace-nowrap">
                     Nama Guru
                   </th>
-                  <th className="py-2 px-4 text-left">Kelas</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jam Masuk
                   </th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jam Selesai
                   </th>
-                  <th className="py-2 px-4 text-left">Materi</th>
-                  <th className="py-2 px-4 text-center">Keterangan</th>
-                  <th className="py-2 px-4 text-center">Aksi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Materi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Keterangan</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody
@@ -440,24 +440,24 @@ function KBMGuru() {
                           <td className="py-2 px-4">
                             {currentPage * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2 px-4">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {users.find((u) => u.id === kbm.userId)?.username}
                           </td>
-                          <td className="py-2 px-4 whitespace-nowrap">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
                             {
                               kelas.find((k) => k.id === kbm.kelasId)
                                 ?.nama_kelas
                             }
                           </td>
-                          <td className="py-2 px-4">{kbm.jam_masuk}</td>
-                          <td className="py-2 px-4">{kbm.jam_pulang}</td>
-                          <td className="py-2 px-4">{kbm.materi}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_masuk}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_pulang}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.materi}</td>
                           <td className="py-2 px-4 text-center">
                             {kbm.keterangan ? (
                               <span>{kbm.keterangan}</span>
                             ) : (
-                              <span className="text-gray-400 italic whitespace-nowrap">
+                              <span className="text-gray-400 italic text-center whitespace-nowrap">
                                 Keterangan belum ditambahkan
                               </span>
                             )}
