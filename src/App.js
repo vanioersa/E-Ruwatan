@@ -1,6 +1,5 @@
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
 import Login from "./auth/login";
 import RegisterAdmin from "./auth/register_admin";
 import DashboardSiswa from "./component/Dashboard";
@@ -33,31 +32,48 @@ import EditGuru from "./page/guru/Profile/EditGuru";
 import SettingGuru from "./page/guru/Profile/SettingGuru";
 
 function App() {
-  const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
-
-  const clearToken = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("loggedInUser");
-    navigate("/");
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = DateTime.now().setZone("Asia/Jakarta");
-      if (now.hour === 23 && now.minute === 59 && now.second === 59) {
-        clearToken();
-      }
-    }, 1000);
-
-    const token = localStorage.getItem("token");
     const loggedInUser = localStorage.getItem("loggedInUser");
-    if (token && loggedInUser) {
+    if (loggedInUser) {
       setUserRole(JSON.parse(loggedInUser).role);
     }
 
-    return () => clearInterval(interval);
-  }, []);
+    const clearTokenAndRole = () => {
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("token");
+      localStorage.setItem("lastCleared", new Date().toISOString());
+      navigate("/");
+    };
+
+    const checkAndClearToken = () => {
+      const lastCleared = localStorage.getItem("lastCleared");
+      const now = new Date();
+      const target = new Date();
+      target.setHours(23, 59, 59, 999);
+
+      if (lastCleared) {
+        const lastClearedDate = new Date(lastCleared);
+        if (now - lastClearedDate > 24 * 60 * 60 * 1000) {
+          clearTokenAndRole();
+        }
+      } else {
+        if (now > target) {
+          target.setDate(target.getDate() + 1);
+        }
+        const timeUntilTarget = target - now;
+        setTimeout(clearTokenAndRole, timeUntilTarget);
+      }
+    };
+
+    checkAndClearToken();
+
+    const intervalId = setInterval(checkAndClearToken, 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [navigate]);
 
   return (
     <div className="App">
@@ -66,7 +82,7 @@ function App() {
           path="/"
           element={<Login />}
         />
-        <Route path="/register_admin" element={<RegisterAdmin />} />
+        <Route path="/register" element={<RegisterAdmin />} />
         {userRole === "ADMIN" && <Navigate to="/dashboard_admin" />}
         {userRole === "GURU" && <Navigate to="/dashboard_guru" />}
         <Route element={<PrivateRoute role="ADMIN" />}>
