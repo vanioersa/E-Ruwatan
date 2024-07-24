@@ -153,62 +153,64 @@ function Setting() {
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-full sm:w-96 md:w-full">
-          <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-            <ul
-              className="flex flex-wrap -mb-px text-sm font-medium text-center"
-              id="default-tab"
-              data-tabs-toggle="#default-tab-content"
-              role="tablist"
-            >
-              <li className="me-2" role="presentation">
-                <Link to={"/profile_admin"}>
-                  <button
-                    className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                    id="profile-tab"
-                    data-tabs-target="#profile"
-                    type="button"
-                    role="tab"
-                    aria-controls="profile"
-                    aria-selected="false"
-                  >
-                    Profile
-                  </button>
-                </Link>
-              </li>
-              <li className="me-2" role="presentation">
-                <Link to={"/edit_profile_admin"}>
-                  <button
-                    className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                    id="settings-tab"
-                    data-tabs-target="#settings"
-                    type="button"
-                    role="tab"
-                    aria-controls="settings"
-                    aria-selected="false"
-                  >
-                    Edit Profile
-                  </button>
-                </Link>
-              </li>
-              <li className="me-2" role="presentation">
-                <Link to={"/edit_password_admin"}>
-                  <button
-                    className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                    id="settings-tab"
-                    data-tabs-target="#settings"
-                    type="button"
-                    role="tab"
-                    aria-controls="settings"
-                    aria-selected="false"
-                  >
-                    Edit Password
-                  </button>
-                </Link>
-              </li>
-            </ul>
+          <div className="mt-20 md:mt-20">
+            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+              <ul
+                className="flex flex-wrap -mb-px text-sm font-medium text-center"
+                id="default-tab"
+                data-tabs-toggle="#default-tab-content"
+                role="tablist"
+              >
+                <li className="mt-10">
+                  <Link to={"/profile_admin"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      id="profile-tab"
+                      data-tabs-target="#profile"
+                      type="button"
+                      role="tab"
+                      aria-controls="profile"
+                      aria-selected="false"
+                    >
+                      Profile
+                    </button>
+                  </Link>
+                </li>
+                <li className="mt-10">
+                  <Link to={"/edit_profile_admin"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      id="settings-tab"
+                      data-tabs-target="#settings"
+                      type="button"
+                      role="tab"
+                      aria-controls="settings"
+                      aria-selected="false"
+                    >
+                      Edit Profile
+                    </button>
+                  </Link>
+                </li>
+                <li className="mt-10">
+                  <Link to={"/edit_password_admin"}>
+                    <button
+                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+                      id="settings-tab"
+                      data-tabs-target="#settings"
+                      type="button"
+                      role="tab"
+                      aria-controls="settings"
+                      aria-selected="false"
+                    >
+                      Edit Password
+                    </button>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="block md:flex justify-center">
+          <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
               className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
@@ -232,6 +234,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={passwordLama}
                     onChange={handleChange}
+                    placeholder="masukan password lama"
                   />
                 </div>
                 <div className="pb-2 pt-2">
@@ -248,6 +251,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={passwordBaru}
                     onChange={handleChange}
+                    placeholder="masukan password baru"
                   />
                 </div>
                 <div className="pb-2 pt-2">
@@ -264,6 +268,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={konfirmasiPassword}
                     onChange={handleChange}
+                    placeholder="masukan password yang baru untuk konfirmasi"
                   />
                 </div>
                 <div className="pb-1 pt-1">

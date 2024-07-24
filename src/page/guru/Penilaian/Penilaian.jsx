@@ -338,14 +338,14 @@ function Penilaian() {
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Cari KBM"
+              placeholder="Cari Penilaian"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
             />
             <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 w-full md:w-auto">
               <div className="flex space-x-2 w-full md:w-auto">
-                <Link to={`/tambahkbm`} className="w-full md:w-auto">
+                <Link to={`/Tambahpenilaian`} className="w-full md:w-auto">
                   <button className="w-full md:w-auto bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <FontAwesomeIcon icon={faPlus} /> Tambah Nilai
                   </button>

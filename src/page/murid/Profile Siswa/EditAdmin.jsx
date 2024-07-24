@@ -181,9 +181,8 @@ const EditAdmin = () => {
                 className="flex flex-wrap -mb-px text-sm font-medium text-center"
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
-                role="tablist"
               >
-                <li className="me-2" role="presentation">
+                <li className="mr-1 mt-8">
                   <Link to={"/profile_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -198,7 +197,7 @@ const EditAdmin = () => {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mr-1 mt-8">
                   <Link to={"/edit_profile_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -213,7 +212,7 @@ const EditAdmin = () => {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mr-1 mt-8">
                   <Link to={"/edit_password_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -292,6 +291,7 @@ const EditAdmin = () => {
                       type="text"
                       value={admin.alamat}
                       onChange={handleChange}
+                      placeholder="tambahkan alamat anda"
                     />
                   </div>
                   <div className="pb-1">
@@ -309,6 +309,7 @@ const EditAdmin = () => {
                       type="number"
                       value={admin.telepon}
                       onChange={handleChange}
+                      placeholder="tambahkan no telfon anda"
                     />
                   </div>
                   <div className="pb-1">

@@ -131,7 +131,7 @@ function Profile_Guru() {
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
               >
-                <li className="mr-2">
+                <li className="me-2">
                   <Link to={"/profile_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -146,7 +146,7 @@ function Profile_Guru() {
                     </button>
                   </Link>
                 </li>
-                <li className="mr-2">
+                <li className="me-2">
                   <Link to={"/edit_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -161,7 +161,7 @@ function Profile_Guru() {
                     </button>
                   </Link>
                 </li>
-                <li className="mr-2">
+                <li className="me-2">
                   <Link to={"/setting_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"

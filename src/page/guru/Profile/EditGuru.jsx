@@ -143,9 +143,8 @@ const EditGuru = () => {
                 className="flex flex-wrap -mb-px text-sm font-medium text-center"
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
-                role="tablist"
               >
-                <li className="me-2" role="presentation">
+                <li className="mr-2">
                   <Link to={"/profile_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -160,7 +159,7 @@ const EditGuru = () => {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mr-2">
                   <Link to={"/edit_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -175,7 +174,7 @@ const EditGuru = () => {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mr-2">
                   <Link to={"/setting_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -254,6 +253,7 @@ const EditGuru = () => {
                       type="text"
                       value={admin.alamat}
                       onChange={handleChange}
+                      placeholder="tambahkan alamat anda"
                     />
                   </div>
                   <div className="pb-1">
@@ -271,6 +271,7 @@ const EditGuru = () => {
                       type="number"
                       value={admin.telepon}
                       onChange={handleChange}
+                      placeholder="tambahkan no telfon anda"
                     />
                   </div>
                   <div className="pb-1">
