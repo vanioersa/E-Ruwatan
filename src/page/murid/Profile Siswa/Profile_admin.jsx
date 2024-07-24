@@ -131,7 +131,7 @@ function Profile_Admin() {
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
               >
-                <li className="me-2">
+                <li className="mr-2">
                   <Link to={"/profile_admin"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"

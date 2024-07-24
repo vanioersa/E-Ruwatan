@@ -1,0 +1,63 @@
+import React from "react";
+import { Link } from "react-router-dom";
+
+
+function Navbarpro() {
+  return (
+    <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+      <ul
+        className="flex flex-wrap -mb-px text-sm font-medium text-center"
+        id="default-tab"
+        data-tabs-toggle="#default-tab-content"
+      >
+        <li className="mt-10">
+          <Link to={"/profile_guru"}>
+            <button
+              className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+              id="profile-tab"
+              data-tabs-target="#profile"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+            >
+              Profile
+            </button>
+          </Link>
+        </li>
+        <li className="mt-10">
+          <Link to={"/edit_guru"}>
+            <button
+              className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+              id="settings-tab"
+              data-tabs-target="#settings"
+              type="button"
+              role="tab"
+              aria-controls="settings"
+              aria-selected="false"
+            >
+              Edit Profile
+            </button>
+          </Link>
+        </li>
+        <li className="mt-10">
+          <Link to={"/setting_guru"}>
+            <button
+              className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
+              id="settings-tab"
+              data-tabs-target="#settings"
+              type="button"
+              role="tab"
+              aria-controls="settings"
+              aria-selected="false"
+            >
+              Edit Password
+            </button>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+export default Navbarpro;

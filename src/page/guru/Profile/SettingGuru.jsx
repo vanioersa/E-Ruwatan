@@ -159,9 +159,8 @@ function Setting() {
                 className="flex flex-wrap -mb-px text-sm font-medium text-center"
                 id="default-tab"
                 data-tabs-toggle="#default-tab-content"
-                role="tablist"
               >
-                <li className="me-2" role="presentation">
+                <li className="mt-10">
                   <Link to={"/profile_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -176,7 +175,7 @@ function Setting() {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mt-10">
                   <Link to={"/edit_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -191,7 +190,7 @@ function Setting() {
                     </button>
                   </Link>
                 </li>
-                <li className="me-2" role="presentation">
+                <li className="mt-10">
                   <Link to={"/setting_guru"}>
                     <button
                       className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
@@ -234,6 +233,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={passwordLama}
                     onChange={handleChange}
+                    placeholder="masukan password lama"
                   />
                 </div>
                 <div className="pb-2 pt-2">
@@ -250,6 +250,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={passwordBaru}
                     onChange={handleChange}
+                    placeholder="masukan password baru"
                   />
                 </div>
                 <div className="pb-2 pt-2">
@@ -266,6 +267,7 @@ function Setting() {
                     type={showPassword ? "text" : "password"}
                     value={konfirmasiPassword}
                     onChange={handleChange}
+                    placeholder="masukan password yang baru"
                   />
                 </div>
                 <div className="pb-1 pt-1">
