@@ -10,9 +10,6 @@ import "./sidebarA.css";
 const SidebarAdmin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  );
   const location = useLocation();
   const [currentTime, setCurrentTime] = useState("");
   const id = localStorage.getItem("id");
@@ -53,26 +50,12 @@ const SidebarAdmin = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("darkMode", "true");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", "false");
-    }
-  }, [darkMode]);
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
-  };
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
   };
 
   const logout = () => {
@@ -112,10 +95,8 @@ const SidebarAdmin = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const backgroundColor = darkMode ? "bg-white" : "bg-gray-800";
-
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <>
       <nav className="fixed top-0 z-50 w-full bg-gray-100 dark:bg-gray-800 border shadow-sm flex justify-between items-center px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center">
           <button
@@ -131,13 +112,7 @@ const SidebarAdmin = () => {
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
           <a href="/dashboard_admin">
-            <span
-              className={`${
-                darkMode ? "text-white" : "text-black"
-              } text-3xl font-medium ml-2`}
-            >
-              E-RUWATAN
-            </span>
+            <span className="text-3xl font-medium ml-2">E-RUWATAN</span>
           </a>
         </div>
 
@@ -146,9 +121,7 @@ const SidebarAdmin = () => {
           <div>
             <button
               type="button"
-              className={`${
-                darkMode ? "bg-white" : "bg-gray-800"
-              } relative flex rounded-full text-sm`}
+              className="relative flex rounded-full text-sm"
               id="user-menu-button"
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
@@ -162,9 +135,7 @@ const SidebarAdmin = () => {
 
           {userMenuOpen && (
             <div
-              className={`${
-                darkMode ? backgroundColor : "bg-white"
-              } absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1`}
+              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 bg-white"
               role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
@@ -172,9 +143,7 @@ const SidebarAdmin = () => {
             >
               <Link to="/profile_admin">
                 <button
-                  className={`${
-                    darkMode ? "text-white" : "text-gray-700"
-                  } block px-4 py-2 text-sm`}
+                  className="block px-4 py-2 text-sm"
                   role="menuitem"
                   tabIndex="-1"
                   id="user-menu-item-0"
@@ -184,9 +153,7 @@ const SidebarAdmin = () => {
               </Link>
               <button
                 onClick={logout}
-                className={`${
-                  darkMode ? "text-white" : "text-gray-700"
-                } block px-4 py-2 text-sm w-full text-left`}
+                className="block px-4 py-2 text-sm w-full text-left"
                 role="menuitem"
                 tabIndex="-1"
                 id="user-menu-item-2"
@@ -199,16 +166,14 @@ const SidebarAdmin = () => {
       </nav>
 
       <div
-        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white ${
-          darkMode ? "dark:bg-gray-800" : ""
-        } shadow-xl border transition-transform duration-300 transform ${
+        className={`fixed top-0 left-0 z-40 w-64 h-full bg-white shadow-xl border transition-transform duration-300 transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="bg-blue-800 text-white px-4 py-3">
           <h1 className="text-2xl font-semibold">E-RUWATAN</h1>
         </div>
-        <ul className="mt-6 text-xl mx-2 text-gray-600 dark:text-gray-200">
+        <ul className="mt-6 text-xl mx-2">
           {[
             {
               icon: (
@@ -300,97 +265,29 @@ const SidebarAdmin = () => {
               key={index}
               className={`py-2 px-3 my-2 rounded cursor-pointer ${
                 isActive(item.path)
-                  ? `bg-gray-500 dark:bg-gray-600 text-black dark:text-white`
-                  : `hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-black dark:hover:text-white`
+                  ? `bg-gray-300 text-black`
+                  : `hover:bg-gray-200 hover:text-black`
               }`}
             >
-              <Link
-                to={item.path}
-                className={`${
-                  darkMode ? "text-white" : "text-gray-800"
-                } flex items-center w-full`}
-              >
+              <Link to={item.path} className="flex items-center w-full">
                 {item.icon}
                 <span
                   style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                  className={`${
-                    darkMode ? "text-white" : "text-gray-800"
-                  } mx-2 font-medium`}
+                  className="mx-2 font-medium"
                 >
                   {item.name}
                 </span>
               </Link>
             </li>
           ))}
-          <div
-            className={`${
-              darkMode ? "text-white" : "text-gray-800"
-            } ml-6 text-xl font-bold absolute bottom-16 w-full`}
-          >
-            Waktu : {currentTime}
-          </div>
-          <hr
-            className={`absolute bottom-14 w-60 ${
-              darkMode ? "text-white" : "text-black"
-            }`}
-          />
-          <li
-            className={`py-2 px-3 my-2 mr-2 mx-2 hover:text-black hover:bg-gray-400 rounded cursor-pointer absolute bottom-0 left-0 min-w-60`}
-          >
-            <button
-              onClick={toggleDarkMode}
-              className={`flex items-center w-full ${
-                darkMode ? "text-white" : "text-gray-800"
-              }`}
+          <hr className="absolute bottom-14 w-60" />
+          <li className="py-2 px-3 my-2 mr-2 mx-2 rounded absolute bottom-0 left-0 min-w-60">
+            <span
+              style={{ fontFamily: "Poopins", fontWeight: "bold" }}
+              className="mx-2 font-medium"
             >
-              <span
-                className={`w-7 h-7 mx-2 ${
-                  darkMode ? "text-white" : "text-gray-800"
-                }`}
-              >
-                {darkMode ? (
-                  <svg
-                    className="w-7 h-7 mr-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    data-slot="icon"
-                    fill="none"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-7 h-7 mr-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    data-slot="icon"
-                    fill="none"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                    />
-                  </svg>
-                )}
-              </span>
-              <span
-                style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className={`${
-                  darkMode ? "text-white" : "text-black"
-                } mx-2 font-medium`}
-              >
-                {darkMode ? "Gelap" : "Terang"}
-              </span>
-            </button>
+              Waktu : {currentTime}
+            </span>
           </li>
         </ul>
       </div>
@@ -399,7 +296,7 @@ const SidebarAdmin = () => {
           sidebarOpen ? "md:ml-0" : "-md:ml-64"
         }`}
       />
-    </div>
+    </>
   );
 };
 
