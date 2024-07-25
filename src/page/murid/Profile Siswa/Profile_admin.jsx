@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getAdminById } from "./api_admin";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import SidebarAdmin from "../../../component/Sidebar";
-import Navpro_admin from "../../../component/Navpro_admin";
+import Navproadmin from "../../../component/Navpro_admin";
 
 function Profile_Admin() {
   const id = localStorage.getItem("id");
@@ -125,7 +124,7 @@ function Profile_Admin() {
       <SidebarAdmin />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-full space-y-6">
-          <Navpro_admin />
+          <Navproadmin />
 
           <div className="block md:flex">
             <div
