@@ -121,64 +121,10 @@ function Profile_Guru() {
 
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
-      <Sidebar />
+      <SidebarGuru />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-full space-y-6">
-          <div className="mt-20 md:mt-20">
-            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-              <ul
-                className="flex flex-wrap -mb-px text-sm font-medium text-center"
-                id="default-tab"
-                data-tabs-toggle="#default-tab-content"
-              >
-                <li className="me-2">
-                  <Link to={"/profile_guru"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="profile-tab"
-                      data-tabs-target="#profile"
-                      type="button"
-                      role="tab"
-                      aria-controls="profile"
-                      aria-selected="false"
-                    >
-                      Profile
-                    </button>
-                  </Link>
-                </li>
-                <li className="me-2">
-                  <Link to={"/edit_guru"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="settings-tab"
-                      data-tabs-target="#settings"
-                      type="button"
-                      role="tab"
-                      aria-controls="settings"
-                      aria-selected="false"
-                    >
-                      Edit Profile
-                    </button>
-                  </Link>
-                </li>
-                <li className="me-2">
-                  <Link to={"/setting_guru"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="settings-tab"
-                      data-tabs-target="#settings"
-                      type="button"
-                      role="tab"
-                      aria-controls="settings"
-                      aria-selected="false"
-                    >
-                      Edit Password
-                    </button>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <div className="max-w-4xl w-96 md:w-full">
+          <Navpro_guru />
 
           <div className="block md:flex">
             <div
@@ -290,8 +236,9 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="alamat"
-                      className={`border rounded-lg px-4 py-2 w-full ${!admin.alamat ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${
+                        !admin.alamat ? "text-gray-400" : "text-gray-900"
+                      }`}
                       type="text"
                       value={admin.alamat ? admin.alamat : "Data kosong"}
                     />
@@ -306,8 +253,9 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="gender"
-                      className={`border rounded-lg px-4 py-2 w-full ${!admin.gender ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${
+                        !admin.gender ? "text-gray-400" : "text-gray-900"
+                      }`}
                       type="text"
                       value={admin.gender ? admin.gender : "Data kosong"}
                     />
@@ -326,8 +274,9 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="telepon"
-                      className={`border rounded-lg px-4 py-2 w-full ${!admin.telepon ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${
+                        !admin.telepon ? "text-gray-400" : "text-gray-900"
+                      }`}
                       type="text"
                       value={
                         admin.telepon
@@ -346,8 +295,9 @@ function Profile_Guru() {
                     <input
                       readOnly
                       id="status_nikah"
-                      className={`border rounded-lg px-4 py-2 w-full ${!admin.status_nikah ? "text-gray-400" : "text-gray-900"
-                        }`}
+                      className={`border rounded-lg px-4 py-2 w-full ${
+                        !admin.status_nikah ? "text-gray-400" : "text-gray-900"
+                      }`}
                       type="text"
                       value={
                         admin.status_nikah ? admin.status_nikah : "Data kosong"

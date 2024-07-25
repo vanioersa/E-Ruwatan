@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 
-function Navbarpro() {
+function Navpro_guru() {
   return (
     <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
       <ul
@@ -60,4 +60,4 @@ function Navbarpro() {
   );
 }
 
-export default Navbarpro;
+export default Navpro_guru;

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Navpro_admin from "../../../component/Navpro_admin";
 
 const EditAdmin = () => {
   const id = localStorage.getItem("id");
@@ -173,63 +174,9 @@ const EditAdmin = () => {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-96 md:w-full">
-          <div className="mt-20 md:mt-20">
-            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-              <ul
-                className="flex flex-wrap -mb-px text-sm font-medium text-center"
-                id="default-tab"
-                data-tabs-toggle="#default-tab-content"
-              >
-                <li className="mr-1 mt-8">
-                  <Link to={"/profile_admin"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="profile-tab"
-                      data-tabs-target="#profile"
-                      type="button"
-                      role="tab"
-                      aria-controls="profile"
-                      aria-selected="false"
-                    >
-                      Profile
-                    </button>
-                  </Link>
-                </li>
-                <li className="mr-1 mt-8">
-                  <Link to={"/edit_profile_admin"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="settings-tab"
-                      data-tabs-target="#settings"
-                      type="button"
-                      role="tab"
-                      aria-controls="settings"
-                      aria-selected="false"
-                    >
-                      Edit Profile
-                    </button>
-                  </Link>
-                </li>
-                <li className="mr-1 mt-8">
-                  <Link to={"/edit_password_admin"}>
-                    <button
-                      className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-400 hover:border-gray-300 dark:hover:text-gray-300"
-                      id="settings-tab"
-                      data-tabs-target="#settings"
-                      type="button"
-                      role="tab"
-                      aria-controls="settings"
-                      aria-selected="false"
-                    >
-                      Edit Password
-                    </button>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <Navpro_admin />
 
           <div className="block md:flex">
             <div
