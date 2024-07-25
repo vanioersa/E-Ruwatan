@@ -372,8 +372,29 @@ const TambahGuru = () => {
                   <option value="">Pilih Status Nikah</option>
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
-                  <option value="Cerai">Cerai</option>
                 </select>
+              </div>
+              <div className="justify-center">
+                <div className="relative">
+                  <label
+                    htmlFor="jabatan"
+                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                  >
+                    Jabatan
+                  </label>
+                  <select
+                    id="jabatan"
+                    name="jabatan"
+                    value={formData.jabatan}
+                    onChange={handleInputChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    // required
+                  >
+                    <option value="">Pilih Jabatan</option>
+                    <option value="Guru Mapel">Guru Mapel</option>
+                    <option value="Wali Kelas">Wali Kelas</option>
+                  </select>
+                </div>
               </div>
             </div>
 

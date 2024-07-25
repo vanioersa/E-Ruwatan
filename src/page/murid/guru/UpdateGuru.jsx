@@ -238,6 +238,7 @@ const UpdateGuru = () => {
                   value={guru.gender}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  disabled
                 >
                   <option value="">Pilih Jenis Kelamin</option>
                   <option value="Laki-laki">Laki-laki</option>
@@ -257,11 +258,11 @@ const UpdateGuru = () => {
                   value={guru.status_nikah}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  disabled
                 >
                   <option value="">Pilih Status Nikah</option>
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
-                  <option value="Cerai">Cerai</option>
                 </select>
               </div>
             </div>
