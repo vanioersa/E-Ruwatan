@@ -64,6 +64,17 @@ function PiketanGuru() {
   const pageCount = Math.ceil(piketan.length / itemsPerPage);
 
   const handleExport = async () => {
+    if (piketan.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data Piketan untuk diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
     const result = await Swal.fire({
       icon: "question",
       title: "Konfirmasi",
@@ -374,7 +385,10 @@ function PiketanGuru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
                 {currentPiketan.length === 0 ? (
                   <tr>
                     <td colSpan="9" className="py-4 px-6 text-center">
@@ -417,7 +431,9 @@ function PiketanGuru() {
                           key={piket.id}
                           className="border-b border-gray-200 hover:bg-gray-100"
                         >
-                          <td className="py-2 px-4">{index + 1 + currentPage * itemsPerPage}</td>
+                          <td className="py-2 px-4">
+                            {index + 1 + currentPage * itemsPerPage}
+                          </td>
                           <td className="py-2 px-4 text-center ">
                             {formatTanggal(piket.tanggal)}
                           </td>
@@ -431,10 +447,18 @@ function PiketanGuru() {
                           <td className="py-2 px-4 text-center">
                             {piket.siswaStatusList.length}
                           </td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Masuk"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Izin"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Sakit"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Alpha"]}</td>
+                          <td className="py-2 px-4 text-center">
+                            {statusCounts["Masuk"]}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusCounts["Izin"]}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusCounts["Sakit"]}
+                          </td>
+                          <td className="py-2 px-4 text-center">
+                            {statusCounts["Alpha"]}
+                          </td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <Link
