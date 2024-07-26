@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -17,10 +17,24 @@ const TambahGuru = () => {
     gender: "",
     telepon: "",
     status_nikah: "",
+    jabatan: "",
+    kelasId: null,
   });
-
+  const [kelas, setKelas] = useState([]);
   const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const fetchKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/kelas/all");
+      setKelas(response.data.reverse());
+    } catch (error) {
+      console.error("Gagal mengambil data Kelas: ", error);
+    }
+  };
+    fetchKelas();
+  }, []);
 
   const togglePassword = () => {
     setPasswordType(passwordType === "password" ? "text" : "password");
@@ -37,8 +51,17 @@ const TambahGuru = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { username, email, password, alamat, gender, telepon, status_nikah } =
-      formData;
+    const {
+      username,
+      email,
+      password,
+      alamat,
+      gender,
+      telepon,
+      status_nikah,
+      jabatan,
+      kelasId,
+    } = formData;
 
     if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
@@ -81,7 +104,6 @@ const TambahGuru = () => {
       return;
     }
 
-    // Validasi input di sini sebelum melakukan registrasi
     if (!username || !email || !password) {
       Swal.fire({
         icon: "error",
@@ -113,6 +135,8 @@ const TambahGuru = () => {
             gender,
             telepon,
             status_nikah,
+            jabatan,
+            kelasId: jabatan === "WaliKelas" ? kelasId : null, // Set kelasId conditionally
             role: "GURU",
           });
 
@@ -151,20 +175,18 @@ const TambahGuru = () => {
   const handleInputChango = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => {
-      // Logika khusus untuk kolom nomor telepon
       if (name === "telepon") {
-        if (value.startsWith("0")) {
+        if (value.startsWith("08")) {
           return { ...prevFormData, [name]: value };
         } else {
-          return { ...prevFormData, [name]: "0" };
+          return { ...prevFormData, [name]: "08" };
         }
       }
-      // Validasi panjang nomor telepon maksimal 10 digit
       if (value.length > 12) {
         Swal.fire({
           icon: "error",
           title: "Nomor telepon terlalu panjang",
-          text: "Nomor telepon harus memiliki maksimal 10 digit.",
+          text: "Nomor telepon harus memiliki maksimal 12 digit.",
         });
         return prevFormData;
       }
@@ -175,14 +197,12 @@ const TambahGuru = () => {
   const handleSubmiit = (e) => {
     e.preventDefault();
     if (formData.telepon.length < 10) {
-      // Menampilkan SweetAlert jika nomor telepon kurang dari 10 digit
       Swal.fire({
         icon: "error",
         title: "Nomor telepon tidak valid",
         text: "Nomor telepon harus memiliki minimal 10 digit.",
       });
     } else {
-      // Logika untuk submit data yang valid
       console.log("Data valid:", formData);
       Swal.fire({
         icon: "success",
@@ -211,14 +231,13 @@ const TambahGuru = () => {
             Tambah Guru
           </p>
           <form onSubmit={handleRegister}>
-            {/* Form Input untuk Setiap Field */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="username"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Nama Pengguna (Username)
+                  Nama Guru
                 </label>
                 <input
                   id="username"
@@ -254,42 +273,37 @@ const TambahGuru = () => {
               </div>
             </div>
 
-            <div className="relative mt-3">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-              >
-                Kata Sandi (Password)
-              </label>
-              <input
-                id="password"
-                name="password"
-                type={passwordType}
-                autoComplete="off"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                placeholder="Masukkan Kata Sandi"
-                required
-              />
-              <span
-                onClick={togglePassword}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer bottom-7 sm:bottom-3"
-              >
-                {passwordType === "password" ? (
-                  <FontAwesomeIcon icon={faEyeSlash} />
-                ) : (
-                  <FontAwesomeIcon icon={faEye} />
-                )}
-              </span>
-              {/* Pesan pemberitahuan di bawah field password */}
-              <p className="text-gray-500 text-sm text-center my-5">
-                *Field Alamat, Telepon, Jenis Kelamin, dan Status Nikah boleh
-                kosong
-              </p>
-            </div>
-
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Kata Sandi
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type={passwordType}
+                  autoComplete="off"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Kata Sandi"
+                  required
+                />
+                <span
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer md:top-10 top-7 sm:top-8 sm:bottom-3"
+                >
+                  {passwordType === "password" ? (
+                    <FontAwesomeIcon icon={faEyeSlash} />
+                  ) : (
+                    <FontAwesomeIcon icon={faEye} />
+                  )}
+                </span>
+              </div>
+
               <div className="relative">
                 <label
                   htmlFor="alamat"
@@ -306,31 +320,9 @@ const TambahGuru = () => {
                   onChange={handleInputChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Alamat"
-                  // required
+                  required
                 />
               </div>
-
-              <form onSubmit={handleSubmiit}>
-                <div className="relative">
-                  <label
-                    htmlFor="telepon"
-                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                  >
-                    Nomor Telepon
-                  </label>
-                  <input
-                    id="telepon"
-                    name="telepon"
-                    type="number"
-                    autoComplete="off"
-                    value={formData.telepon}
-                    onChange={handleInputChango}
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="Masukkan Nomor Telepon"
-                    // required
-                  />
-                </div>
-              </form>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -339,7 +331,7 @@ const TambahGuru = () => {
                   htmlFor="gender"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Jenis Kelamin
+                  Gender
                 </label>
                 <select
                   id="gender"
@@ -347,13 +339,37 @@ const TambahGuru = () => {
                   value={formData.gender}
                   onChange={handleInputChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  // required
+                  required
                 >
-                  <option value="">Pilih Jenis Kelamin</option>
+                  <option value="">Pilih Gender</option>
                   <option value="Laki-laki">Laki-laki</option>
                   <option value="Perempuan">Perempuan</option>
                 </select>
               </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="telepon"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Telepon
+                </label>
+                <input
+                  id="telepon"
+                  name="telepon"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.telepon}
+                  onChange={handleInputChango}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Nomor Telepon"
+                  maxLength={12}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="status_nikah"
@@ -367,36 +383,62 @@ const TambahGuru = () => {
                   value={formData.status_nikah}
                   onChange={handleInputChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  // required
+                  required
                 >
-                  <option value="">Pilih Status Nikah</option>
+                  <option value="">Pilih Status</option>
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
+                  <option value="Cerai">Cerai</option>
                 </select>
               </div>
-              <div className="justify-center">
-                <div className="relative">
-                  <label
-                    htmlFor="jabatan"
-                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                  >
-                    Jabatan
-                  </label>
-                  <select
-                    id="jabatan"
-                    name="jabatan"
-                    value={formData.jabatan}
-                    onChange={handleInputChange}
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    // required
-                  >
-                    <option value="">Pilih Jabatan</option>
-                    <option value="Guru Mapel">Guru Mapel</option>
-                    <option value="Wali Kelas">Wali Kelas</option>
-                  </select>
-                </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="jabatan"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Jabatan
+                </label>
+                <select
+                  id="jabatan"
+                  name="jabatan"
+                  value={formData.jabatan}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Pilih Jabatan</option>
+                  <option value="Bukan WaliKelas">Bukan WaliKelas</option>
+                  <option value="WaliKelas">WaliKelas</option>
+                </select>
               </div>
             </div>
+
+            {formData.jabatan === "WaliKelas" && (
+              <div className="relative mt-4">
+                <label
+                  htmlFor="kelasId"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Pilih Kelas
+                </label>
+                <select
+                  id="kelasId"
+                  name="kelasId"
+                  value={formData.kelasId}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Pilih Kelas</option>
+                  {kelas.map((kelas) => (
+                  <option className="text-sm" key={kelas.id} value={kelas.id}>
+                    {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                  </option>
+                ))}
+                </select>
+              </div>
+            )}
 
             <div className="flex justify-between mt-6">
               <button

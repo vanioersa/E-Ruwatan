@@ -3,6 +3,8 @@ import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
 import { Link, useLocation } from "react-router-dom";
 import { getAdminById } from "./api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBarsStaggered, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const SidebarGuru = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -95,39 +97,9 @@ const SidebarGuru = () => {
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
-              <svg
-                className="w-6 h-6"
-                data-slot="icon"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                ></path>
-              </svg>
+              <FontAwesomeIcon icon={faXmark} size="lg" />
             ) : (
-              <svg
-                className="w-6 h-6"
-                data-slot="icon"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                ></path>
-              </svg>
+              <FontAwesomeIcon icon={faBarsStaggered} size="lg" />
             )}
           </button>
           <img src={logobinus} className="h-12" alt="Logo" />
@@ -151,7 +123,7 @@ const SidebarGuru = () => {
             >
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">Open user menu</span>
-              <img className="h-9 w-h-9 rounded-full" src={profilePic} alt="" />
+              <img className="h-9 w-h-9 rounded-full bg-white" src={profilePic} alt="" />
             </button>
           </div>
 

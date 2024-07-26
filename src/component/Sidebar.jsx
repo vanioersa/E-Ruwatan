@@ -101,7 +101,7 @@ const SidebarAdmin = () => {
         <div className="flex items-center">
           <button
             id="sidebar-toggle"
-            className="text-white dark:text-white focus:outline-none md:hidden mx-3"
+            className="text-white focus:outline-none md:hidden mx-3"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
@@ -129,7 +129,7 @@ const SidebarAdmin = () => {
             >
               <span className="absolute -inset-1.5"></span>
               <span className="sr-only">Open user menu</span>
-              <img className="h-9 w-9 rounded-full" src={profilePic} alt="" />
+              <img className="h-9 w-9 rounded-full bg-white" src={profilePic} alt="" />
             </button>
           </div>
 

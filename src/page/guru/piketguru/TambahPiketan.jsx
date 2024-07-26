@@ -68,10 +68,10 @@ const TambahPiketan = () => {
     }
   };
 
-  const handleStudentCheckboxChange = (studentId, status) => {
+  const handleStudentStatusChange = (studentId, status) => {
     setSelectedStatus((prev) => ({
       ...prev,
-      [studentId]: prev[studentId] === status ? undefined : status, // Toggle status
+      [studentId]: status,
     }));
   };
 
@@ -151,7 +151,10 @@ const TambahPiketan = () => {
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
         <h1 className="text-3xl font-semibold mb-6">Tambah Piketan</h1>
-        <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
+        >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
             Tambah Piketan
           </p>
@@ -210,52 +213,74 @@ const TambahPiketan = () => {
                 <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="py-2 px-4">No</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
                         Nama Siswa
                       </th>
-                      <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
                         Status
                       </th>
                     </tr>
                   </thead>
-                  <tbody style={{ backgroundColor: "white" }} className="divide-y-2 divide-gray-200">
+                  <tbody
+                    style={{ backgroundColor: "white" }}
+                    className="divide-y-2 divide-gray-200"
+                  >
                     {siswaByKelas.length === 0 ? (
                       <tr>
-                        <td colSpan="2" className="text-center text-gray-900 py-4">
+                        <td
+                          colSpan="3"
+                          className="text-center text-gray-900 py-4"
+                        >
                           {selectedKelas
                             ? "Tidak ada siswa yang tersedia untuk kelas ini."
                             : "Silakan pilih kelas terlebih dahulu."}
                         </td>
                       </tr>
                     ) : (
-                      siswaByKelas.map((siswa) => (
+                      siswaByKelas.map((siswa, index) => (
                         <tr key={siswa.id}>
-                          <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <td className="px-5 py-4 whitespace-nowrap">
+                            {index + 1}
+                          </td>
+                          <td className="px-5 py-4 text-center whitespace-nowrap">
                             {siswa.nama_siswa}
                           </td>
-                          <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <select
-                              value={selectedStatus[siswa.id] || ""}
-                              onChange={(e) =>
-                                handleStudentCheckboxChange(
-                                  siswa.id,
-                                  e.target.value
+                          <td className="px-5 py-4 whitespace-nowrap text-gray-500">
+                            <div className="flex justify-center space-x-3 md:space-x-20">
+                              {["Masuk", "Izin", "Sakit", "Alpha"].map(
+                                (status) => (
+                                  <label
+                                    key={status}
+                                    className="inline-flex items-center"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name={`status-${siswa.id}`}
+                                      value={status}
+                                      checked={
+                                        selectedStatus[siswa.id] === status
+                                      }
+                                      onChange={() =>
+                                        handleStudentStatusChange(
+                                          siswa.id,
+                                          status
+                                        )
+                                      }
+                                      className="form-radio"
+                                    />
+                                    <span className="ml-2">{status}</span>
+                                  </label>
                                 )
-                              }
-                              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            >
-                              <option value="">Pilih Status</option>
-                              <option value="Masuk">Masuk</option>
-                              <option value="Izin">Izin</option>
-                              <option value="Sakit">Sakit</option>
-                              <option value="Alpha">Alpha</option>
-                            </select>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
                     )}
                   </tbody>
                 </table>
+
                 {error && selectedKelas && (
                   <p className="text-red-500 text-sm mt-2 sm:mt-1">{error}</p>
                 )}
@@ -266,7 +291,7 @@ const TambahPiketan = () => {
               <button
                 type="button"
                 onClick={batal}
-                 className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-red-500 py-3 text-sm sm:text-sm font-medium"
               >
                 Batal
               </button>

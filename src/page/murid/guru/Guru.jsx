@@ -14,7 +14,6 @@ import {
 import { Link } from "react-router-dom";
 import { getAllUsers, deleteUsers } from "./api_guru";
 import ReactPaginate from "react-paginate";
-import * as XLSX from "xlsx";
 import axios from "axios";
 
 function Guru() {
@@ -23,14 +22,28 @@ function Guru() {
   const guruPerPage = 10;
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
+  const [kelas, setKelas] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
   const [selectedGuruId, setSelectedGuruId] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); // State untuk menyimpan file yang dipilih
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]); // Update state dengan file yang dipilih
+    setSelectedFile(event.target.files[0]);
   };
+
+  const fetchKelas = async () => {
+    try {
+      const response = await axios.get("http://localhost:4001/kelas/all");
+      setKelas(response.data);
+    } catch (error) {
+      console.error("Failed to fetch Kelas: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchKelas();
+  }, []);
 
   const handleImportData = async (event) => {
     event.preventDefault();
@@ -51,12 +64,12 @@ function Guru() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const formData = new FormData();
-        formData.append("file", selectedFile); // Menggunakan selectedFile yang sudah diupdate
+        formData.append("file", selectedFile);
 
         try {
           const token = localStorage.getItem("token");
           const response = await axios.post(
-            `http://localhost:4001/guru/upload/importGuru`,
+            `http://localhost:4001/upload/import`,
             formData,
             {
               headers: {
@@ -73,9 +86,9 @@ function Guru() {
             showConfirmButton: false,
             timer: 2500,
           });
-          setIsModalOpen(false); // Tutup modal setelah impor
+          setIsModalOpen(false);
           window.location.reload();
-          // fetchGuru(); // Memanggil kembali fetchGuru untuk memuat data baru
+          // fetchGuru();
         } catch (error) {
           console.error("Error importing file:", error);
           Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
@@ -144,9 +157,17 @@ function Guru() {
     const teleponMatch =
       typeof g.telepon === "string" &&
       g.telepon.toLowerCase().includes(searchTerm.toLowerCase());
+    const jabatanMatch =
+      typeof g.jabatan === "string" &&
+      g.jabatan.toLowerCase().includes(searchTerm.toLowerCase());
     const statusNikahMatch =
       typeof g.status_nikah === "string" &&
       g.status_nikah.toLowerCase().includes(searchTerm.toLowerCase());
+    const kelasMatch =
+      g.kelas &&
+      `${g.kelas.kelas} - ${g.kelas.nama_kelas}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
     return (
       usernameMatch ||
@@ -154,28 +175,24 @@ function Guru() {
       genderMatch ||
       alamatMatch ||
       teleponMatch ||
-      statusNikahMatch
+      statusNikahMatch ||
+      jabatanMatch ||
+      kelasMatch
     );
   });
 
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
-  // const modifiedGuru = filteredGuru.map((g, index) => {
-  //   const modifiedTelepon =
-  //     g.telepon && g.telepon.replace(/^08/, "+62 ").replace(/.{4}$/, "****");
-
-  //   return {
-  //     ...g,
-  //     modifiedTelepon,
-  //   };
-  // });
-
   const modifiedGuru = filteredGuru.map((g, index) => {
     const modifiedTelepon = g.telepon && g.telepon.replace(/^08/, "+62 ");
+    const kelasText = g.kelas
+      ? `${g.kelas.kelas} - ${g.kelas.nama_kelas}`
+      : "-";
 
     return {
       ...g,
       modifiedTelepon,
+      kelasText,
     };
   });
 
@@ -203,7 +220,7 @@ function Guru() {
           try {
             const token = localStorage.getItem("token");
             const response = await axios.get(
-              "http://localhost:4001/guru/upload/export-guru",
+              "http://localhost:4001/upload/export",
               {
                 responseType: "blob",
                 headers: {
@@ -269,13 +286,13 @@ function Guru() {
     });
 
     if (!isConfirmed.isConfirmed) {
-      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+      return;
     }
 
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:4001/guru/download/template-guru",
+        "http://localhost:4001/download/template",
         {
           responseType: "blob",
           headers: {
@@ -285,15 +302,31 @@ function Guru() {
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
-
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "Template_Guru.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
+
+      Swal.fire({
+        title: "Sukses!",
+        text: "Template berhasil diunduh.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     } catch (error) {
       console.error("Error saat mengunduh file:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat mengunduh template.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
 
@@ -331,7 +364,7 @@ function Guru() {
                 </button>
               </div>
               <button
-                onClick={() => setIsModalOpen(true)} // Buka modal untuk import data
+                onClick={() => setIsModalOpen(true)}
                 className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
@@ -346,13 +379,23 @@ function Guru() {
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Guru
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Email</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Email
+                  </th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jenis Kelamin
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Alamat
+                  </th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nomor Telepon
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Jabatan
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Walikelas
                   </th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Status Pernikahan
@@ -375,41 +418,17 @@ function Guru() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.username}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.email}</td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.gender ? (
-                            <span>{g.gender}</span>
-                          ) : (
-                            <span
-                              className="text-gray-400 italic text-sm whitespace-nowrap"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                              }}
-                            >
-                              Data kosong
-                            </span>
-                          )}
+                          {g.username}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.alamat ? (
-                            <span>{g.alamat}</span>
-                          ) : (
-                            <span
-                              className="text-gray-400 italic text-sm whitespace-nowrap"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                              }}
-                            >
-                              Data kosong
-                            </span>
-                          )}
+                          {g.email}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.gender}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.alamat}
                         </td>
                         <td
                           className="py-2 px-4 text-center whitespace-nowrap"
@@ -433,39 +452,19 @@ function Guru() {
                                   : ""}
                               </span>
                             )
-                          ) : (
-                            <span
-                              className="text-gray-400 italic text-sm whitespace-nowrap"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                              }}
-                            >
-                              Data kosong
-                            </span>
-                          )}
+                          ) : null}
                         </td>
-
                         <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.status_nikah ? (
-                            <span>{g.status_nikah}</span>
-                          ) : (
-                            <span
-                              className="text-gray-400 italic text-sm whitespace-nowrap"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                              }}
-                            >
-                              Data kosong
-                            </span>
-                          )}
+                          {g.jabatan}
                         </td>
-
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {g.kelasText}
+                          </td>
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.status_nikah}
+                        </td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
@@ -485,7 +484,7 @@ function Guru() {
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="py-4 text-center text-gray-500">
+                    <td colSpan="10" className="py-4 text-center text-gray-500">
                       Tidak ada data guru yang ditemukan.
                     </td>
                   </tr>

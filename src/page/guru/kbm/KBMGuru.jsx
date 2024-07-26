@@ -206,25 +206,16 @@ function KBMGuru() {
   const pageCount = Math.ceil(filteredKBMGuru.length / itemsPerPage);
   const changePage = ({ selected }) => setCurrentPage(selected);
 
-  const dataToExport = filteredKBMGuru
-    .filter(
-      (kbm) =>
-        users.find((u) => u.id === kbm.userId)?.username === storedUsername
-    )
-    .map((kbm) => ({
-      "Nama Guru": kbm.userId
-        ? users.find((u) => u.id === kbm.userId)?.username
-        : "",
-      Kelas: kbm.kelasId
-        ? `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${
-            kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas
-          }`
-        : "",
-      "Jam Masuk": kbm.jam_masuk || "",
-      "Jam Pulang": kbm.jam_pulang || "",
-      Materi: kbm.materi || "",
-      Keterangan: kbm.keterangan || "",
-    }));
+  // const dataToExport = filteredKBMGuru
+  //   .filter((kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername)
+  //   .map((kbm) => ({
+  //     "Nama Guru": kbm.userId ? users.find((u) => u.id === kbm.userId)?.username : "",
+  //     Kelas: kbm.kelasId ? `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}` : "",
+  //     "Jam Masuk": kbm.jam_masuk || "",
+  //     "Jam Pulang": kbm.jam_pulang || "",
+  //     Materi: kbm.materi || "",
+  //     Keterangan: kbm.keterangan || "",
+  //   }));
 
   // EXPORT KBM
   const exportExcellKBM = () => {
@@ -312,7 +303,7 @@ function KBMGuru() {
     });
 
     if (!isConfirmed.isConfirmed) {
-      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+      return;
     }
 
     try {
@@ -475,10 +466,7 @@ function KBMGuru() {
                           </td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">
                             {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
-                            {
-                              kelas.find((k) => k.id === kbm.kelasId)
-                                ?.nama_kelas
-                            }
+                            {kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}
                           </td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">
                             {kbm.jam_masuk}
