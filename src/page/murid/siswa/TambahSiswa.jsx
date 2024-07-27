@@ -40,6 +40,19 @@ const TambahSiswa = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validasi untuk NISN
+    if (siswa.nisn.length < 10 || siswa.nisn.length > 15) {
+      Swal.fire({
+        title: "Gagal",
+        text: "NISN harus memiliki panjang antara 10 dan 15 karakter",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
     Swal.fire({
       title: "Apakah Anda yakin?",
       text: "Data siswa akan disimpan",
