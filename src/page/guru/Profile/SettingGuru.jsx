@@ -153,7 +153,7 @@ function Setting() {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <SidebarGuru />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-96 md:w-full">
+      <div className="max-w-4xl w-96 md:w-full">
           <Navpro_guru/>
 
           <div className="block md:flex">

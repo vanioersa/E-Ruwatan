@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import Navpro_guru from "../../../component/Navpro_guru";
 
 function Profile_Guru() {
   const id = localStorage.getItem("id");
@@ -123,8 +124,8 @@ function Profile_Guru() {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-96 md:w-full">
-        <Navproguru />
+        <div className="max-w-4xl w-full space-y-6">
+        <Navpro_guru />
 
           <div className="block md:flex">
             <div
