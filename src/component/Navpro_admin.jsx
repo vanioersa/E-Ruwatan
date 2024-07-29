@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 function Navpro_admin() {
   return (
-    <div className="mt-50 md:mt-20">
+    <div
+      className="mt-50 md:mt-20 fixed w-full z-50 bg-white"
+      style={{ top: "10%" }}
+    >
       <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
         <ul
           className="flex flex-wrap -mb-px text-sm font-medium text-center"
