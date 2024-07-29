@@ -26,6 +26,7 @@ function PiketanGuru() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const token = localStorage.getItem("token");
+  const [status, setStatus] = useState(piketan.status);
 
   useEffect(() => {
     fetchPiketan();
@@ -237,6 +238,45 @@ function PiketanGuru() {
           text: "Terjadi kesalahan saat menghapus piket!",
         });
       }
+    }
+  };
+
+  const handleUpdatePiket = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:4001/piket/edit/${id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Berhasil",
+          text: `Status piket berhasil diperbarui`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        fetchPiketan(); // Refresh piketan data
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal memperbarui status piket!",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating status piket", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Terjadi kesalahan saat memperbarui status piket!",
+      });
     }
   };
 
@@ -498,6 +538,7 @@ function PiketanGuru() {
                         <td className="py-3 px-4 text-center">
                           <div className="flex justify-center gap-2">
                             <Link
+                              onClick={() => handleUpdatePiket(piket.id)}
                               to={`/editpiketan/${piket.id}`}
                               className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                               title="Edit"
