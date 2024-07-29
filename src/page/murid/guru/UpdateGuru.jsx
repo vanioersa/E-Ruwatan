@@ -4,12 +4,11 @@ import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import { getUsersById, updateUsers } from "./api_guru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const UpdateGuru = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
 
   const [guru, setGuru] = useState({
     username: "",
@@ -21,8 +20,10 @@ const UpdateGuru = () => {
     password: "",
   });
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const [passwordType, setPasswordType] = useState("password");
+
+  const togglePassword = () => {
+    setPasswordType(passwordType === "password" ? "text" : "password");
   };
 
   useEffect(() => {
@@ -57,7 +58,8 @@ const UpdateGuru = () => {
       initialGuruData.alamat !== guru.alamat ||
       initialGuruData.gender !== guru.gender ||
       initialGuruData.telepon !== guru.telepon ||
-      initialGuruData.status_nikah !== guru.status_nikah;
+      initialGuruData.jabatan !== guru.jabatan ||
+      initialGuruData.status_nikah !== guru.status_nikah
 
     if (!isDataChanged) {
       Swal.fire({
@@ -147,7 +149,7 @@ const UpdateGuru = () => {
                   htmlFor="username"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Nama Pengguna (Username)
+                  Nama Guru
                 </label>
                 <input
                   id="username"
@@ -184,6 +186,62 @@ const UpdateGuru = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+            <div className="relative">
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Kata Sandi
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type={passwordType}
+                  autoComplete="off"
+                  value={guru.password}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Kata Sandi"
+                />
+                <span
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer md:top-10 top-7 sm:top-8 sm:bottom-3"
+                >
+                  {passwordType === "password" ? (
+                    <FontAwesomeIcon icon={faEyeSlash} />
+                  ) : (
+                    <FontAwesomeIcon icon={faEye} />
+                  )}
+                </span>
+              </div>
+              {/* <div className="relative">
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Kata Sandi
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type={passwordType}
+                  autoComplete="off"
+                  value={guru.password}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan password yang akan diubah"
+                />
+                <span
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer md:top-10 top-7 sm:top-8 sm:bottom-3"
+                >
+                  {passwordType === "password" ? (
+                    <FontAwesomeIcon icon={faEyeSlash} />
+                  ) : (
+                    <FontAwesomeIcon icon={faEye} />
+                  )}
+                </span>
+              </div> */}
               <div className="relative">
                 <label
                   htmlFor="alamat"
@@ -202,7 +260,9 @@ const UpdateGuru = () => {
                   placeholder="Masukkan Alamat"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="telepon"
@@ -222,9 +282,6 @@ const UpdateGuru = () => {
                   minLength={10}
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="gender"
@@ -232,19 +289,19 @@ const UpdateGuru = () => {
                 >
                   Jenis Kelamin
                 </label>
-                <select
+                <input
                   id="gender"
                   name="gender"
+                  type="text"
                   value={guru.gender}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  disabled
-                >
-                  <option value="">Pilih Jenis Kelamin</option>
-                  <option value="Laki-laki">Laki-laki</option>
-                  <option value="Perempuan">Perempuan</option>
-                </select>
+                  readOnly
+                />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="status_nikah"
@@ -258,40 +315,30 @@ const UpdateGuru = () => {
                   value={guru.status_nikah}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  disabled
                 >
-                  <option value="">Pilih Status Nikah</option>
+                  {/* <option value="">Pilih Status Nikah</option> */}
                   <option value="Belum Menikah">Belum Menikah</option>
                   <option value="Menikah">Menikah</option>
                 </select>
               </div>
-            </div>
-
-            <div className="relative mt-4">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="off"
-                value={guru.password}
-                onChange={handleChange}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                placeholder="Masukkan password yang akan diubah"
-              />
-              <div
-                className="icon-container"
-                onClick={togglePasswordVisibility}
-              >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  className="text-gray-400"
-                />
+              <div className="relative">
+                <label
+                  htmlFor="jabatan"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Jabatan
+                </label>
+                <select
+                  id="jabatan"
+                  name="jabatan"
+                  value={guru.jabatan}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  {/* <option value="">Pilih Status Nikah</option> */}
+                  <option value="Bukan Walikelas">Bukan Walikelas</option>
+                  <option value="WaliKelas">WaliKelas</option>
+                </select>
               </div>
             </div>
 
@@ -313,15 +360,6 @@ const UpdateGuru = () => {
           </form>
         </div>
       </div>
-      <style>{`
-      .icon-container {
-        position: absolute;
-        top: 70%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-      }
-      `}</style>
     </div>
   );
 };

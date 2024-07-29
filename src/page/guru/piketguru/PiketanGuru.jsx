@@ -26,6 +26,7 @@ function PiketanGuru() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const token = localStorage.getItem("token");
+  const [status, setStatus] = useState(piketan.status);
 
   useEffect(() => {
     fetchPiketan();
@@ -60,10 +61,64 @@ function PiketanGuru() {
   };
 
   const offset = currentPage * itemsPerPage;
-  const currentPiketan = piketan.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(piketan.length / itemsPerPage);
+  const filteredPiketan = piketan.filter((piket) => {
+    const kelasInfo = kelas.find((k) => k.id === piket.kelasId);
+    const statusCounts = {
+      Masuk: 0,
+      Izin: 0,
+      Sakit: 0,
+      Alpha: 0,
+    };
+
+    piket.siswaStatusList.forEach((siswaStatus) => {
+      siswaStatus.statusList.forEach((status) => {
+        if (status in statusCounts) {
+          statusCounts[status]++;
+        }
+      });
+    });
+
+    return (
+      String(piket.tanggal).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(kelasInfo?.kelas)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(kelasInfo?.nama_kelas)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(piket.siswaStatusList.length)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(statusCounts.Masuk)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(statusCounts.Izin)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(statusCounts.Sakit)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      String(statusCounts.Alpha)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const currentPiketan = filteredPiketan.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredPiketan.length / itemsPerPage);
 
   const handleExport = async () => {
+    if (piketan.length === 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: "Tidak ada data Piketan untuk diekspor",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
     const result = await Swal.fire({
       icon: "question",
       title: "Konfirmasi",
@@ -186,6 +241,45 @@ function PiketanGuru() {
     }
   };
 
+  const handleUpdatePiket = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:4001/piket/edit/${id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Berhasil",
+          text: `Status piket berhasil diperbarui`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        fetchPiketan(); // Refresh piketan data
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal memperbarui status piket!",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating status piket", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Terjadi kesalahan saat memperbarui status piket!",
+      });
+    }
+  };
+
   // const handleExportPDF = async () => {
   //   if (selectedTanggal && selectedKelasId) {
   //     try {
@@ -221,7 +315,6 @@ function PiketanGuru() {
   //   }
   // };
 
-  // Function to format tanggal
   const formatTanggal = (date) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     return new Date(date).toLocaleDateString("id-ID", options);
@@ -264,8 +357,8 @@ function PiketanGuru() {
                   className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <FontAwesomeIcon icon={faUpload} /> Export PDF
-                </button> */}
-                {/* <button
+                </button>
+                <button
                   onClick={openImportModal}
                   className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
@@ -328,9 +421,9 @@ function PiketanGuru() {
                   </div>
                 </div>
               </div>
-            )} */}
+            )}
 
-            {/* {showImportModal && (
+            {showImportModal && (
               <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
                 <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
                   <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
@@ -374,88 +467,96 @@ function PiketanGuru() {
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white" }} className="text-gray-600 text-base font-normal">
+              <tbody
+                style={{ backgroundColor: "white" }}
+                className="text-gray-600 text-base font-normal"
+              >
                 {currentPiketan.length === 0 ? (
                   <tr>
                     <td colSpan="9" className="py-4 px-6 text-center">
-                      Tidak ada data piketan yang ditemukan.
+                      {filteredPiketan.length === 0
+                        ? "Data yang Anda cari tidak ditemukan."
+                        : "Tidak ada data piketan yang ditemukan."}
                     </td>
                   </tr>
                 ) : (
-                  currentPiketan
-                    .filter((piket) =>
-                      String(piket.tanggal)
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
-                    .map((piket, index) => {
-                      const statusCounts = {
-                        Masuk: 0,
-                        Izin: 0,
-                        Sakit: 0,
-                        Alpha: 0,
-                      };
+                  currentPiketan.map((piket, index) => {
+                    const statusCounts = {
+                      Masuk: 0,
+                      Izin: 0,
+                      Sakit: 0,
+                      Alpha: 0,
+                    };
 
-                      // Calculate status counts
-                      piket.siswaStatusList.forEach((siswaStatus) => {
-                        siswaStatus.statusList.forEach((status) => {
-                          if (status in statusCounts) {
-                            statusCounts[status]++;
-                          }
-                        });
-                      });
-
-                      // Replace counts with "-" if they are zero
-                      Object.keys(statusCounts).forEach((key) => {
-                        if (statusCounts[key] === 0) {
-                          statusCounts[key] = "-";
+                    piket.siswaStatusList.forEach((siswaStatus) => {
+                      siswaStatus.statusList.forEach((status) => {
+                        if (status in statusCounts) {
+                          statusCounts[status]++;
                         }
                       });
+                    });
 
-                      return (
-                        <tr
-                          key={piket.id}
-                          className="border-b border-gray-200 hover:bg-gray-100"
-                        >
-                          <td className="py-2 px-4">{index + 1 + currentPage * itemsPerPage}</td>
-                          <td className="py-2 px-4 text-center ">
-                            {formatTanggal(piket.tanggal)}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {kelas.find((k) => k.id === piket.kelasId)?.kelas} -{" "}
-                            {
-                              kelas.find((k) => k.id === piket.kelasId)
-                                ?.nama_kelas
-                            }
-                          </td>
-                          <td className="py-2 px-4 text-center">
-                            {piket.siswaStatusList.length}
-                          </td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Masuk"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Izin"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Sakit"]}</td>
-                          <td className="py-2 px-4 text-center">{statusCounts["Alpha"]}</td>
-                          <td className="py-3 px-4 text-center">
-                            <div className="flex justify-center gap-2">
-                              <Link
-                                to={`/editpiketan/${piket.id}`}
-                                className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                                title="Edit"
-                              >
-                                <FontAwesomeIcon icon={faEdit} />
-                              </Link>
-                              <button
-                                onClick={() => handleDeletePiketById(piket.id)}
-                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                                title="Hapus"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
+                    Object.keys(statusCounts).forEach((key) => {
+                      if (statusCounts[key] === 0) {
+                        statusCounts[key] = "-";
+                      }
+                    });
+
+                    return (
+                      <tr
+                        key={piket.id}
+                        className="border-b border-gray-200 hover:bg-gray-100"
+                      >
+                        <td className="py-2 px-4">
+                          {index + 1 + currentPage * itemsPerPage}
+                        </td>
+                        <td className="py-2 px-4 text-center ">
+                          {formatTanggal(piket.tanggal)}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {kelas.find((k) => k.id === piket.kelasId)?.kelas} -{" "}
+                          {
+                            kelas.find((k) => k.id === piket.kelasId)
+                              ?.nama_kelas
+                          }
+                        </td>
+                        <td className="py-2 px-4 text-center">
+                          {piket.siswaStatusList.length}
+                        </td>
+                        <td className="py-2 px-4 text-center">
+                          {statusCounts["Masuk"]}
+                        </td>
+                        <td className="py-2 px-4 text-center">
+                          {statusCounts["Izin"]}
+                        </td>
+                        <td className="py-2 px-4 text-center">
+                          {statusCounts["Sakit"]}
+                        </td>
+                        <td className="py-2 px-4 text-center">
+                          {statusCounts["Alpha"]}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <div className="flex justify-center gap-2">
+                            <Link
+                              onClick={() => handleUpdatePiket(piket.id)}
+                              to={`/editpiketan/${piket.id}`}
+                              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                              title="Edit"
+                            >
+                              <FontAwesomeIcon icon={faEdit} />
+                            </Link>
+                            <button
+                              onClick={() => handleDeletePiketById(piket.id)}
+                              className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                              title="Hapus"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

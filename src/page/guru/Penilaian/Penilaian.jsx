@@ -23,13 +23,12 @@ function Penilaian() {
   const [dataPerPage] = useState(10);
   const [kelas, setKelas] = useState([]);
   const [siswa, setSiswa] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [excelFile, setExcelFile] = useState(null); // State untuk menyimpan file Excel
+  const [excelFile, setExcelFile] = useState(null);
 
   const pageCount = Math.ceil(data.length / dataPerPage);
 
-  // Handle perubahan pada file Excel yang diunggah
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
@@ -46,7 +45,6 @@ function Penilaian() {
     setShowImportModal(false);
   };
 
-  // Fungsi untuk impor file Excel
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
@@ -96,8 +94,6 @@ function Penilaian() {
       });
     }
   };
-
-  // ghdghfghfhjghjghghghjg
 
   useEffect(() => {
     fetchData();
@@ -186,18 +182,15 @@ function Penilaian() {
   });
 
   /// EXPORT PENILAIAN
-  const dataToExport = filteredData.map((item, index) => ({
-    No: index + 1,
-    "Siswa ID": item.siswa_id || "", // Menggunakan properti siswa_id dari item
-    "Nama Siswa":
-      (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "", // Menampilkan nama_siswa jika ada
-    "Kelas ID": item.kelas_id || "", // Menggunakan properti kelas_id dari item
-    Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${
-      kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""
-    }`, // Menampilkan kelas dan nama_kelas jika ada
-    Nilai: item.nilai || "", // Menampilkan nilai jika ada
-    Deskripsi: item.deskripsi || "", // Menampilkan deskripsi jika ada
-  }));
+  // const dataToExport = filteredData.map((item, index) => ({
+  //   No: index + 1,
+  //   "Siswa ID": item.siswa_id || "",
+  //   "Nama Siswa": (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "",
+  //   "Kelas ID": item.kelas_id || "",
+  //   Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""}`,
+  //   Nilai: item.nilai || "",
+  //   Deskripsi: item.deskripsi || "",
+  // }));
 
   const exportExcell = async (kelas_id, siswa_id) => {
     Swal.fire({
@@ -211,8 +204,6 @@ function Penilaian() {
       if (result.isConfirmed) {
         try {
           const token = localStorage.getItem("token");
-
-          // Menggunakan axios untuk request GET ke endpoint export-penilaian dengan query params kelas_id dan siswa_id
           const response = await axios.get(
             `http://localhost:4001/panilaian/upload/export-penilaian?${kelas_id}${siswa_id}`,
             {
@@ -223,22 +214,13 @@ function Penilaian() {
             }
           );
 
-          // Membuat URL dari blob data yang diterima
           const url = window.URL.createObjectURL(new Blob([response.data]));
-
-          // Membuat link untuk di-download
           const link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", "ExportPenilaian.xlsx");
-
-          // Menambahkan link ke body dokumen dan mengkliknya untuk memulai download
           document.body.appendChild(link);
           link.click();
-
-          // Setelah selesai, menghapus link dari body dokumen
           document.body.removeChild(link);
-
-          // Menampilkan notifikasi sukses menggunakan SweetAlert
           Swal.fire({
             icon: "success",
             title: "Sukses!",
@@ -247,7 +229,6 @@ function Penilaian() {
             timer: 2000,
           });
         } catch (error) {
-          // Menampilkan notifikasi error jika proses ekspor gagal
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -263,11 +244,8 @@ function Penilaian() {
 
   const exportExcellPenilaian = () => {
     if (filteredData.length > 0) {
-      // Mengumpulkan semua kelasId dan siswaId yang ada di filteredData
       const kelasIds = filteredData.map((item) => item.kelas_id);
       const siswaIds = filteredData.map((item) => item.siswa_id);
-
-      // Memanggil fungsi exportExcell dengan parameter kelasIds dan siswaIds
       exportExcell(kelasIds, siswaIds);
     } else {
       Swal.fire({
@@ -279,48 +257,48 @@ function Penilaian() {
       });
     }
   };
-  // EXPORT PENILAIAN
+
   const downloadFormat = async (e) => {
     e.preventDefault();
 
     const isConfirmed = await Swal.fire({
-      title: 'Apakah Anda yakin?',
+      title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, unduh!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, unduh!",
     });
 
     if (!isConfirmed.isConfirmed) {
-      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+      return;
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4001/panilaian/download/template-penilaian', {
-        responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:4001/panilaian/download/template-penilaian",
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'Template_Penilaian.xlsx');
+      link.setAttribute("download", "Template_Penilaian.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (error) {
-      console.error('Error saat mengunduh file:', error);
+      console.error("Error saat mengunduh file:", error);
     }
   };
-  // EXPORT PENILAIAN
-
- 
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -412,11 +390,15 @@ function Penilaian() {
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nama Siswa
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Kelas
+                  </th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Nilai Siswa
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Deskripsi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Deskripsi
+                  </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -444,7 +426,9 @@ function Penilaian() {
                         <td className="py-2 px-4 text-center whitespace-nowrap">
                           {`${item.kelas.kelas} - ${item.kelas.nama_kelas}`}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{item.nilai}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {item.nilai}
+                        </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
                           {item.deskripsi ? (
                             <span>{item.deskripsi}</span>
@@ -475,7 +459,7 @@ function Penilaian() {
                 ) : (
                   <tr>
                     <td colSpan="6" className="text-center py-4">
-                      Tidak ada data ditemukan
+                      Tidak ada data Penilaian yang ditemukan
                     </td>
                   </tr>
                 )}
