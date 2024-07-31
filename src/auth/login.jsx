@@ -48,6 +48,8 @@ function Logins() {
           const { userData, token } = response.data;
           localStorage.setItem("token", token);
           localStorage.setItem("username", userData.username);
+          localStorage.setItem("jabatan", userData.jabatan);
+          localStorage.setItem("kelasId", userData.kelas);
           localStorage.setItem("id", userData.id);
           localStorage.setItem("role", userData.role);
           localStorage.setItem("userData", JSON.stringify(userData));

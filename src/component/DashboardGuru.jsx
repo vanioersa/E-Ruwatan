@@ -14,6 +14,7 @@ function DashboardGuru() {
   const [user, setUser] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
+  const [jabatan, setJabatan] = useState("");
   const [hoverStates, setHoverStates] = useState([false, false, false]);
 
   const handleMouseEnter = (index) => {
@@ -33,6 +34,10 @@ function DashboardGuru() {
     if (storedUsername) {
       setUsername(storedUsername);
     }
+    const storedJabatan = localStorage.getItem("jabatan");
+    if (storedJabatan) {
+      setJabatan(storedJabatan);
+    }
   }, []);
 
   useEffect(() => {
@@ -50,7 +55,7 @@ function DashboardGuru() {
   useEffect(() => {
     const fetchPenilaian = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/panilaian/all");
+        const response = await axios.get("http://localhost:4001/penilaian/all");
         setPenilaian(response.data);
       } catch (error) {
         console.error("Failed to fetch Penilaian: ", error);
@@ -71,7 +76,6 @@ function DashboardGuru() {
     fetchKBM();
   }, []);
 
-  // Ambil data Guru dari API
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -120,7 +124,9 @@ function DashboardGuru() {
             >
               Hai, <strong>{username}</strong>!{" "}
               <span style={{ boxShadow: "none" }}>
-                Selamat datang di dashboard Guru.
+                {jabatan === "WaliKelas"
+                  ? "Selamat datang di dashboard Guru Anda sebagai WaliKelas."
+                  : "Selamat datang di dashboard Guru."}
               </span>
             </h1>
           </div>
@@ -129,7 +135,7 @@ function DashboardGuru() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama */}
-            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+            <div className={`mb-4 px-3 flex-shrink-0 w-full ${jabatan === "WaliKelas" ? "sm:w-1/2 md:w-1/3" : "sm:w-1/2 md:w-1/2"}`}>
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <svg
@@ -158,7 +164,7 @@ function DashboardGuru() {
                         ).length
                       }
                     </h2>
-                    <p className="text-lg text-white">KBM Guru</p>
+                    <p className="text-lg text-white">KBM</p>
                   </div>
                 </div>
                 <hr className="border-white" />
@@ -182,7 +188,7 @@ function DashboardGuru() {
             </div>
 
             {/* Kartu kedua */}
-            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+            <div className={`mb-4 px-3 flex-shrink-0 w-full ${jabatan === "WaliKelas" ? "sm:w-1/2 md:w-1/3" : "sm:w-1/2 md:w-1/2"}`}>
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <svg
@@ -235,57 +241,59 @@ function DashboardGuru() {
             </div>
 
             {/* Kartu ketiga */}
-            <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
-              <div
-                className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
-              >
-                <div className="px-6 py-6 flex items-center justify-between">
-                  <svg
-                    className="w-12 h-12 text-white mr-4"
-                    data-slot="icon"
-                    fill="none"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                    ></path>
-                  </svg>
-                  <div>
-                    <h2 className="text-4xl text-center font-medium text-white">
-                      {Penilaian.length}
-                    </h2>
-                    <p className="text-lg text-white">Penilaian</p>
+            {jabatan === "WaliKelas" && (
+              <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+                <div
+                  className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
+                >
+                  <div className="px-6 py-6 flex items-center justify-between">
+                    <svg
+                      className="w-12 h-12 text-white mr-4"
+                      data-slot="icon"
+                      fill="none"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <h2 className="text-4xl text-center font-medium text-white">
+                        {Penilaian.length}
+                      </h2>
+                      <p className="text-lg text-white">Penilaian</p>
+                    </div>
+                  </div>
+                  <hr className="border-white" />
+                  <div className="py-2 text-center font-medium">
+                    <a
+                      style={{ cursor: "default" }}
+                      href="/penilaian"
+                      onMouseEnter={() => handleMouseEnter(2)}
+                      onMouseLeave={() => handleMouseLeave(2)}
+                      className={`text-white ${
+                        hoverStates[2] ? "hover:text-cyan-800" : ""
+                      }`}
+                    >
+                      Klik di sini{" "}
+                      <FontAwesomeIcon
+                        icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
+                      />
+                    </a>
                   </div>
                 </div>
-                <hr className="border-white" />
-                <div className="py-2 text-center font-medium">
-                  <a
-                    style={{ cursor: "default" }}
-                    href="/penilaian"
-                    onMouseEnter={() => handleMouseEnter(2)}
-                    onMouseLeave={() => handleMouseLeave(2)}
-                    className={`text-white ${
-                      hoverStates[2] ? "hover:text-cyan-800" : ""
-                    }`}
-                  >
-                    Klik di sini{" "}
-                    <FontAwesomeIcon
-                      icon={hoverStates[2] ? faRightLong : faCircleArrowRight}
-                    />
-                  </a>
-                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
-            {/* Tabel Guru */}
+            {/* Tabel KBM */}
             <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="py-2 mb-2">
                 <h1
@@ -295,7 +303,7 @@ function DashboardGuru() {
                     borderRadius: "8px",
                   }}
                 >
-                  Tabel KBM Guru
+                  Tabel KBM
                 </h1>
               </div>
               <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
@@ -303,9 +311,15 @@ function DashboardGuru() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Jam Masuk</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Jam Keluar</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Nama Guru
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Jam Masuk
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Jam Selesai
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -345,7 +359,7 @@ function DashboardGuru() {
                           className="text-gray-700 text-center py-4"
                           style={{ backgroundColor: "white" }}
                         >
-                          Maaf, data KBM Guru tidak ditemukan.
+                          Data KBM Tidak Tersedia
                         </td>
                       </tr>
                     )}
@@ -354,7 +368,7 @@ function DashboardGuru() {
               </div>
             </div>
 
-            {/* Tabel Siswa */}
+            {/* Tabel Piekatan */}
             <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
               <div className="py-2 mb-2">
                 <h1
@@ -372,9 +386,15 @@ function DashboardGuru() {
                   <thead>
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Tanggal</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Status</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Nama Guru
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Tanggal
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Status
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -414,7 +434,7 @@ function DashboardGuru() {
                           colSpan="4"
                           className="text-gray-700 text-center py-4"
                         >
-                          Maaf, data Piketan tidak ditemukan.
+                          Data Piekatan Tidak Tersedia
                         </td>
                       </tr>
                     )}

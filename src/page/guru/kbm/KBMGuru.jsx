@@ -17,32 +17,29 @@ import axios from "axios";
 import ReactPaginate from "react-paginate";
 
 function KBMGuru() {
-  const [data, setData] = useState([]);
   const [kbmGuru, setKbmGuru] = useState([]);
   const [users, setUsers] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showImportModal, setShowImportModal] = useState(false);
-  const [excelFile, setExcelFile] = useState(null); // State untuk menyimpan file Excel
+  const [excelFile, setExcelFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const itemsPerPage = 10;
   const storedUsername = localStorage.getItem("username");
 
-  // Ambil data KBM Guru dari API
   useEffect(() => {
     const fetchKBMGuru = async () => {
       try {
         const data = await getAllKbms();
         setKbmGuru(data.reverse());
       } catch (error) {
-        console.error("Failed to fetch KBM Guru: ", error);
+        console.error("Failed to fetch KBM: ", error);
       }
     };
     fetchKBMGuru();
   }, [location.pathname]);
 
-  // Ambil data User dari API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -55,7 +52,6 @@ function KBMGuru() {
     fetchUsers();
   }, []);
 
-  // Ambil data Kelas dari API
   useEffect(() => {
     const fetchKelas = async () => {
       try {
@@ -80,7 +76,6 @@ function KBMGuru() {
     setExcelFile(e.target.files[0]);
   };
 
-  //IMPORT EXCEL KBM
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
@@ -106,7 +101,7 @@ function KBMGuru() {
 
         try {
           const response = await axios.post(
-            `http://localhost:4001/kbm/upload/import-KBM`, // Sesuaikan dengan endpoint untuk impor file Excel
+            `http://localhost:4001/kbm/upload/import-KBM`,
             formData,
             {
               headers: {
@@ -123,7 +118,7 @@ function KBMGuru() {
             showConfirmButton: false,
             timer: 2500,
           });
-          window.location.reload(); // Refresh halaman setelah berhasil impor
+          window.location.reload();
         } catch (error) {
           console.error("Error importing file:", error);
           Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
@@ -132,25 +127,10 @@ function KBMGuru() {
     });
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await getAllKbms();
-      setData(response.reverse());
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-    }
-  };
-
-  // Fungsi untuk menghapus KBM Guru
   const handleDeleteKBM = async (id) => {
     Swal.fire({
       title: "Konfirmasi",
-      text: "Anda yakin ingin menghapus data KBM Guru?",
+      text: "Anda yakin ingin menghapus data KBM?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Ya",
@@ -164,29 +144,33 @@ function KBMGuru() {
           );
           Swal.fire({
             title: "Berhasil",
-            text: "Data KBM Guru berhasil dihapus",
+            text: "Data KBM berhasil dihapus",
             icon: "success",
             showConfirmButton: false,
             timer: 2000,
           });
         } catch (error) {
-          console.error("Gagal menghapus KBM Guru: ", error);
-          Swal.fire("Gagal", "Gagal menghapus data KBM Guru", "error");
+          console.error("Gagal menghapus KBM: ", error);
+          Swal.fire("Gagal", "Gagal menghapus data KBM", "error");
         }
       }
     });
   };
 
-  // Filter data berdasarkan term pencarian
-  const filteredKBMGuru = kbmGuru.filter((kbm) => {
-    const namaGuru = users
-      .find((u) => u.id === kbm.userId)
-      ?.username?.toLowerCase();
+  const getFilteredKBMGuru = () => {
+    return kbmGuru.filter((kbm) => {
+      const user = users.find((u) => u.id === kbm.userId);
+      return user?.username?.toLowerCase() === storedUsername.toLowerCase();
+    });
+  };
+
+  const filteredKBMGuru = getFilteredKBMGuru().filter((kbm) => {
+    const user = users.find((u) => u.id === kbm.userId);
     const kelass = kelas.find((k) => k.id === kbm.kelasId);
     const kelasName = kelass?.kelas;
     const namaKelas = kelass?.nama_kelas;
     const isNamaGuruMatch =
-      namaGuru && namaGuru.includes(searchTerm.toLowerCase());
+      user?.username?.toLowerCase().includes(searchTerm.toLowerCase());
     const isKelasMatch =
       kelass &&
       namaKelas &&
@@ -195,31 +179,22 @@ function KBMGuru() {
         .includes(searchTerm.toLowerCase());
     const isMateriMatch =
       kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase());
+    const isJam_masukiMatch =
+      kbm.jam_masuk && kbm.jam_masuk.toLowerCase().includes(searchTerm.toLowerCase());
+    const isJam_pulangMatch =
+      kbm.jam_pulang && kbm.jam_pulang.toLowerCase().includes(searchTerm.toLowerCase());
     const isKeteranganMatch =
       kbm.keterangan &&
       kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase());
     return (
-      isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch
+      isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch || isJam_masukiMatch || isJam_pulangMatch
     );
   });
 
   const pageCount = Math.ceil(filteredKBMGuru.length / itemsPerPage);
   const changePage = ({ selected }) => setCurrentPage(selected);
 
-  // const dataToExport = filteredKBMGuru
-  //   .filter((kbm) => users.find((u) => u.id === kbm.userId)?.username === storedUsername)
-  //   .map((kbm) => ({
-  //     "Nama Guru": kbm.userId ? users.find((u) => u.id === kbm.userId)?.username : "",
-  //     Kelas: kbm.kelasId ? `${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}` : "",
-  //     "Jam Masuk": kbm.jam_masuk || "",
-  //     "Jam Pulang": kbm.jam_pulang || "",
-  //     Materi: kbm.materi || "",
-  //     Keterangan: kbm.keterangan || "",
-  //   }));
-
-  // EXPORT KBM
   const exportExcellKBM = () => {
-    const storedUsername = localStorage.getItem("username");
     const currentKbm = filteredKBMGuru.find(
       (kbm) =>
         users.find((u) => u.id === kbm.userId)?.username === storedUsername
@@ -270,63 +245,56 @@ function KBMGuru() {
           Swal.fire({
             icon: "success",
             title: "Sukses!",
-            text: "File berhasil diunduh",
+            text: "File berhasil diekspor",
             showConfirmButton: false,
             timer: 2000,
           });
         } catch (error) {
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Ekspor KBM Gagal!",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          console.log(error);
+          console.error("Error exporting file:", error);
+          Swal.fire("Error", "Gagal mengekspor file", "error");
         }
       }
     });
   };
-  // EXPORT KBM
 
-  const downloadFormat = async (e) => {
-    e.preventDefault();
-
+  const downloadFormat = async () => {
     const isConfirmed = await Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Anda akan mengunduh template ini!",
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mendownload format template?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, unduh!",
-    });
+      confirmButtonText: "Ya, download!",
+      cancelButtonText: "Batal",
+    }).then((result) => result.isConfirmed);
 
-    if (!isConfirmed.isConfirmed) {
-      return;
-    }
+    if (isConfirmed) {
+      try {
+        const response = await axios.get(
+          `http://localhost:4001/kbm/download/template`,
+          { responseType: "blob" }
+        );
 
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:4001/kbm/download/template-kbm",
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "TemplateKBM.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "Template_KBM.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error("Error saat mengunduh file:", error);
+        Swal.fire({
+          icon: "success",
+          title: "Sukses!",
+          text: "File template berhasil diunduh",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        Swal.fire("Error", "Gagal mengunduh file template", "error");
+      }
     }
   };
 
@@ -340,10 +308,10 @@ function KBMGuru() {
           style={{ backgroundColor: "white" }}
           className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
         >
-          <h1 className="text-3xl font-semibold text-gray-800">KBM Guru</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">KBM</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
-              type="text"
+              type="search"
               placeholder="Cari KBM"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -415,9 +383,9 @@ function KBMGuru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4">No</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">
+                  {/* <th className="py-2 px-4 text-left whitespace-nowrap">
                     Nama Guru
-                  </th>
+                  </th> */}
                   <th className="py-2 px-4 text-center">Kelas</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Jam Masuk
@@ -461,9 +429,9 @@ function KBMGuru() {
                           <td className="py-2 px-4">
                             {currentPage * itemsPerPage + index + 1}
                           </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {/* <td className="py-2 px-4 text-center whitespace-nowrap">
                             {users.find((u) => u.id === kbm.userId)?.username}
-                          </td>
+                          </td> */}
                           <td className="py-2 px-4 text-center whitespace-nowrap">
                             {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
                             {kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}
@@ -507,22 +475,10 @@ function KBMGuru() {
                 ) : (
                   <tr>
                     <td colSpan="8" className="text-center py-4 text-gray-500">
-                      Tidak ada data KBM yang ditemukan
+                      {searchTerm ? "Data KBM Tidak Ditemukan" : "Data KBM Tidak Tersedia"}
                     </td>
                   </tr>
                 )}
-                {filteredKBMGuru.length > 0 &&
-                  filteredKBMGuru.every(
-                    (kbm) =>
-                      users.find((u) => u.id === kbm.userId)?.username !==
-                      storedUsername
-                  ) && (
-                    <tr>
-                      <td colSpan="8" className="text-center py-4">
-                        Data KBM tidak tersedia untuk pengguna ini
-                      </td>
-                    </tr>
-                  )}
               </tbody>
             </table>
           </div>

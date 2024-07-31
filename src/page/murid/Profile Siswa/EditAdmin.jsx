@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import axios from "axios";
-import Navpro_admin from "../../../component/Navpro_admin";
+import NavproAdmin from "../../../component/Navpro_admin";
 
 const EditAdmin = () => {
   const id = localStorage.getItem("id");
@@ -176,7 +175,7 @@ const EditAdmin = () => {
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-96 md:w-full">
-        <Navpro_admin />
+        <NavproAdmin />
 
           <div className="block md:flex">
             <div

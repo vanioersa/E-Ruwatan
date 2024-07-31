@@ -5,19 +5,27 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getUsersById, updateUsers } from "./api_guru";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import axios from "axios";
+import dayjs from "dayjs";
 
 const UpdateGuru = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [kelas, setKelas] = useState([]);
   const [guru, setGuru] = useState({
     username: "",
     email: "",
     alamat: "",
     gender: "",
     telepon: "",
-    status_nikah: "",
     password: "",
+    tanggal: "",
+    tempat: "",
+    nik: "",
+    nip: "",
+    jabatan: "",
+    hobi: "",
+    kelasId: "",
   });
 
   const [passwordType, setPasswordType] = useState("password");
@@ -39,14 +47,50 @@ const UpdateGuru = () => {
     fetchGuru();
   }, [id]);
 
+  useEffect(() => {
+    const fetchKelas = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/kelas/all");
+        setKelas(response.data.reverse());
+      } catch (error) {
+        console.error("Gagal mengambil data Kelas: ", error);
+      }
+    };
+    fetchKelas();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setGuru((prevGuru) => ({
-      ...prevGuru,
-      [name]: value,
-    }));
+  
+    if (name === "telepon") {
+      let formattedValue = value.replace(/[^0-9]/g, "");
+      if (!formattedValue.startsWith("08")) {
+        formattedValue = "08" + formattedValue;
+      }
+      setGuru((prevGuru) => ({
+        ...prevGuru,
+        [name]: formattedValue.slice(0, 13),
+      }));
+    } else if (name === "tanggal") {
+      const formattedDate = dayjs(value, "YYYY-MM-DD").format("DD-MM-YYYY");
+      setGuru((prevGuru) => ({
+        ...prevGuru,
+        [name]: formattedDate,
+      }));
+    } else if (name === "jabatan" && value !== "WaliKelas") {
+      setGuru((prevGuru) => ({
+        ...prevGuru,
+        [name]: value,
+        kelasId: "",
+      }));
+    } else {
+      setGuru((prevGuru) => ({
+        ...prevGuru,
+        [name]: value,
+      }));
+    }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,8 +102,14 @@ const UpdateGuru = () => {
       initialGuruData.alamat !== guru.alamat ||
       initialGuruData.gender !== guru.gender ||
       initialGuruData.telepon !== guru.telepon ||
+      initialGuruData.password !== guru.password ||
+      initialGuruData.tanggal !== guru.tanggal ||
+      initialGuruData.tempat !== guru.tempat ||
+      initialGuruData.nik !== guru.nik ||
+      initialGuruData.nip !== guru.nip ||
       initialGuruData.jabatan !== guru.jabatan ||
-      initialGuruData.status_nikah !== guru.status_nikah
+      initialGuruData.hobi !== guru.hobi ||
+      initialGuruData.kelasId !== guru.kelasId;
 
     if (!isDataChanged) {
       Swal.fire({
@@ -72,7 +122,6 @@ const UpdateGuru = () => {
       return;
     }
 
-    // Validasi password minimal 8 karakter saat ingin mengganti password
     if (guru.password && guru.password.length < 8) {
       Swal.fire({
         icon: "error",
@@ -106,22 +155,6 @@ const UpdateGuru = () => {
         timer: 2000,
       });
     }
-  };
-
-  const handleTeleponChange = (e) => {
-    const { name, value } = e.target;
-    setGuru((prevGuru) => {
-      // Logika khusus untuk kolom nomor telepon
-      if (name === "telepon") {
-        // Pastikan angka 08 tetap di depan
-        if (value.startsWith("08")) {
-          return { ...prevGuru, [name]: value };
-        } else {
-          return { ...prevGuru, [name]: "08" };
-        }
-      }
-      return { ...prevGuru, [name]: value };
-    });
   };
 
   const handleCancel = () => {
@@ -186,7 +219,7 @@ const UpdateGuru = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-            <div className="relative">
+              <div className="relative">
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
@@ -214,34 +247,67 @@ const UpdateGuru = () => {
                   )}
                 </span>
               </div>
-              {/* <div className="relative">
+
+              <div className="relative">
                 <label
-                  htmlFor="password"
+                  htmlFor="gender"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Kata Sandi
+                  Jenis Kelamin
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type={passwordType}
-                  autoComplete="off"
-                  value={guru.password}
+                <select
+                  id="gender"
+                  name="gender"
+                  value={guru.gender}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan password yang akan diubah"
-                />
-                <span
-                  onClick={togglePassword}
-                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer md:top-10 top-7 sm:top-8 sm:bottom-3"
                 >
-                  {passwordType === "password" ? (
-                    <FontAwesomeIcon icon={faEyeSlash} />
-                  ) : (
-                    <FontAwesomeIcon icon={faEye} />
-                  )}
-                </span>
-              </div> */}
+                  <option value="">Pilih Gender</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="tanggal"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Tanggal Lahir
+                </label>
+                <input
+                  id="tanggal"
+                  name="tanggal"
+                  type="date"
+                  value={dayjs(guru.tanggal, "DD-MM-YYYY").format("YYYY-MM-DD")}
+                  onChange={handleChange}
+                  max={dayjs().format("YYYY-MM-DD")}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Tanggal"
+                />
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="tempat"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Tempat Lahir
+                </label>
+                <input
+                  id="tempat"
+                  name="tempat"
+                  type="text"
+                  value={guru.tempat}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Tempat"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="alamat"
@@ -253,16 +319,12 @@ const UpdateGuru = () => {
                   id="alamat"
                   name="alamat"
                   type="text"
-                  autoComplete="off"
                   value={guru.alamat}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Alamat"
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="telepon"
@@ -273,30 +335,11 @@ const UpdateGuru = () => {
                 <input
                   id="telepon"
                   name="telepon"
-                  type="number"
-                  autoComplete="off"
-                  value={guru.telepon}
-                  onChange={handleTeleponChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Nomor Telepon"
-                  minLength={10}
-                />
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="gender"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Jenis Kelamin
-                </label>
-                <input
-                  id="gender"
-                  name="gender"
                   type="text"
-                  value={guru.gender}
+                  value={guru.telepon}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  readOnly
+                  placeholder="Masukkan Telepon"
                 />
               </div>
             </div>
@@ -304,23 +347,41 @@ const UpdateGuru = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
-                  htmlFor="status_nikah"
+                  htmlFor="nik"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Status Nikah
+                  NIK
                 </label>
-                <select
-                  id="status_nikah"
-                  name="status_nikah"
-                  value={guru.status_nikah}
+                <input
+                  id="nik"
+                  name="nik"
+                  type="text"
+                  value={guru.nik}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                >
-                  {/* <option value="">Pilih Status Nikah</option> */}
-                  <option value="Belum Menikah">Belum Menikah</option>
-                  <option value="Menikah">Menikah</option>
-                </select>
+                  placeholder="Masukkan NIK"
+                />
               </div>
+              <div className="relative">
+                <label
+                  htmlFor="nip"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  NIP
+                </label>
+                <input
+                  id="nip"
+                  name="nip"
+                  type="text"
+                  value={guru.nip}
+                  onChange={handleChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan NIP"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="jabatan"
@@ -334,15 +395,84 @@ const UpdateGuru = () => {
                   value={guru.jabatan}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
                 >
-                  {/* <option value="">Pilih Status Nikah</option> */}
-                  <option value="Bukan Walikelas">Bukan Walikelas</option>
+                  <option value="">Pilih Jabatan</option>
+                  <option value="Bukan WaliKelas">Bukan WaliKelas</option>
                   <option value="WaliKelas">WaliKelas</option>
                 </select>
               </div>
+
+              {guru.jabatan === "WaliKelas" && (
+                <>
+                  <div className="relative">
+                    <label
+                      htmlFor="kelasId"
+                      className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                    >
+                      Pilih Kelas
+                    </label>
+                    <select
+                      id="kelasId"
+                      name="kelasId"
+                      value={guru.kelasId}
+                      onChange={handleChange}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      required
+                    >
+                      {kelas.map((kelas) => (
+                    <option className="text-sm" key={kelas.id} value={kelas.id}>
+                      {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                    </option>
+                  ))}
+                    </select>
+                  </div>
+                  <div className="relative col-span-2">
+                    <label
+                      htmlFor="hobi"
+                      className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                    >
+                      Hobi
+                    </label>
+                    <input
+                      id="hobi"
+                      name="hobi"
+                      type="text"
+                      autoComplete="off"
+                      value={guru.hobi}
+                      onChange={handleChange}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="Masukkan Hobi"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              {guru.jabatan !== "WaliKelas" && (
+                <div className="relative">
+                  <label
+                    htmlFor="hobi"
+                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                  >
+                    Hobi
+                  </label>
+                  <input
+                    id="hobi"
+                    name="hobi"
+                    type="text"
+                    autoComplete="off"
+                    value={guru.hobi}
+                    onChange={handleChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="Masukkan Hobi"
+                    required
+                  />
+                </div>
+              )}
             </div>
 
-            <div className="flex justify-between mt-6">
+             <div className="flex justify-between mt-6">
               <button
                 type="button"
                 onClick={handleCancel}
@@ -352,9 +482,9 @@ const UpdateGuru = () => {
               </button>
               <button
                 type="submit"
-                className="block w-20 sm:w-24 rounded-lg text-black outline outline-[#0b409c] py-3 text-sm sm:text-sm font-medium"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
-                Perbarui
+                Simpan
               </button>
             </div>
           </form>

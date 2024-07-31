@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Sidebar from "../../../component/SidebarGuru";
 import Swal from "sweetalert2";
 import { getAdminById, updateAdmin } from "./api_guru";
-import Navbarpro_guru from "../../../component/Navpro_guru";
-import Navpro_guru from "../../../component/Navpro_guru";
+import NavproGuru from "../../../component/Navpro_guru";
 import SidebarGuru from "../../../component/SidebarGuru";
 
 const EditGuru = () => {
@@ -140,7 +137,7 @@ const EditGuru = () => {
       <SidebarGuru />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-93 md:w-full">
-          <Navpro_guru />
+          <NavproGuru />
 
           <div className="block md:flex">
             <div

@@ -181,7 +181,6 @@ function Penilaian() {
     );
   });
 
-  /// EXPORT PENILAIAN
   // const dataToExport = filteredData.map((item, index) => ({
   //   No: index + 1,
   //   "Siswa ID": item.siswa_id || "",
@@ -315,7 +314,7 @@ function Penilaian() {
           </h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
-              type="text"
+              type="search"
               placeholder="Cari Penilaian"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -459,7 +458,7 @@ function Penilaian() {
                 ) : (
                   <tr>
                     <td colSpan="6" className="text-center py-4">
-                      Tidak ada data Penilaian yang ditemukan
+                    {searchTerm ? "Data Penilaian Tidak Ditemukan" : "Data Penilaian Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

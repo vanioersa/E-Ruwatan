@@ -171,10 +171,10 @@ const UpdateKBM = () => {
         <SidebarGuru />
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
-        <h1 className="judul text-3xl font-semibold">Update KBM Guru</h1>
+        <h1 className="judul text-3xl font-semibold">Update KBM</h1>
         <div style={{ backgroundColor: "white" }} className="update-kbm mt-12 bg-white p-5 ml-8 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
-            Update KBM Guru
+            Update KBM
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">

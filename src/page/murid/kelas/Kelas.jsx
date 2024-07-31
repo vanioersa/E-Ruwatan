@@ -10,12 +10,10 @@ import {
   faArrowLeft,
   faArrowRight,
   faUpload,
-  // faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { importKelas, getAllKelas, deleteKelas } from "./api_kelas";
+import { getAllKelas, deleteKelas } from "./api_kelas";
 import ReactPaginate from "react-paginate";
-import * as XLSX from "xlsx";
 import axios from "axios";
 
 function Kelas() {
@@ -25,16 +23,15 @@ function Kelas() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const kelasPerPage = 10;
   const pagesVisited = pageNumber * kelasPerPage;
-  const [selectedFile, setSelectedFile] = useState(null); // State untuk menyimpan file yang dipilih
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]); // Update state dengan file yang dipilih
+    setSelectedFile(event.target.files[0]);
   };
 
   const handleImportData = async (event) => {
     event.preventDefault();
     if (!selectedFile) {
-      // Periksa apakah file sudah dipilih
       Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
       return;
     }
@@ -51,7 +48,7 @@ function Kelas() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const formData = new FormData();
-        formData.append("file", selectedFile); // Menggunakan selectedFile yang sudah diupdate
+        formData.append("file", selectedFile);
 
         try {
           const token = localStorage.getItem("token");
@@ -73,7 +70,7 @@ function Kelas() {
             showConfirmButton: false,
             timer: 2500,
           });
-          window.location.reload(); // Refresh halaman setelah berhasil impor
+          window.location.reload();
         } catch (error) {
           console.error("Error importing file:", error);
           Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
@@ -82,7 +79,6 @@ function Kelas() {
     });
   };
 
-  // Fetch data for Kelas from the API
   useEffect(() => {
     const fetchKelas = async () => {
       try {
@@ -95,7 +91,6 @@ function Kelas() {
     fetchKelas();
   }, []);
 
-  // Function to delete a Kelas
   const handleDelete = async (id, namaKelas, kelasName) => {
     Swal.fire({
       title: "Konfirmasi",
@@ -149,7 +144,6 @@ function Kelas() {
     Kelas: k.kelas,
   }));
 
-  // Export data to Excel
   const exportExcelKelas = async () => {
     if (dataToExport.length > 0) {
       Swal.fire({
@@ -225,7 +219,7 @@ function Kelas() {
     });
 
     if (!isConfirmed.isConfirmed) {
-      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+      return;
     }
 
     try {
@@ -273,7 +267,7 @@ function Kelas() {
           <h1 className="text-3xl font-semibold text-gray-800">Data Kelas</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
-              type="text"
+              type="search"
               placeholder="Cari Kelas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -294,7 +288,7 @@ function Kelas() {
                 </button>
               </div>
               <button
-                onClick={() => setIsModalOpen(true)} // Buka modal untuk import data
+                onClick={() => setIsModalOpen(true)}
                 className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
                 <FontAwesomeIcon icon={faUpload} /> Import Data
@@ -329,7 +323,7 @@ function Kelas() {
                           {index + 1 + pagesVisited}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">{k.kelas}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
                           {k.nama_kelas}
                         </td>
                         <td className="py-2 px-4 text-center">

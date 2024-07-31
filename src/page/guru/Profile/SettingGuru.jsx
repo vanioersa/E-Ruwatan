@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import SidebarGuru from "../../../component/SidebarGuru";
 import Swal from "sweetalert2";
-import Navpro_guru from "../../../component/Navpro_guru";
+import NavproGuru from "../../../component/Navpro_guru";
 
 function Setting() {
   const [passwordLama, setPasswordLama] = useState("");
   const [passwordBaru, setPasswordBaru] = useState("");
   const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -154,7 +152,7 @@ function Setting() {
       <SidebarGuru />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="max-w-4xl w-96 md:w-full">
-          <Navpro_guru/>
+          <NavproGuru/>
 
           <div className="block md:flex">
             <div

@@ -25,7 +25,6 @@ function Profile_Admin() {
   );
   const [previewImage, setPreviewImagepreviewImage] = useState(null);
   const [editProfil, setEditProfile] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +72,6 @@ function Profile_Admin() {
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setError("Unauthorized: Silakan masuk kembali.");
         Swal.fire({
           icon: "error",
           title: "Login Gagal",
@@ -82,7 +80,6 @@ function Profile_Admin() {
           showConfirmButton: false,
         });
       } else {
-        setError("Terjadi kesalahan.");
         console.error("Kesalahan saat mengunggah foto:", error);
         Swal.fire({
           icon: "error",
@@ -100,7 +97,6 @@ function Profile_Admin() {
     const file = e.target.files[0];
     setImage(file);
     setPreviewImagepreviewImage(URL.createObjectURL(file));
-    setError(null);
   };
 
   useEffect(() => {

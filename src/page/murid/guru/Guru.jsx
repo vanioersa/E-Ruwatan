@@ -22,7 +22,6 @@ function Guru() {
   const guruPerPage = 10;
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
-  const [kelas, setKelas] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHiddenTelepon, setIsHiddenTelepon] = useState(true);
   const [selectedGuruId, setSelectedGuruId] = useState(null);
@@ -31,19 +30,6 @@ function Guru() {
   const handleFileSelect = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-  const fetchKelas = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data);
-    } catch (error) {
-      console.error("Failed to fetch Kelas: ", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchKelas();
-  }, []);
 
   const handleImportData = async (event) => {
     event.preventDefault();
@@ -160,14 +146,26 @@ function Guru() {
     const jabatanMatch =
       typeof g.jabatan === "string" &&
       g.jabatan.toLowerCase().includes(searchTerm.toLowerCase());
-    const statusNikahMatch =
-      typeof g.status_nikah === "string" &&
-      g.status_nikah.toLowerCase().includes(searchTerm.toLowerCase());
     const kelasMatch =
       g.kelas &&
       `${g.kelas.kelas} - ${g.kelas.nama_kelas}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
+    const tanggalMatch =
+      typeof g.tanggal === "string" &&
+      g.tanggal.toLowerCase().includes(searchTerm.toLowerCase());
+    const tempatMatch =
+      typeof g.tempat === "string" &&
+      g.tempat.toLowerCase().includes(searchTerm.toLowerCase());
+    const nikMatch =
+      typeof g.nik === "string" &&
+      g.nik.toLowerCase().includes(searchTerm.toLowerCase());
+    const nipMatch =
+      typeof g.nip === "string" &&
+      g.nip.toLowerCase().includes(searchTerm.toLowerCase());
+    const hobiMatch =
+      typeof g.hobi === "string" &&
+      g.hobi.toLowerCase().includes(searchTerm.toLowerCase());
 
     return (
       usernameMatch ||
@@ -175,11 +173,16 @@ function Guru() {
       genderMatch ||
       alamatMatch ||
       teleponMatch ||
-      statusNikahMatch ||
       jabatanMatch ||
-      kelasMatch
+      kelasMatch ||
+      tanggalMatch ||
+      tempatMatch ||
+      nikMatch ||
+      nipMatch ||
+      hobiMatch
     );
-  });
+});
+
 
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
@@ -203,7 +206,6 @@ function Guru() {
     "Jenis Kelamin": g.gender,
     Alamat: g.alamat,
     "Nomor Telepon": g.modifiedTelepon,
-    "Status Pernikahan": g.status_nikah,
   }));
 
   const exportExcelGuru = async () => {
@@ -343,7 +345,7 @@ function Guru() {
           <h1 className="text-3xl font-semibold text-gray-800">Data Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
-              type="text"
+              type="search"
               placeholder="Cari Guru..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -376,30 +378,18 @@ function Guru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4">No</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Nama Guru
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Email
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Jenis Kelamin
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Alamat
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Nomor Telepon
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Jabatan
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Walikelas
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Status Pernikahan
-                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Email</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Jenis Kelamin</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Tanggal Lahir</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Tempat Lahir</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat Rumah</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Nomor Telepon</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">NIK</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">NIP</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Jabatan</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Walikelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Hobi</th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -415,21 +405,13 @@ function Guru() {
                         key={g.id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                       >
-                        <td className="py-2 px-4">
-                          {index + 1 + pagesVisited}
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.username}
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.email}
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.gender}
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.alamat}
-                        </td>
+                        <td className="py-2 px-4">{index + 1 + pagesVisited}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.username}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.email}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.gender}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.tanggal}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.tempat}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.alamat}</td>
                         <td
                           className="py-2 px-4 text-center whitespace-nowrap"
                           onDoubleClick={() => handleDoubleClick(g.id)}
@@ -437,34 +419,20 @@ function Guru() {
                           {g.telepon ? (
                             g.id === selectedGuruId ? (
                               isHiddenTelepon ? (
-                                <span>
-                                  {g.modifiedTelepon
-                                    ? g.modifiedTelepon.replace(/.{4}$/, "****")
-                                    : ""}
-                                </span>
+                                <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
                               ) : (
                                 <span>{g.modifiedTelepon}</span>
                               )
                             ) : (
-                              <span>
-                                {g.modifiedTelepon
-                                  ? g.modifiedTelepon.replace(/.{4}$/, "****")
-                                  : ""}
-                              </span>
+                              <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
                             )
                           ) : null}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.jabatan}
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {g.kelasText}
-                          </td>
-                        </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
-                          {g.status_nikah}
-                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.nik}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.nip}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.jabatan}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.kelasText}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.hobi}</td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
@@ -484,7 +452,7 @@ function Guru() {
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="10" className="py-4 text-center text-gray-500">
+                    <td colSpan="15" className="py-4 text-center text-gray-500">
                       Tidak ada data guru yang ditemukan.
                     </td>
                   </tr>

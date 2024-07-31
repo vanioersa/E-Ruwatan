@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -10,8 +10,9 @@ const TambahPiketan = () => {
   const [siswaByKelas, setSiswaByKelas] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState({});
   const [tanggal, setTanggal] = useState(new Date().toISOString().slice(0, 16));
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchKelas();
@@ -26,15 +27,7 @@ const TambahPiketan = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedKelas) {
-      fetchSiswaByKelas(selectedKelas);
-    }
-  }, [selectedKelas]);
-
-  const token = localStorage.getItem("token");
-
-  const fetchSiswaByKelas = async (kelasId) => {
+  const fetchSiswaByKelas = useCallback(async (kelasId) => {
     try {
       if (kelasId) {
         const response = await axios.get(
@@ -52,7 +45,13 @@ const TambahPiketan = () => {
     } catch (error) {
       console.error("Gagal mengambil data Siswa: ", error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (selectedKelas) {
+      fetchSiswaByKelas(selectedKelas);
+    }
+  }, [selectedKelas, fetchSiswaByKelas]);
 
   const handleKelasChange = async (e) => {
     const selectedKelasId = e.target.value;
@@ -181,9 +180,6 @@ const TambahPiketan = () => {
                     </option>
                   ))}
                 </select>
-                {error && !selectedKelas && (
-                  <p className="text-red-500 text-sm mt-1">{error}</p>
-                )}
               </div>
 
               <div className="relative">
@@ -280,10 +276,6 @@ const TambahPiketan = () => {
                     )}
                   </tbody>
                 </table>
-
-                {error && selectedKelas && (
-                  <p className="text-red-500 text-sm mt-2 sm:mt-1">{error}</p>
-                )}
               </div>
             </div>
 

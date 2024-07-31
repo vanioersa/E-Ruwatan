@@ -5,34 +5,25 @@ import axios from "axios";
 import Sidebar from "../../../component/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import dayjs from 'dayjs';
 
 const apiUrl = "http://localhost:4001";
 
 const TambahGuru = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    alamat: "",
-    gender: "",
-    telepon: "",
-    status_nikah: "",
-    jabatan: "",
-    kelasId: null,
-  });
+  const [formData, setFormData] = useState({username: "", email: "", password: "", gender: "", tanggal: "", tempat: "", alamat: "", telepon: "", nik: "", nip: "", jabatan: "", kelasId: null, hobi: ""});
   const [kelas, setKelas] = useState([]);
   const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchKelas = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/kelas/all");
-      setKelas(response.data.reverse());
-    } catch (error) {
-      console.error("Gagal mengambil data Kelas: ", error);
-    }
-  };
+    const fetchKelas = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/kelas/all");
+        setKelas(response.data.reverse());
+      } catch (error) {
+        console.error("Gagal mengambil data Kelas: ", error);
+      }
+    };
     fetchKelas();
   }, []);
 
@@ -42,31 +33,39 @@ const TambahGuru = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  
+    if (name === "telepon") {
+      let formattedValue = value.replace(/[^0-9]/g, "");
+      if (!formattedValue.startsWith("08")) {
+        formattedValue = "08" + formattedValue;
+      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: formattedValue.slice(0, 13),
+      }));
+    } else if (name === "tanggal") {
+      const formattedDate = dayjs(value, "YYYY-MM-DD").format("DD-MM-YYYY");
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: formattedDate,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
   };
-
+  
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const {
-      username,
-      email,
-      password,
-      alamat,
-      gender,
-      telepon,
-      status_nikah,
-      jabatan,
-      kelasId,
-    } = formData;
+    const {username, email, password, gender, tanggal, tempat, alamat, telepon, nik, nip, jabatan, kelasId, hobi} = formData;
 
     if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
         icon: "error",
-        title: "Registrasi Gagal",
+        title: "Gagal",
         text: "Username hanya boleh berisi huruf dan spasi",
         timer: 2000,
         showConfirmButton: false,
@@ -76,7 +75,7 @@ const TambahGuru = () => {
     if (!username.charAt(0).match(/^[A-Z]$/)) {
       Swal.fire({
         icon: "error",
-        title: "Registrasi Gagal",
+        title: "Gagal",
         text: "Huruf pertama username harus kapital",
         timer: 2000,
         showConfirmButton: false,
@@ -86,7 +85,7 @@ const TambahGuru = () => {
     if (password.length < 8) {
       Swal.fire({
         icon: "error",
-        title: "Registrasi Gagal",
+        title: "Gagal",
         text: "Password harus terdiri dari minimal 8 karakter",
         timer: 2000,
         showConfirmButton: false,
@@ -96,19 +95,8 @@ const TambahGuru = () => {
     if (!password.match(/^(?=.*[a-zA-Z])(?=.*[0-9])/)) {
       Swal.fire({
         icon: "error",
-        title: "Registrasi Gagal",
+        title: "Gagal",
         text: "Password harus terdiri dari angka dan huruf",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    if (!username || !email || !password) {
-      Swal.fire({
-        icon: "error",
-        title: "Registrasi Gagal",
-        text: "Semua kolom harus diisi",
         timer: 2000,
         showConfirmButton: false,
       });
@@ -127,18 +115,7 @@ const TambahGuru = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.post(`${apiUrl}/register`, {
-            username,
-            email,
-            password,
-            alamat,
-            gender,
-            telepon,
-            status_nikah,
-            jabatan,
-            kelasId: jabatan === "WaliKelas" ? kelasId : null, // Set kelasId conditionally
-            role: "GURU",
-          });
+          const response = await axios.post(`${apiUrl}/register`, {username, email, password, gender, tanggal, tempat, alamat, telepon, nik, nip, jabatan, kelasId: jabatan === "WaliKelas" ? kelasId : null, hobi, role: "GURU"});
 
           if (response.data) {
             Swal.fire({
@@ -152,7 +129,7 @@ const TambahGuru = () => {
             });
           }
         } catch (error) {
-          let errorMessage = "Registrasi gagal! Silakan coba lagi.";
+          let errorMessage = "gagal! Silakan coba lagi.";
           if (error.response?.status === 401) {
             errorMessage = "Username atau email sudah digunakan.";
           } else {
@@ -161,7 +138,7 @@ const TambahGuru = () => {
           }
           Swal.fire({
             icon: "error",
-            title: "Registrasi Gagal!",
+            title: "Gagal!",
             text: errorMessage,
             timer: 2000,
             showConfirmButton: false,
@@ -170,46 +147,6 @@ const TambahGuru = () => {
         }
       }
     });
-  };
-
-  const handleInputChango = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => {
-      if (name === "telepon") {
-        if (value.startsWith("08")) {
-          return { ...prevFormData, [name]: value };
-        } else {
-          return { ...prevFormData, [name]: "08" };
-        }
-      }
-      if (value.length > 12) {
-        Swal.fire({
-          icon: "error",
-          title: "Nomor telepon terlalu panjang",
-          text: "Nomor telepon harus memiliki maksimal 12 digit.",
-        });
-        return prevFormData;
-      }
-      return { ...prevFormData, [name]: value };
-    });
-  };
-
-  const handleSubmiit = (e) => {
-    e.preventDefault();
-    if (formData.telepon.length < 10) {
-      Swal.fire({
-        icon: "error",
-        title: "Nomor telepon tidak valid",
-        text: "Nomor telepon harus memiliki minimal 10 digit.",
-      });
-    } else {
-      console.log("Data valid:", formData);
-      Swal.fire({
-        icon: "success",
-        title: "Berhasil!",
-        text: "Data berhasil ditambahkan.",
-      });
-    }
   };
 
   const batal = () => {
@@ -306,28 +243,6 @@ const TambahGuru = () => {
 
               <div className="relative">
                 <label
-                  htmlFor="alamat"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Alamat
-                </label>
-                <input
-                  id="alamat"
-                  name="alamat"
-                  type="text"
-                  autoComplete="off"
-                  value={formData.alamat}
-                  onChange={handleInputChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Masukkan Alamat"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
-              <div className="relative">
-                <label
                   htmlFor="gender"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
@@ -346,6 +261,69 @@ const TambahGuru = () => {
                   <option value="Perempuan">Perempuan</option>
                 </select>
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="tanggal"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Tanggal Lahir
+                </label>
+                <input
+                  id="tanggal"
+                  name="tanggal"
+                  type="date"
+                  value={dayjs(formData.tanggal, "DD-MM-YYYY").format("YYYY-MM-DD")}
+                  onChange={handleInputChange}
+                  max={dayjs().format("YYYY-MM-DD")}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                />
+              </div>
+
+              <div className="relative">
+                <label
+                  htmlFor="tempat"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Tempat Lahir
+                </label>
+                <input
+                  id="tempat"
+                  name="tempat"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.tempat}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Tempat Lahir"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+              <div className="relative">
+                <label
+                  htmlFor="alamat"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  Alamat
+                </label>
+                <input
+                  id="alamat"
+                  name="alamat"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.alamat}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan Alamat"
+                  required
+                />
+              </div>
 
               <div className="relative">
                 <label
@@ -357,10 +335,10 @@ const TambahGuru = () => {
                 <input
                   id="telepon"
                   name="telepon"
-                  type="text"
+                  type="number"
                   autoComplete="off"
                   value={formData.telepon}
-                  onChange={handleInputChango}
+                  onChange={handleInputChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="Masukkan Nomor Telepon"
                   maxLength={12}
@@ -372,26 +350,46 @@ const TambahGuru = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
-                  htmlFor="status_nikah"
+                  htmlFor="nik"
                   className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
                 >
-                  Status Nikah
+                  NIK
                 </label>
-                <select
-                  id="status_nikah"
-                  name="status_nikah"
-                  value={formData.status_nikah}
+                <input
+                  id="nik"
+                  name="nik"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.nik}
                   onChange={handleInputChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan NIK"
                   required
-                >
-                  <option value="">Pilih Status</option>
-                  <option value="Belum Menikah">Belum Menikah</option>
-                  <option value="Menikah">Menikah</option>
-                  <option value="Cerai">Cerai</option>
-                </select>
+                />
               </div>
 
+              <div className="relative">
+                <label
+                  htmlFor="nip"
+                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                >
+                  NIP
+                </label>
+                <input
+                  id="nip"
+                  name="nip"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.nip}
+                  onChange={handleInputChange}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Masukkan NIP"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
               <div className="relative">
                 <label
                   htmlFor="jabatan"
@@ -412,33 +410,80 @@ const TambahGuru = () => {
                   <option value="WaliKelas">WaliKelas</option>
                 </select>
               </div>
-            </div>
 
-            {formData.jabatan === "WaliKelas" && (
-              <div className="relative mt-4">
-                <label
-                  htmlFor="kelasId"
-                  className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
-                >
-                  Pilih Kelas
-                </label>
-                <select
-                  id="kelasId"
-                  name="kelasId"
-                  value={formData.kelasId}
-                  onChange={handleInputChange}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Pilih Kelas</option>
-                  {kelas.map((kelas) => (
-                  <option className="text-sm" key={kelas.id} value={kelas.id}>
-                    {`${kelas.kelas} - ${kelas.nama_kelas}`}
-                  </option>
-                ))}
-                </select>
-              </div>
-            )}
+              {formData.jabatan === "WaliKelas" && (
+                <>
+                  <div className="relative">
+                    <label
+                      htmlFor="kelasId"
+                      className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                    >
+                      Pilih Kelas
+                    </label>
+                    <select
+                      id="kelasId"
+                      name="kelasId"
+                      value={formData.kelasId}
+                      onChange={handleInputChange}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      required
+                    >
+                      <option value="">Pilih Kelas</option>
+                      {kelas.map((kelas) => (
+                        <option
+                          className="text-sm"
+                          key={kelas.id}
+                          value={kelas.id}
+                        >
+                          {`${kelas.kelas} - ${kelas.nama_kelas}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="relative col-span-2">
+                    <label
+                      htmlFor="hobi"
+                      className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                    >
+                      Hobi
+                    </label>
+                    <input
+                      id="hobi"
+                      name="hobi"
+                      type="text"
+                      autoComplete="off"
+                      value={formData.hobi}
+                      onChange={handleInputChange}
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="Masukkan Hobi"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              {formData.jabatan !== "WaliKelas" && (
+                <div className="relative">
+                  <label
+                    htmlFor="hobi"
+                    className="block mb-2 text-sm sm:text-sm font-medium text-gray-900"
+                  >
+                    Hobi
+                  </label>
+                  <input
+                    id="hobi"
+                    name="hobi"
+                    type="text"
+                    autoComplete="off"
+                    value={formData.hobi}
+                    onChange={handleInputChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="Masukkan Hobi"
+                    required
+                  />
+                </div>
+              )}
+            </div>
 
             <div className="flex justify-between mt-6">
               <button

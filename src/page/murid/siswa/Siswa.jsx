@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import { getAllSiswa, deleteSiswa } from "./api_siswa";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
-import * as xlsx from "xlsx";
 
 function Siswa() {
   const [siswa, setSiswa] = useState([]);
@@ -35,14 +34,14 @@ function Siswa() {
     }
 
     Swal.fire({
-      title: 'Apakah Anda yakin?',
+      title: "Apakah Anda yakin?",
       text: "Anda akan mengimpor data dari file ini.",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, impor!',
-      cancelButtonText: 'Batal'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, impor!",
+      cancelButtonText: "Batal",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const formData = new FormData();
@@ -69,7 +68,7 @@ function Siswa() {
             showConfirmButton: false,
             timer: 2500,
           });
-          window.location.reload()
+          window.location.reload();
         } catch (error) {
           console.error("Error importing file:", error);
           Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
@@ -137,20 +136,21 @@ function Siswa() {
   const filteredSiswa = siswa.filter((s) => {
     const kelass = kelas.find((k) => k.id === s.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === s.kelasId)?.nama_kelas;
+  
     return (
-      (s.nama_siswa &&
-        s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nama_siswa && s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.gender && s.gender.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.tanggal && s.tanggal.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.tempat && s.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.alamat && s.alamat.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelass &&
-        namaKelas &&
-        `${kelass} - ${namaKelas}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()))
+      (s.telepon && s.telepon.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nik && s.nik.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nis && s.nis.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kelass && namaKelas && `${kelass} - ${namaKelas}`.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-
+  
   const dataToExport = filteredSiswa.map((s, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Siswa": s.nama_siswa,
@@ -236,38 +236,41 @@ function Siswa() {
     e.preventDefault();
 
     const isConfirmed = await Swal.fire({
-      title: 'Apakah Anda yakin?',
+      title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya, unduh!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, unduh!",
     });
 
     if (!isConfirmed.isConfirmed) {
-      return; // Jika pengguna tidak mengonfirmasi, keluar dari fungsi
+      return;
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4001/siswa/download/template', {
-        responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://localhost:4001/siswa/download/template",
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'Template_Siswa.xlsx');
+      link.setAttribute("download", "Template_Siswa.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (error) {
-      console.error('Error saat mengunduh file:', error);
+      console.error("Error saat mengunduh file:", error);
     }
   };
 
@@ -278,11 +281,14 @@ function Siswa() {
         <Sidebar />
       </div>
       <div className="content-page flex-1 container p-8 overflow-y-auto">
-        <div style={{ backgroundColor: "white" }} className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6">
+        <div
+          style={{ backgroundColor: "white" }}
+          className="my-10 bg-white border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
+        >
           <h1 className="text-3xl font-semibold text-gray-800">Data Siswa</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
-              type="text"
+              type="search"
               placeholder="Cari Siswa..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -349,21 +355,41 @@ function Siswa() {
             </div>
           )}
 
-
           <div className="mt-4 overflow-x-auto border border-gray-200 rounded-lg">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
-                  <th className="py-2 px-4">No</th>
+                  <th className="py-2 px-4 text-left">No</th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Nama Siswa
+                    Nama Lengkap
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">NISN</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Jenis Kelamin
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Tanggal Lahir
+                  </th>
                   <th className="py-2 px-4 text-center whitespace-nowrap">
                     Tempat Lahir
                   </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Alamat Rumah
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Nomor Telepon
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    NIK
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    NIS
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    NISN
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Kelas
+                  </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -382,14 +408,37 @@ function Siswa() {
                         <td className="py-2 px-4">
                           {index + 1 + pagesVisited}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.nama_siswa}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.nisn}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.tempat}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {s.nama_siswa}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.gender}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.tanggal}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {s.tempat}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {s.alamat}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.telepon}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.nik}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.nis}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {s.nisn}
+                        </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
                           {kelas.find((k) => k.id === s.kelasId)?.kelas} -{" "}
                           {kelas.find((k) => k.id === s.kelasId)?.nama_kelas}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{s.alamat}</td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditSiswa/${s.id}`}>
@@ -409,7 +458,7 @@ function Siswa() {
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center py-4">
+                    <td colSpan="12" className="text-center py-4">
                       Tidak ada data siswa yang ditemukan
                     </td>
                   </tr>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { Link } from "react-router-dom";
@@ -26,14 +26,9 @@ function PiketanGuru() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const token = localStorage.getItem("token");
-  const [status, setStatus] = useState(piketan.status);
+  // const [status, setStatus] = useState(piketan.status);
 
-  useEffect(() => {
-    fetchPiketan();
-    fetchKelas();
-  }, []);
-
-  const fetchPiketan = async () => {
+  const fetchPiketan = useCallback(async () => {
     try {
       const response = await axios.get("/piket/all", {
         headers: {
@@ -45,16 +40,21 @@ function PiketanGuru() {
     } catch (error) {
       console.error("Error fetching piketan data", error);
     }
-  };
+  }, [token]);
 
-  const fetchKelas = async () => {
+  const fetchKelas = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
       setKelas(response.data);
     } catch (error) {
       console.error("Failed to fetch Kelas: ", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPiketan();
+    fetchKelas();
+  }, [fetchPiketan, fetchKelas]);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -330,7 +330,7 @@ function PiketanGuru() {
           style={{ backgroundColor: "white" }}
           className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
         >
-          <h1 className="text-3xl font-semibold text-gray-800">Piketan Guru</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">Piketan</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <input
               type="text"

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import logobinus from "../asset/logobinus.png";
 import Swal from "sweetalert2";
-import { Link, useLocation } from "react-router-dom";
 import { getAdminById } from "./api";
+import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered, faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,6 +15,7 @@ const SidebarGuru = () => {
   const [profilePic, setProfilePic] = useState(
     "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
   );
+  const jabatan = localStorage.getItem("jabatan");
 
   useEffect(() => {
     if (id) {
@@ -48,6 +49,7 @@ const SidebarGuru = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
+        localStorage.removeItem("jabatan"); // Hapus jabatan dari local storage saat logout
         Swal.fire({
           title: "Berhasil Keluar",
           text: "Anda telah berhasil keluar.",
@@ -217,14 +219,14 @@ const SidebarGuru = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25A8.967 8.967 0 0 1 18 3.75c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
                 ></path>
               </svg>
               <span
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
                 className="mx-2 font-medium"
               >
-                KBM Guru
+                KBM
               </span>
             </Link>
           </li>
@@ -259,37 +261,39 @@ const SidebarGuru = () => {
               </span>
             </Link>
           </li>
-          <li
-            className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/penilaian")
-                ? `bg-gray-100 text-black`
-                : `hover:bg-gray-200 hover:text-black`
-              }`}
-          >
-            <Link to="/penilaian" className="flex items-center w-full">
-              <svg
-                className="w-7 h-7 mr-2"
-                data-slot="icon"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                ></path>
-              </svg>
-              <span
-                style={{ fontFamily: "Poopins", fontWeight: "bold" }}
-                className="mx-2 font-medium"
-              >
-                Penilaian
-              </span>
-            </Link>
-          </li>
+          {jabatan === "WaliKelas" && (
+            <li
+              className={`py-2 px-3 my-2 rounded cursor-pointer ${isActive("/penilaian")
+                  ? `bg-gray-100 text-black`
+                  : `hover:bg-gray-200 hover:text-black`
+                }`}
+            >
+              <Link to="/penilaian" className="flex items-center w-full">
+                <svg
+                  className="w-7 h-7 mr-2"
+                  data-slot="icon"
+                  fill="none"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                  ></path>
+                </svg>
+                <span
+                  style={{ fontFamily: "Poopins", fontWeight: "bold" }}
+                  className="mx-2 font-medium"
+                >
+                  Penilaian
+                </span>
+              </Link>
+            </li>
+          )}
           <hr className="absolute bottom-14 w-60" />
           <li className="py-2 px-3 my-2 mr-2 mx-2 rounded absolute bottom-0 left-0 min-w-60">
             <span

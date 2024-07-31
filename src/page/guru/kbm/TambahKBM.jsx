@@ -137,16 +137,16 @@ const TambahKBM = () => {
       await createKbm(kbmData);
       Swal.fire({
         title: "Berhasil",
-        text: "Data KBM Guru berhasil ditambahkan",
+        text: "Data KBM berhasil ditambahkan",
         icon: "success",
         showConfirmButton: false,
         timer: 2000,
       }).then(() => {
-        navigate(-1); // Assuming you want to navigate back to a previous page
+        navigate(-1);
       });
     } catch (error) {
-      console.error("Gagal menambahkan KBM Guru: ", error);
-      let errorMessage = "Gagal menambahkan KBM Guru. Silakan coba lagi.";
+      console.error("Gagal menambahkan KBM: ", error);
+      let errorMessage = "Gagal menambahkan KBM. Silakan coba lagi.";
       if (
         error.response &&
         error.response.data &&
@@ -174,10 +174,10 @@ const TambahKBM = () => {
         <SidebarGuru />
       </div>
       <div className="content-page max-h-screen container p-8 min-h-screen">
-        <h1 className="judul text-3xl font-semibold">Tambah KBM Guru</h1>
+        <h1 className="judul text-3xl font-semibold">Tambah KBM</h1>
         <div style={{ backgroundColor: "white" }} className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg">
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
-            Tambah KBM Guru
+            Tambah KBM
           </p>
           <form onSubmit={handleSubmit}>
             <input

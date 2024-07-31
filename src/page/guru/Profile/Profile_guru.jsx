@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../../component/SidebarGuru";
-import Navproguru from "../../../component/Navpro_guru";
 import { getAdminById } from "./api_guru";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
-import Navpro_guru from "../../../component/Navpro_guru";
+import NavproGuru from "../../../component/Navpro_guru";
 
 function Profile_Guru() {
   const id = localStorage.getItem("id");
@@ -26,7 +25,6 @@ function Profile_Guru() {
   );
   const [previewImage, setPreviewImagepreviewImage] = useState(null);
   const [editProfil, setEditProfile] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,7 +72,6 @@ function Profile_Guru() {
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setError("Unauthorized: Silakan masuk kembali.");
         Swal.fire({
           icon: "error",
           title: "Login Gagal",
@@ -83,7 +80,6 @@ function Profile_Guru() {
           showConfirmButton: false,
         });
       } else {
-        setError("Terjadi kesalahan.");
         console.error("Kesalahan saat mengunggah foto:", error);
         Swal.fire({
           icon: "error",
@@ -101,7 +97,6 @@ function Profile_Guru() {
     const file = e.target.files[0];
     setImage(file);
     setPreviewImagepreviewImage(URL.createObjectURL(file));
-    setError(null);
   };
 
   useEffect(() => {
@@ -125,7 +120,7 @@ function Profile_Guru() {
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-full space-y-6">
-        <Navpro_guru />
+        <NavproGuru />
 
           <div className="block md:flex">
             <div

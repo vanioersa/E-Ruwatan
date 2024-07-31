@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import Sidebar from "../../../component/Sidebar";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import Navpro_admin from "../../../component/Navpro_admin";
+import NavproAdmin from "../../../component/Navpro_admin";
 
 function Setting() {
   const [passwordLama, setPasswordLama] = useState("");
   const [passwordBaru, setPasswordBaru] = useState("");
   const [konfirmasiPassword, setKonfirmasiPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -154,8 +152,7 @@ function Setting() {
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl w-full sm:w-96 md:w-full">
-          <Navpro_admin />
-
+          <NavproAdmin />
           <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
@@ -235,9 +232,6 @@ function Setting() {
                     Submit
                   </button>
                 </div>
-                {message && (
-                  <div className="text-center mt-4 text-red-500">{message}</div>
-                )}
               </form>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SidebarGuru from "../../../component/SidebarGuru";
 import axios from "axios";
@@ -8,43 +8,42 @@ import Swal from "sweetalert2";
 const UpdatePenilaian = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [penilaian, setPenilaian] = useState({ deskripsi: "", nilai: "" });
   const [kelas, setKelas] = useState([]);
   const [siswaByKelas, setSiswaByKelas] = useState([]);
 
-  const fetchKelas = async () => {
+  const fetchKelas = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:4001/kelas/all");
       setKelas(response.data);
     } catch (error) {
       console.error("Gagal mengambil data Kelas: ", error);
     }
-  };
+  }, []);
 
-  const fetchSiswaByKelas = async () => {
+  const fetchSiswaByKelas = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:4001/siswa/all");
       setSiswaByKelas(response.data);
     } catch (error) {
       console.error("Gagal mengambil data Siswa: ", error);
     }
-  };
-
-  useEffect(() => {
-    fetchKelas();
-    fetchSiswaByKelas();
-    fetchPenilaian();
   }, []);
 
-  const fetchPenilaian = async () => {
+  const fetchPenilaian = useCallback(async () => {
     try {
       const response = await getPenilaianById(id);
       setPenilaian(response);
     } catch (error) {
       console.error("Gagal mengambil data Penilaian: ", error);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchKelas();
+    fetchSiswaByKelas();
+    fetchPenilaian();
+  }, [fetchKelas, fetchSiswaByKelas, fetchPenilaian]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
