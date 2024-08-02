@@ -170,7 +170,7 @@ function Kelas() {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "ExportKelas.xlsx");
+            link.setAttribute("download", "Ekspor-Kelas.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -207,7 +207,7 @@ function Kelas() {
 
   const downloadFormat = async (e) => {
     e.preventDefault();
-
+  
     const isConfirmed = await Swal.fire({
       title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
@@ -217,11 +217,11 @@ function Kelas() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, unduh!",
     });
-
+  
     if (!isConfirmed.isConfirmed) {
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -233,20 +233,39 @@ function Kelas() {
           },
         }
       );
-
+  
       const url = window.URL.createObjectURL(new Blob([response.data]));
-
+  
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "Template_Kelas.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
+  
+      Swal.fire({
+        title: "Sukses!",
+        text: "Template berhasil diunduh.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error saat mengunduh file:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat mengunduh template.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
-
+  
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div
@@ -348,7 +367,7 @@ function Kelas() {
                 ) : (
                   <tr>
                     <td colSpan="4" className="py-4 text-center text-gray-500">
-                      Tidak ada data kelas yang ditemukan.
+                      {searchTerm ? "Data Kelas Tidak Ditemukan" : "Data Kelas Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

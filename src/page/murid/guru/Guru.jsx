@@ -74,7 +74,6 @@ function Guru() {
           });
           setIsModalOpen(false);
           window.location.reload();
-          // fetchGuru();
         } catch (error) {
           console.error("Error importing file:", error);
           Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
@@ -234,7 +233,7 @@ function Guru() {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "ExportGuru.xlsx");
+            link.setAttribute("download", "Ekspor-Guru.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -306,7 +305,7 @@ function Guru() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Template_Guru.xlsx");
+      link.setAttribute("download", "Templat-Guru.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
@@ -318,6 +317,8 @@ function Guru() {
         confirmButtonColor: "#3085d6",
         showConfirmButton: false,
         timer: 2000,
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       console.error("Error saat mengunduh file:", error);
@@ -453,7 +454,7 @@ function Guru() {
                 ) : (
                   <tr>
                     <td colSpan="15" className="py-4 text-center text-gray-500">
-                      Tidak ada data guru yang ditemukan.
+                      {searchTerm ? "Data Guru Tidak Ditemukan" : "Data Guru Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

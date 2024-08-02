@@ -11,12 +11,6 @@ function Profile_Admin() {
   const id = localStorage.getItem("id");
   const token = localStorage.getItem("token");
   const [admin, setAdmin] = useState({
-    username: "",
-    email: "",
-    alamat: "",
-    gender: "",
-    telepon: "",
-    status_nikah: "",
     image: "",
   });
   const [image, setImage] = useState(null);
@@ -118,14 +112,14 @@ function Profile_Admin() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <SidebarAdmin />
-      <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-full space-y-6">
+      <div className="flex flex-grow items-center justify-center">
+        <div className="max-w-4xl w-full">
           <Navproadmin />
 
           <div className="block md:flex">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
+              className="md:flex-1 p-4 sm:p-6 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
             >
               <div className="text-center flex justify-between items-center">
                 <span className="text-xl font-semibold text-gray-800">
@@ -178,7 +172,7 @@ function Profile_Admin() {
 
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-4 sm:p-6 lg:p-8 lg:ml-4 shadow-md rounded-tr-xl rounded-br-xl"
+              className="md:flex-1 p-4 sm:p-6 bg-white shadow-md rounded-tr-xl rounded-br-xl"
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Data Profile</strong>
@@ -214,88 +208,6 @@ function Profile_Admin() {
                       className="border rounded-xl px-4 py-2 w-full text-gray-900"
                       type="email"
                       value={admin.email}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="pb-4">
-                <div className="flex flex-col sm:flex-row">
-                  <div className="w-full sm:w-1/2 pr-2">
-                    <label
-                      htmlFor="alamat"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Alamat
-                    </label>
-                    <input
-                      readOnly
-                      id="alamat"
-                      className={`border rounded-xl px-4 py-2 w-full ${
-                        !admin.alamat ? "text-gray-400" : "text-gray-900"
-                      }`}
-                      type="text"
-                      value={admin.alamat ? admin.alamat : "Data kosong"}
-                    />
-                  </div>
-                  <div className="w-full sm:w-1/2 pl-2">
-                    <label
-                      htmlFor="gender"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Gender
-                    </label>
-                    <input
-                      readOnly
-                      id="gender"
-                      className={`border rounded-xl px-4 py-2 w-full ${
-                        !admin.gender ? "text-gray-400" : "text-gray-900"
-                      }`}
-                      type="text"
-                      value={admin.gender ? admin.gender : "Data kosong"}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="pb-4">
-                <div className="flex flex-col sm:flex-row">
-                  <div className="w-full sm:w-1/2 pr-2">
-                    <label
-                      htmlFor="telepon"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Telepon
-                    </label>
-                    <input
-                      readOnly
-                      id="telepon"
-                      className={`border rounded-xl px-4 py-2 w-full ${
-                        !admin.telepon ? "text-gray-400" : "text-gray-900"
-                      }`}
-                      type="text"
-                      value={
-                        admin.telepon
-                          ? admin.telepon.replace(/^08/, "+62 ")
-                          : "Data kosong"
-                      }
-                    />
-                  </div>
-                  <div className="w-full sm:w-1/2 pl-2">
-                    <label
-                      htmlFor="status_nikah"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Status Nikah
-                    </label>
-                    <input
-                      readOnly
-                      id="status_nikah"
-                      className={`border rounded-xl px-4 py-2 w-full ${
-                        !admin.status_nikah ? "text-gray-400" : "text-gray-900"
-                      }`}
-                      type="text"
-                      value={
-                        admin.status_nikah ? admin.status_nikah : "Data kosong"
-                      }
                     />
                   </div>
                 </div>

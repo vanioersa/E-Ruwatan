@@ -23,7 +23,6 @@ function Penilaian() {
   const [dataPerPage] = useState(10);
   const [kelas, setKelas] = useState([]);
   const [siswa, setSiswa] = useState([]);
-  // const [users, setUsers] = useState([]);
   const [showImportModal, setShowImportModal] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
 
@@ -65,7 +64,7 @@ function Penilaian() {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/panilaian/upload/importPenilaian",
+        "http://localhost:4001/penilaian/upload/importPenilaian",
         formData,
         {
           headers: {
@@ -181,16 +180,6 @@ function Penilaian() {
     );
   });
 
-  // const dataToExport = filteredData.map((item, index) => ({
-  //   No: index + 1,
-  //   "Siswa ID": item.siswa_id || "",
-  //   "Nama Siswa": (siswa.find((s) => s.id === item.siswa_id) || {}).nama_siswa || "",
-  //   "Kelas ID": item.kelas_id || "",
-  //   Kelas: `${kelas.find((k) => k.id === item.kelas_id)?.kelas || ""} - ${kelas.find((k) => k.id === item.kelas_id)?.nama_kelas || ""}`,
-  //   Nilai: item.nilai || "",
-  //   Deskripsi: item.deskripsi || "",
-  // }));
-
   const exportExcell = async (kelas_id, siswa_id) => {
     Swal.fire({
       title: "Konfirmasi",
@@ -204,7 +193,7 @@ function Penilaian() {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:4001/panilaian/upload/export-penilaian?${kelas_id}${siswa_id}`,
+            `http://localhost:4001/penilaian/upload/export-penilaian?${kelas_id}${siswa_id}`,
             {
               responseType: "blob",
               headers: {
@@ -277,7 +266,7 @@ function Penilaian() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:4001/panilaian/download/template-penilaian",
+        "http://localhost:4001/penilaian/download/template-penilaian",
         {
           responseType: "blob",
           headers: {

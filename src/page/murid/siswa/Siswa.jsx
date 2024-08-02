@@ -136,21 +136,28 @@ function Siswa() {
   const filteredSiswa = siswa.filter((s) => {
     const kelass = kelas.find((k) => k.id === s.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === s.kelasId)?.nama_kelas;
-  
+
     return (
-      (s.nama_siswa && s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.nama_siswa &&
+        s.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.gender && s.gender.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (s.tanggal && s.tanggal.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.tanggal &&
+        s.tanggal.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.tempat && s.tempat.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.alamat && s.alamat.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (s.telepon && s.telepon.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (s.telepon &&
+        s.telepon.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nik && s.nik.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nis && s.nis.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (s.nisn && s.nisn.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (kelass && namaKelas && `${kelass} - ${namaKelas}`.toLowerCase().includes(searchTerm.toLowerCase()))
+      (kelass &&
+        namaKelas &&
+        `${kelass} - ${namaKelas}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()))
     );
   });
-  
+
   const dataToExport = filteredSiswa.map((s, index) => ({
     No: index + 1 + pagesVisited,
     "Nama Siswa": s.nama_siswa,
@@ -186,7 +193,7 @@ function Siswa() {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "ExportSiswa.xlsx");
+            link.setAttribute("download", "Ekspor-Siswa.xlsx");
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -265,12 +272,31 @@ function Siswa() {
 
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Template_Siswa.xlsx");
+      link.setAttribute("download", "Templat-Siswa.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
+
+      Swal.fire({
+        title: "Sukses!",
+        text: "Template berhasil diunduh.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error saat mengunduh file:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat mengunduh template.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
 
@@ -459,7 +485,9 @@ function Siswa() {
                 ) : (
                   <tr>
                     <td colSpan="12" className="text-center py-4">
-                      Tidak ada data siswa yang ditemukan
+                      {searchTerm
+                        ? "Data Siswa Tidak Ditemukan"
+                        : "Data Siswa Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

@@ -15,6 +15,7 @@ function DashboardGuru() {
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
   const [jabatan, setJabatan] = useState("");
+  const [kelasId, setKelasId] = useState("");
   const [hoverStates, setHoverStates] = useState([false, false, false]);
 
   const handleMouseEnter = (index) => {
@@ -38,6 +39,10 @@ function DashboardGuru() {
     if (storedJabatan) {
       setJabatan(storedJabatan);
     }
+    const storedkelasId = localStorage.getItem("kelasId");
+    if (storedkelasId) {
+      setKelasId(storedkelasId);
+    }
   }, []);
 
   useEffect(() => {
@@ -55,7 +60,7 @@ function DashboardGuru() {
   useEffect(() => {
     const fetchPenilaian = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/penilaian/all");
+        const response = await axios.get("http://localhost:4001/  /all");
         setPenilaian(response.data);
       } catch (error) {
         console.error("Failed to fetch Penilaian: ", error);
@@ -125,7 +130,7 @@ function DashboardGuru() {
               Hai, <strong>{username}</strong>!{" "}
               <span style={{ boxShadow: "none" }}>
                 {jabatan === "WaliKelas"
-                  ? "Selamat datang di dashboard Guru Anda sebagai WaliKelas."
+                  ? `Selamat datang di dashboard Guru Anda sebagai WaliKelas ${kelasId}.`
                   : "Selamat datang di dashboard Guru."}
               </span>
             </h1>

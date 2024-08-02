@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:4001/panilaian";
+const apiUrl = "http://localhost:4001/penilaian";
 
 export const getAllPenilaian = async () => {
   const token = localStorage.getItem("token");

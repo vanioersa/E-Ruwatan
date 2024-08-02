@@ -5,7 +5,7 @@ const apiUrl = "http://localhost:4001";
 export const getAllUsers = async () => {
   try {
     const response = await axios.get(`${apiUrl}/users`);
-    console.log("API response data:", response.data); // Log response dari API
+    console.log("API response data:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch users: ", error);

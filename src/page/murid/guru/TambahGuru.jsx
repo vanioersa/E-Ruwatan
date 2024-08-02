@@ -5,12 +5,26 @@ import axios from "axios";
 import Sidebar from "../../../component/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const apiUrl = "http://localhost:4001";
 
 const TambahGuru = () => {
-  const [formData, setFormData] = useState({username: "", email: "", password: "", gender: "", tanggal: "", tempat: "", alamat: "", telepon: "", nik: "", nip: "", jabatan: "", kelasId: null, hobi: ""});
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    gender: "",
+    tanggal: "",
+    tempat: "",
+    alamat: "",
+    telepon: "",
+    nik: "",
+    nip: "",
+    jabatan: "",
+    kelasId: null,
+    hobi: "",
+  });
   const [kelas, setKelas] = useState([]);
   const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
@@ -33,7 +47,7 @@ const TambahGuru = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === "telepon") {
       let formattedValue = value.replace(/[^0-9]/g, "");
       if (!formattedValue.startsWith("08")) {
@@ -56,11 +70,25 @@ const TambahGuru = () => {
       }));
     }
   };
-  
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const {username, email, password, gender, tanggal, tempat, alamat, telepon, nik, nip, jabatan, kelasId, hobi} = formData;
+    const {
+      username,
+      email,
+      password,
+      gender,
+      tanggal,
+      tempat,
+      alamat,
+      telepon,
+      nik,
+      nip,
+      jabatan,
+      kelasId,
+      hobi,
+    } = formData;
 
     if (!username.match(/^[A-Za-z\s]+$/)) {
       Swal.fire({
@@ -103,50 +131,95 @@ const TambahGuru = () => {
       return;
     }
 
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data guru akan disimpan",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya",
-      cancelButtonText: "Tidak",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.post(`${apiUrl}/register`, {username, email, password, gender, tanggal, tempat, alamat, telepon, nik, nip, jabatan, kelasId: jabatan === "WaliKelas" ? kelasId : null, hobi, role: "GURU"});
+    try {
+      const { data } = await axios.get(`${apiUrl}/users`, {
+        params: { nik, nip, telepon },
+      });
+      if (data.nik) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "NIK sudah digunakan",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+      if (data.nip) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "NIP sudah digunakan",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+      if (data.telepon) {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Telepon sudah digunakan",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
 
-          if (response.data) {
-            Swal.fire({
-              icon: "success",
-              title: "Berhasil",
-              text: "Guru berhasil ditambahkan",
-              timer: 2000,
-              showConfirmButton: false,
-            }).then(() => {
-              navigate(-1);
-            });
-          }
-        } catch (error) {
-          let errorMessage = "gagal! Silakan coba lagi.";
-          if (error.response?.status === 401) {
-            errorMessage = "Username atau email sudah digunakan.";
-          } else {
-            errorMessage =
-              error.response?.data?.message || "Terjadi kesalahan.";
-          }
+      const result = await Swal.fire({
+        title: "Apakah Anda yakin?",
+        text: "Data guru akan disimpan",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya",
+        cancelButtonText: "Tidak",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.post(`${apiUrl}/register`, {
+          username,
+          email,
+          password,
+          gender,
+          tanggal,
+          tempat,
+          alamat,
+          telepon,
+          nik,
+          nip,
+          jabatan: jabatan === "WaliKelas" ? kelasId : null,
+          hobi,
+          role: "GURU",
+        });
+
+        if (response.data) {
           Swal.fire({
-            icon: "error",
-            title: "Gagal!",
-            text: errorMessage,
+            icon: "success",
+            title: "Berhasil",
+            text: "Guru berhasil ditambahkan",
             timer: 2000,
             showConfirmButton: false,
-          });
-          console.error(error);
+          }).then(() => navigate(-1));
         }
       }
-    });
+    } catch (error) {
+      let errorMessage = "gagal! Silakan coba lagi.";
+      if (error.response?.status === 401) {
+        errorMessage = "Username atau email sudah digunakan.";
+      } else {
+        errorMessage = error.response?.data?.message || "Terjadi kesalahan.";
+      }
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: errorMessage,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      console.error(error);
+    }
   };
 
   const batal = () => {
@@ -275,7 +348,9 @@ const TambahGuru = () => {
                   id="tanggal"
                   name="tanggal"
                   type="date"
-                  value={dayjs(formData.tanggal, "DD-MM-YYYY").format("YYYY-MM-DD")}
+                  value={dayjs(formData.tanggal, "DD-MM-YYYY").format(
+                    "YYYY-MM-DD"
+                  )}
                   onChange={handleInputChange}
                   max={dayjs().format("YYYY-MM-DD")}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
