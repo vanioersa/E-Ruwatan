@@ -21,7 +21,7 @@ function Kelas() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const kelasPerPage = 10;
+  const [kelasPerPage, setKelasPerPage] = useState(10);
   const pagesVisited = pageNumber * kelasPerPage;
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -285,13 +285,27 @@ function Kelas() {
         >
           <h1 className="text-3xl font-semibold text-gray-800">Data Kelas</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="search"
-              placeholder="Cari Kelas..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+          <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={kelasPerPage}
+                onChange={(e) => setKelasPerPage(Number(e.target.value))}
+                style={{ height: '45px' }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+                <input
+                  type="search"
+                  placeholder="Cari Siswa..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                  style={{ height: '45px' }}
+                />
+              </div>
             <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
               <div className="flex flex-row gap-2 md:gap-4">
                 <Link to="/TambahKelas">

@@ -194,7 +194,6 @@ const UpdateKBM = () => {
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg block w-full p-2.5"
                 />
               </div>
-              {/* Selector untuk kelas */}
               <div className="relative">
                 <label
                   htmlFor="kelasId"
@@ -218,7 +217,6 @@ const UpdateKBM = () => {
                 </select>
               </div>
             </div>
-            {/* Form input untuk jam masuk dan pulang */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
               <div className="relative">
                 <label
@@ -253,7 +251,6 @@ const UpdateKBM = () => {
                 />
               </div>
             </div>
-            {/* Form input untuk keterangan dan materi */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
               <div className="relative">
                 <label
@@ -279,7 +276,7 @@ const UpdateKBM = () => {
                 >
                   Keterangan
                 </label>
-                <input
+                <textarea
                   type="text"
                   id="keterangan"
                   name="keterangan"
@@ -290,7 +287,6 @@ const UpdateKBM = () => {
                 />
               </div>
             </div>
-            {/* Button untuk submit dan batal */}
             <div className="flex justify-between mt-6">
               <button
                 type="button"

@@ -1,5 +1,6 @@
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode"
 import Login from "./auth/login";
 import RegisterAdmin from "./auth/register_admin";
 import DashboardSiswa from "./component/Dashboard";
@@ -37,6 +38,8 @@ function App() {
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
+    const token = localStorage.getItem("token");
+
     if (loggedInUser) {
       setUserRole(JSON.parse(loggedInUser).role);
     }
@@ -44,27 +47,20 @@ function App() {
     const clearTokenAndRole = () => {
       localStorage.removeItem("loggedInUser");
       localStorage.removeItem("token");
-      localStorage.setItem("lastCleared", new Date().toISOString());
       navigate("/");
     };
 
-    const checkAndClearToken = () => {
-      const lastCleared = localStorage.getItem("lastCleared");
-      const now = new Date();
-      const target = new Date();
-      target.setHours(23, 59, 59, 999);
+    const isTokenExpired = (token) => {
+      if (!token) return true;
 
-      if (lastCleared) {
-        const lastClearedDate = new Date(lastCleared);
-        if (now - lastClearedDate > 24 * 60 * 60 * 1000) {
-          clearTokenAndRole();
-        }
-      } else {
-        if (now > target) {
-          target.setDate(target.getDate() + 1);
-        }
-        const timeUntilTarget = target - now;
-        setTimeout(clearTokenAndRole, timeUntilTarget);
+      const decoded = jwtDecode(token); // Perbaiki penggunaan di sini
+      const now = Date.now() / 1000;
+      return decoded.exp < now;
+    };
+
+    const checkAndClearToken = () => {
+      if (isTokenExpired(token)) {
+        clearTokenAndRole();
       }
     };
 
@@ -78,10 +74,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route
-          path="/"
-          element={<Login />}
-        />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<RegisterAdmin />} />
         {userRole === "ADMIN" && <Navigate to="/dashboard_admin" />}
         {userRole === "GURU" && <Navigate to="/dashboard_guru" />}

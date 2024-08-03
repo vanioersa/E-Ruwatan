@@ -21,7 +21,7 @@ function Siswa() {
   const [kelas, setKelas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
-  const siswaPerPage = 10;
+  const [siswaPerPage, setSiswaPerPage] = useState(10);
   const pagesVisited = pageNumber * siswaPerPage;
   const [showImportModal, setShowImportModal] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
@@ -313,13 +313,27 @@ function Siswa() {
         >
           <h1 className="text-3xl font-semibold text-gray-800">Data Siswa</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="search"
-              placeholder="Cari Siswa..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+            <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={siswaPerPage}
+                onChange={(e) => setSiswaPerPage(Number(e.target.value))}
+                style={{ height: '45px' }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+                <input
+                  type="search"
+                  placeholder="Cari Siswa..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                  style={{ height: '45px' }}
+                />
+              </div>
             <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
               <div className="flex flex-row gap-2 md:gap-4">
                 <Link to="/TambahSiswa">

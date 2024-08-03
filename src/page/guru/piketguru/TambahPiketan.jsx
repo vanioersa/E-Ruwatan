@@ -131,7 +131,7 @@ const TambahPiketan = () => {
       console.error("Gagal menambahkan piketan: ", error);
       Swal.fire({
         title: "Gagal",
-        text: "Gagal menambahkan piketan. Silakan coba lagi.",
+        text: "Siswa sudah terdaftar untuk hari ini. Mohon periksa kembali.",
         icon: "error",
         timer: 1500,
         showConfirmButton: false,

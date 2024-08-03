@@ -19,7 +19,7 @@ import axios from "axios";
 function Guru() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
-  const guruPerPage = 10;
+  const [guruPerPage, setGuruPerPage] = useState(10);
   const pagesVisited = pageNumber * guruPerPage;
   const [guru, setGuru] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -180,8 +180,7 @@ function Guru() {
       nipMatch ||
       hobiMatch
     );
-});
-
+  });
 
   const pageCount = Math.ceil(filteredGuru.length / guruPerPage);
 
@@ -191,11 +190,7 @@ function Guru() {
       ? `${g.kelas.kelas} - ${g.kelas.nama_kelas}`
       : "-";
 
-    return {
-      ...g,
-      modifiedTelepon,
-      kelasText,
-    };
+    return { ...g, modifiedTelepon, kelasText };
   });
 
   const dataToExport = modifiedGuru.map((g, index) => ({
@@ -224,9 +219,7 @@ function Guru() {
               "http://localhost:4001/upload/export",
               {
                 responseType: "blob",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
               }
             );
 
@@ -294,12 +287,7 @@ function Guru() {
       const token = localStorage.getItem("token");
       const response = await axios.get(
         "http://localhost:4001/download/template",
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { responseType: "blob", headers: { Authorization: `Bearer ${token}` } }
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -345,13 +333,27 @@ function Guru() {
         >
           <h1 className="text-3xl font-semibold text-gray-800">Data Guru</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="search"
-              placeholder="Cari Guru..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+            <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={guruPerPage}
+                onChange={(e) => setGuruPerPage(Number(e.target.value))}
+                style={{ height: "45px" }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+              <input
+                type="search"
+                placeholder="Cari Guru..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                style={{ height: "45px" }}
+              />
+            </div>
             <div className="flex flex-col md:flex-row justify-center md:justify-start gap-2 md:gap-4">
               <div className="flex flex-row gap-2 md:gap-4">
                 <Link to="/TambahGuru">
@@ -374,23 +376,48 @@ function Guru() {
               </button>
             </div>
           </div>
+
           <div className="mt-4 overflow-x-auto border  border-gray-200 rounded-lg">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-base leading-normal">
                   <th className="py-2 px-4">No</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Email</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Jenis Kelamin</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Tanggal Lahir</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Tempat Lahir</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Alamat Rumah</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Nomor Telepon</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">NIK</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">NIP</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Jabatan</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Walikelas</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">Hobi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Nama Guru
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Email
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Jenis Kelamin
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Tanggal Lahir
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Tempat Lahir
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Alamat Rumah
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Nomor Telepon
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    NIK
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    NIP
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Jabatan
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Walikelas
+                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">
+                    Hobi
+                  </th>
                   <th className="py-2 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -406,13 +433,27 @@ function Guru() {
                         key={g.id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                       >
-                        <td className="py-2 px-4">{index + 1 + pagesVisited}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.username}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.email}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.gender}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.tanggal}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.tempat}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.alamat}</td>
+                        <td className="py-2 px-4">
+                          {index + 1 + pagesVisited}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.username}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.email}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.gender}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.tanggal}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {g.tempat}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {g.alamat}
+                        </td>
                         <td
                           className="py-2 px-4 text-center whitespace-nowrap"
                           onDoubleClick={() => handleDoubleClick(g.id)}
@@ -420,20 +461,38 @@ function Guru() {
                           {g.telepon ? (
                             g.id === selectedGuruId ? (
                               isHiddenTelepon ? (
-                                <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
+                                <span>
+                                  {g.modifiedTelepon
+                                    ? g.modifiedTelepon.replace(/.{4}$/, "****")
+                                    : ""}
+                                </span>
                               ) : (
                                 <span>{g.modifiedTelepon}</span>
                               )
                             ) : (
-                              <span>{g.modifiedTelepon ? g.modifiedTelepon.replace(/.{4}$/, "****") : ""}</span>
+                              <span>
+                                {g.modifiedTelepon
+                                  ? g.modifiedTelepon.replace(/.{4}$/, "****")
+                                  : ""}
+                              </span>
                             )
                           ) : null}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.nik}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.nip}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.jabatan}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">{g.kelasText}</td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{g.hobi}</td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.nik}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.nip}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.jabatan}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                          {g.kelasText}
+                        </td>
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                          {g.hobi}
+                        </td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center gap-2">
                             <Link to={`/EditGuru/${g.id}`}>
@@ -454,7 +513,9 @@ function Guru() {
                 ) : (
                   <tr>
                     <td colSpan="15" className="py-4 text-center text-gray-500">
-                      {searchTerm ? "Data Guru Tidak Ditemukan" : "Data Guru Tidak Tersedia"}
+                      {searchTerm
+                        ? "Data Guru Tidak Ditemukan"
+                        : "Data Guru Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

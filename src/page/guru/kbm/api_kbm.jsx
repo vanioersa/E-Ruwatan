@@ -72,3 +72,18 @@ export const deleteKbm = async (id) => {
     throw error;
   }
 };
+
+export const exportKbmId = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`${apiUrl}/upload/export-by-id/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to export KBM with id ${id}: `, error);
+    throw error;
+  }
+};
