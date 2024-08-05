@@ -25,8 +25,9 @@ function KBMGuru() {
   const [excelFile, setExcelFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemPerPage] = useState(10);
   const storedUsername = localStorage.getItem("username");
+  const storedUserId = localStorage.getItem("id");
 
   useEffect(() => {
     const fetchKBMGuru = async () => {
@@ -76,58 +77,7 @@ function KBMGuru() {
     setExcelFile(e.target.files[0]);
   };
 
-  const importExcell = async (e) => {
-    e.preventDefault();
-    if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!.", "error");
-      return;
-    }
-
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Anda akan mengimpor data dari file ini.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, impor!",
-      cancelButtonText: "Batal",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const formData = new FormData();
-        formData.append("file", excelFile);
-
-        const token = localStorage.getItem("token");
-
-        try {
-          const response = await axios.post(
-            `http://localhost:4001/kbm/upload/import-KBM`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log(response.data);
-          Swal.fire({
-            icon: "success",
-            title: "Sukses!",
-            text: "Berhasil Ditambahkan",
-            showConfirmButton: false,
-            timer: 2500,
-          });
-          window.location.reload();
-        } catch (error) {
-          console.error("Error importing file:", error);
-          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
-        }
-      }
-    });
-  };
-
-  const handleDeleteKBM = async (id) => {
+    const handleDeleteKBM = async (id) => {
     Swal.fire({
       title: "Konfirmasi",
       text: "Anda yakin ingin menghapus data KBM?",
@@ -169,34 +119,13 @@ function KBMGuru() {
     const kelass = kelas.find((k) => k.id === kbm.kelasId);
     const kelasName = kelass?.kelas;
     const namaKelas = kelass?.nama_kelas;
-    const isNamaGuruMatch = user?.username
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const isKelasMatch =
-      kelass &&
-      namaKelas &&
-      `${kelasName} - ${namaKelas}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-    const isMateriMatch =
-      kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase());
-    const isJam_masukiMatch =
-      kbm.jam_masuk &&
-      kbm.jam_masuk.toLowerCase().includes(searchTerm.toLowerCase());
-    const isJam_pulangMatch =
-      kbm.jam_pulang &&
-      kbm.jam_pulang.toLowerCase().includes(searchTerm.toLowerCase());
-    const isKeteranganMatch =
-      kbm.keterangan &&
-      kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase());
-    return (
-      isNamaGuruMatch ||
-      isKelasMatch ||
-      isMateriMatch ||
-      isKeteranganMatch ||
-      isJam_masukiMatch ||
-      isJam_pulangMatch
-    );
+    const isNamaGuruMatch = user ?.username.toLowerCase() .includes(searchTerm.toLowerCase());
+    const isKelasMatch = kelass && namaKelas && `${kelasName} - ${namaKelas}` .toLowerCase() .includes(searchTerm.toLowerCase());
+    const isMateriMatch = kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase());
+    const isJam_masukiMatch = kbm.jam_masuk && kbm.jam_masuk.toLowerCase().includes(searchTerm.toLowerCase());
+    const isJam_pulangMatch = kbm.jam_pulang && kbm.jam_pulang.toLowerCase().includes(searchTerm.toLowerCase());
+    const isKeteranganMatch = kbm.keterangan && kbm.keterangan.toLowerCase().includes(searchTerm.toLowerCase());
+    return ( isNamaGuruMatch || isKelasMatch || isMateriMatch || isKeteranganMatch || isJam_masukiMatch || isJam_pulangMatch );
   });
 
   const pageCount = Math.ceil(filteredKBMGuru.length / itemsPerPage);
@@ -253,52 +182,134 @@ function KBMGuru() {
   //   });
   // };
 
-  const exportExcellKBM = async (userId) => {
+  const exportExcellKBM = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:4001/kbm/upload/export-kbm?userId=${storedUserId}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!response.data || response.data.size === 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "Tidak ada data yang tersedia untuk diekspor",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+  
+      Swal.fire({
+        title: "Konfirmasi",
+        text: "Anda yakin ingin mengexport data KBM?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Ya",
+        cancelButtonText: "Batal",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "ExportKBM.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+  
+            Swal.fire({
+              icon: "success",
+              title: "Sukses!",
+              text: "File berhasil diekspor",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          } catch (error) {
+            console.error("Error exporting file:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: "Gagal mengekspor file. " + error.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Gagal mendapatkan data untuk diekspor. " + error.message,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  };
+  
+  const importExcell = async (e) => {
+    e.preventDefault();
+    if (!excelFile) {
+      Swal.fire({
+        title: "Error", 
+        text: "Anda belum memilih file untuk diimport!.", 
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2500,
+      }).then(() => {
+        window.location.reload();
+      });
+      return;
+    }
+
     Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengexport data KBM?",
-      icon: "question",
+      title: "Apakah Anda yakin?",
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Ya",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, impor!",
       cancelButtonText: "Batal",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", excelFile);
+
+        const token = localStorage.getItem("token");
+
         try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
-            `http://localhost:4001/kbm/upload/export-kbm?userId=${userId}`,
+          const response = await axios.post(
+            `http://localhost:4001/kbm/upload/import-KBM?userId=${storedUserId}`,
+            formData,
             {
-              responseType: "blob",
               headers: {
+                "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "ExportKBM.xlsx");
-          document.body.appendChild(link);
-          link.click();
-          link.parentNode.removeChild(link);
-
+          console.log(response.data);
           Swal.fire({
             icon: "success",
             title: "Sukses!",
-            text: "File berhasil diekspor",
+            text: "Berhasil Ditambahkan",
             showConfirmButton: false,
-            timer: 2000,
+            timer: 2500,
+          }).then(() => {
+            window.location.reload();
           });
         } catch (error) {
-          console.error("Error exporting file:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Tidak ada data yang tersedia",
-            showConfirmButton: false,
-            timer: 2000,
-          });
+          console.error("Error importing file:", error);
+          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
         }
       }
     });
@@ -307,12 +318,12 @@ function KBMGuru() {
   const downloadFormat = async () => {
     const isConfirmed = await Swal.fire({
       title: "Konfirmasi",
-      text: "Anda yakin ingin mendownload format template?",
+      text: "Anda akan mengunduh template ini!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, download!",
+      confirmButtonText: "Ya, unduh!",
       cancelButtonText: "Batal",
     }).then((result) => result.isConfirmed);
 
@@ -326,7 +337,7 @@ function KBMGuru() {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "TemplateKBM.xlsx");
+        link.setAttribute("download", "Template-KBM.xlsx");
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -334,7 +345,7 @@ function KBMGuru() {
         Swal.fire({
           icon: "success",
           title: "Sukses!",
-          text: "File template berhasil diunduh",
+          text: "Template berhasil diunduh",
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
@@ -359,13 +370,27 @@ function KBMGuru() {
         >
           <h1 className="text-3xl font-semibold text-gray-800">KBM</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="search"
-              placeholder="Cari KBM"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+          <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={itemsPerPage}
+                onChange={(e) => setItemPerPage(Number(e.target.value))}
+                style={{ height: "45px" }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+              <input
+                type="search"
+                placeholder="Cari Guru..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                style={{ height: "45px" }}
+              />
+            </div>
             <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 w-full md:w-auto">
               <div className="flex space-x-2 w-full md:w-auto">
                 <Link to={`/tambahkbm`} className="w-full md:w-auto">
@@ -381,16 +406,13 @@ function KBMGuru() {
                 </button> */}
               </div>
               <div className="flex space-x-2 w-full md:w-auto">
-                {filteredKBMGuru && (
-                  <button
-                  onClick={() => exportExcellKBM(filteredKBMGuru.length > 0 ? filteredKBMGuru[0].userId : null)}
+                <button
+                  onClick={exportExcellKBM}
                   className="w-full md:w-auto bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                   // disabled={filteredKBMGuru.length === 0}
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export KBM
                 </button>
-                
-                )}
                 <button
                   onClick={openImportModal}
                   className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -415,25 +437,10 @@ function KBMGuru() {
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex">
-                    <button
-                      onClick={closeImportModal}
-                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={importExcell}
-                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Import
-                    </button>
+                    <button onClick={closeImportModal} className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2">Batal</button>
+                      <button onClick={importExcell} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Import</button>
                   </div>
-                  <button
-                    onClick={downloadFormat}
-                    className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                  >
-                    Unduh Templat
-                  </button>
+                  <button onClick={downloadFormat} className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">Unduh Templat</button>
                 </div>
               </div>
             </div>
@@ -444,27 +451,13 @@ function KBMGuru() {
               <thead>
                 <tr className="bg-gray-200 text-gray-900 text-sm leading-normal">
                   <th className="py-2 px-4">No</th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Nama Guru
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Kelas
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Jam Masuk
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Jam Selesai
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Materi
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Keterangan
-                  </th>
-                  <th className="py-2 px-4 text-center whitespace-nowrap">
-                    Aksi
-                  </th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Nama Guru</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Jam Masuk</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Jam Selesai</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Materi</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Keterangan</th>
+                  <th className="py-2 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody
@@ -489,37 +482,13 @@ function KBMGuru() {
                           key={kbm.id}
                           className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
-                          <td className="py-2 px-4">
-                            {currentPage * itemsPerPage + index + 1}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {users.find((u) => u.id === kbm.userId)?.username}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{" "}
-                            {
-                              kelas.find((k) => k.id === kbm.kelasId)
-                                ?.nama_kelas
-                            }
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {kbm.jam_masuk}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {kbm.jam_pulang}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {kbm.materi}
-                          </td>
-                          <td className="py-2 px-4 text-center">
-                            {kbm.keterangan ? (
-                              <span>{kbm.keterangan}</span>
-                            ) : (
-                              <span className="text-gray-400 italic text-center whitespace-nowrap">
-                                Keterangan belum ditambahkan
-                              </span>
-                            )}
-                          </td>
+                          <td className="py-2 px-4">{currentPage * itemsPerPage + index + 1}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{users.find((u) => u.id === kbm.userId)?.username}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{kelas.find((k) => k.id === kbm.kelasId) ?.nama_kelas}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_masuk}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_pulang}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.materi}</td>
+                          <td className="py-2 px-4 text-center">{kbm.keterangan ? (<span>{kbm.keterangan}</span>) : (<span className="text-gray-400 italic text-center whitespace-nowrap">Keterangan belum ditambahkan</span>)}</td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <Link to={`/EditKBM/${kbm.id}`}>
@@ -527,10 +496,7 @@ function KBMGuru() {
                                   <FontAwesomeIcon icon={faEdit} />
                                 </button>
                               </Link>
-                              <button
-                                onClick={() => handleDeleteKBM(kbm.id)}
-                                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                              >
+                              <button onClick={() => handleDeleteKBM(kbm.id)} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <FontAwesomeIcon icon={faTrash} />
                               </button>
                             </div>
@@ -541,9 +507,7 @@ function KBMGuru() {
                 ) : (
                   <tr>
                     <td colSpan="8" className="text-center py-4 text-gray-500">
-                      {searchTerm
-                        ? "Data KBM Tidak Ditemukan"
-                        : "Data KBM Tidak Tersedia"}
+                      {searchTerm ? "Data KBM Tidak Ditemukan" : "Data KBM Tidak Tersedia"}
                     </td>
                   </tr>
                 )}

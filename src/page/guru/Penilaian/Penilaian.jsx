@@ -248,7 +248,7 @@ function Penilaian() {
 
   const downloadFormat = async (e) => {
     e.preventDefault();
-
+  
     const isConfirmed = await Swal.fire({
       title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
@@ -258,11 +258,11 @@ function Penilaian() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, unduh!",
     });
-
+  
     if (!isConfirmed.isConfirmed) {
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -274,20 +274,37 @@ function Penilaian() {
           },
         }
       );
-
+  
       const url = window.URL.createObjectURL(new Blob([response.data]));
-
+  
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Template_Penilaian.xlsx");
+      link.setAttribute("download", "Templat-Penilaian.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
+  
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Template berhasil diunduh.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error saat mengunduh file:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Terjadi kesalahan saat mengunduh template.",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
-
+  
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="sidebar w-full md:w-64 bg-gray-100 shadow-lg">

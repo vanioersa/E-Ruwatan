@@ -11,14 +11,13 @@ const TambahKBM = () => {
     kelasId: "",
     jam_masuk: "",
     jam_pulang: "",
-    keterangan: "",
     materi: "",
+    keterangan: "",
   });
 
   const [kelas, setKelas] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState("");
   const [users, setUsers] = useState([]);
-  // const [selectedUsers, setSelectedUsers] = useState("");
   const currentTime = useState(getCurrentTime());
   const navigate = useNavigate();
 
@@ -68,10 +67,7 @@ const TambahKBM = () => {
       const currentTime = getCurrentTime();
       const enteredTime = value;
 
-      // Membandingkan waktu yang dimasukkan dengan waktu saat ini
       if (enteredTime < currentTime) {
-        // Menampilkan pesan kesalahan atau menangani masukan waktu yang tidak valid
-        // Contoh menampilkan pesan kesalahan menggunakan Swal:
         Swal.fire({
           title: "Waktu Tidak Valid",
           text: "Waktu yang dimasukkan tidak valid. Harap masukkan waktu yang valid.",
@@ -79,10 +75,9 @@ const TambahKBM = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+        return;
       }
 
-      // Memeriksa apakah "jam_masuk" dan "jam_pulang" memiliki nilai yang valid
       if (
         name === "jam_pulang" &&
         kbm.jam_masuk &&
@@ -96,7 +91,7 @@ const TambahKBM = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        return; // Keluar dari fungsi untuk mencegah pembaruan state dengan waktu yang tidak valid
+        return;
       }
     }
 
@@ -129,8 +124,8 @@ const TambahKBM = () => {
       kelasId: selectedKelas,
       jam_masuk: kbm.jam_masuk,
       jam_pulang: kbm.jam_pulang,
-      keterangan: kbm.keterangan,
       materi: kbm.materi,
+      keterangan: kbm.keterangan,
     };
 
     try {
@@ -189,7 +184,7 @@ const TambahKBM = () => {
                   htmlFor="userId"
                   className="block mb-2 text-sm sm:text-xs font-medium text-gray-900"
                 >
-                  Kelas
+                  Nama Guru
                 </label>
                 <input
                   type="text"
@@ -283,7 +278,7 @@ const TambahKBM = () => {
                   value={kbm.materi}
                   onChange={handleChange}
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm sm:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Materi"
+                  placeholder="Masukan Materi"
                   required
                   autoComplete="off"
                 />

@@ -1,74 +1,59 @@
-import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode"
-import Login from "./auth/login";
-import RegisterAdmin from "./auth/register_admin";
-import DashboardSiswa from "./component/Dashboard";
-import DashboardGuru from "./component/DashboardGuru";
-import Siswa from "./page/murid/siswa/Siswa";
-import Kelas from "./page/murid/kelas/Kelas";
-import Guru from "./page/murid/guru/Guru";
-import TambahSiswa from "./page/murid/siswa/TambahSiswa";
-import TambahKelas from "./page/murid/kelas/TambahKelas";
-import TambahGuru from "./page/murid/guru/TambahGuru";
-import PiketanGuru from "./page/guru/piketguru/PiketanGuru";
-import KBMGuru from "./page/guru/kbm/KBMGuru";
-import TambahPiketan from "./page/guru/piketguru/TambahPiketan";
-import TambahKBM from "./page/guru/kbm/TambahKBM";
-import UpdateSiswa from "./page/murid/siswa/UpdateSiswa";
-import UpdateKelas from "./page/murid/kelas/UpdateKelas";
-import UpdateGuru from "./page/murid/guru/UpdateGuru";
-import Setting from "./page/murid/Profile Siswa/Setting";
-import EditAdmin from "./page/murid/Profile Siswa/EditAdmin";
-import PDFpiket from "./component/PDF";
-import UpdateKBM from "./page/guru/kbm/UpdateKBM";
-import ProfileGuru from "./page/guru/Profile/Profile_guru";
-import UpdatePiketan from "./page/guru/piketguru/UpdatePiketan";
-import ProfileAdmin from "./page/murid/Profile Siswa/Profile_admin";
-import Penilaian from "./page/guru/Penilaian/Penilaian";
-import TambahPenilaian from "./page/guru/Penilaian/TambahPenilaian";
-import UpdatePenilaian from "./page/guru/Penilaian/UpdatePenilaian";
-import PrivateRoute from "./routeer/PrivateRoute";
-import EditGuru from "./page/guru/Profile/EditGuru";
-import SettingGuru from "./page/guru/Profile/SettingGuru";
+import React, { useState, useEffect } from 'react';
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import Login from './auth/login';
+import RegisterAdmin from './auth/register_admin';
+import DashboardSiswa from './component/Dashboard';
+import DashboardGuru from './component/DashboardGuru';
+import Siswa from './page/murid/siswa/Siswa';
+import Kelas from './page/murid/kelas/Kelas';
+import Guru from './page/murid/guru/Guru';
+import TambahSiswa from './page/murid/siswa/TambahSiswa';
+import TambahKelas from './page/murid/kelas/TambahKelas';
+import TambahGuru from './page/murid/guru/TambahGuru';
+import PiketanGuru from './page/guru/piketguru/PiketanGuru';
+import KBMGuru from './page/guru/kbm/KBMGuru';
+import TambahPiketan from './page/guru/piketguru/TambahPiketan';
+import TambahKBM from './page/guru/kbm/TambahKBM';
+import UpdateSiswa from './page/murid/siswa/UpdateSiswa';
+import UpdateKelas from './page/murid/kelas/UpdateKelas';
+import UpdateGuru from './page/murid/guru/UpdateGuru';
+import Setting from './page/murid/Profile Siswa/Setting';
+import EditAdmin from './page/murid/Profile Siswa/EditAdmin';
+import PDFpiket from './component/PDF';
+import UpdateKBM from './page/guru/kbm/UpdateKBM';
+import ProfileGuru from './page/guru/Profile/Profile_guru';
+import UpdatePiketan from './page/guru/piketguru/UpdatePiketan';
+import ProfileAdmin from './page/murid/Profile Siswa/Profile_admin';
+import Penilaian from './page/guru/Penilaian/Penilaian';
+import TambahPenilaian from './page/guru/Penilaian/TambahPenilaian';
+import UpdatePenilaian from './page/guru/Penilaian/UpdatePenilaian';
+import PrivateRoute from './routeer/PrivateRoute';
+import EditGuru from './page/guru/Profile/EditGuru';
+import SettingGuru from './page/guru/Profile/SettingGuru';
 
 function App() {
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
+  // Fungsi untuk memeriksa masa berlaku token
+  const isTokenExpired = (token) => {
+    // Mengasumsikan token berisi timestamp kedaluwarsa dalam payload-nya
+    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode token JWT
+    const expirationTime = decodedToken.exp * 1000; // Mengonversi ke milidetik
+    return Date.now() > expirationTime;
+  };
+
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    const token = localStorage.getItem("token");
-
-    if (loggedInUser) {
-      setUserRole(JSON.parse(loggedInUser).role);
+    const token = localStorage.getItem('token');
+    if (token && isTokenExpired(token)) {
+      localStorage.removeItem('token');
+      setUserRole(null);
+      navigate('/');
+    } else if (token) {
+      // Anda mungkin perlu mengatur peran pengguna berdasarkan token
+      const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode token JWT
+      setUserRole(decodedToken.role); // Mengasumsikan peran disertakan dalam token
     }
-
-    const clearTokenAndRole = () => {
-      localStorage.removeItem("loggedInUser");
-      localStorage.removeItem("token");
-      navigate("/");
-    };
-
-    const isTokenExpired = (token) => {
-      if (!token) return true;
-
-      const decoded = jwtDecode(token); // Perbaiki penggunaan di sini
-      const now = Date.now() / 1000;
-      return decoded.exp < now;
-    };
-
-    const checkAndClearToken = () => {
-      if (isTokenExpired(token)) {
-        clearTokenAndRole();
-      }
-    };
-
-    checkAndClearToken();
-
-    const intervalId = setInterval(checkAndClearToken, 60 * 1000);
-
-    return () => clearInterval(intervalId);
   }, [navigate]);
 
   return (
@@ -76,8 +61,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<RegisterAdmin />} />
+
         {userRole === "ADMIN" && <Navigate to="/dashboard_admin" />}
         {userRole === "GURU" && <Navigate to="/dashboard_guru" />}
+
         <Route element={<PrivateRoute role="ADMIN" />}>
           <Route path="/dashboard_admin" element={<DashboardSiswa />} />
           <Route path="/siswa" element={<Siswa />} />
@@ -108,9 +95,8 @@ function App() {
           <Route path="/edit_guru" element={<EditGuru />} />
           <Route path="/setting_guru" element={<SettingGuru />} />
         </Route>
-        <Route element={<PrivateRoute />}>
-          <Route path="/pdf/page" element={<PDFpiket />} />
-        </Route>
+
+        <Route path="/pdf/page" element={<PrivateRoute element={<PDFpiket />} />} />
       </Routes>
     </div>
   );
