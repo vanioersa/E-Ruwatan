@@ -35,11 +35,9 @@ function App() {
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
-  // Fungsi untuk memeriksa masa berlaku token
   const isTokenExpired = (token) => {
-    // Mengasumsikan token berisi timestamp kedaluwarsa dalam payload-nya
-    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode token JWT
-    const expirationTime = decodedToken.exp * 1000; // Mengonversi ke milidetik
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = decodedToken.exp * 1000;
     return Date.now() > expirationTime;
   };
 
@@ -50,10 +48,20 @@ function App() {
       setUserRole(null);
       navigate('/');
     } else if (token) {
-      // Anda mungkin perlu mengatur peran pengguna berdasarkan token
-      const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode token JWT
-      setUserRole(decodedToken.role); // Mengasumsikan peran disertakan dalam token
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserRole(decodedToken.role);
     }
+
+    const intervalId = setInterval(() => {
+      const token = localStorage.getItem('token');
+      if (token && isTokenExpired(token)) {
+        localStorage.removeItem('token');
+        setUserRole(null);
+        navigate('/');
+      }
+    }, 60000);
+
+    return () => clearInterval(intervalId);
   }, [navigate]);
 
   return (

@@ -29,7 +29,15 @@ function Siswa() {
   const importExcel = async (event) => {
     event.preventDefault();
     if (!excelFile) {
-      Swal.fire("Error", "Anda belum memilih file untuk diimport!", "error");
+      Swal.fire({
+        title: "Error", 
+        text: "Anda belum memilih file untuk diimport!.", 
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2500,
+      }).then(() => {
+        window.location.reload();
+      });
       return;
     }
 
@@ -71,7 +79,15 @@ function Siswa() {
           window.location.reload();
         } catch (error) {
           console.error("Error importing file:", error);
-          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Gagal mengimpor file. " + error.message,
+            showConfirmButton: false,
+            timer: 2500,
+          }).then(() => {
+            window.location.reload();
+          });
         }
       }
     });

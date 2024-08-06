@@ -24,6 +24,7 @@ function PiketanGuru() {
   const [selectedTanggal, setSelectedTanggal] = useState("");
   const [selectedKelasId, setSelectedKelasId] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const [excelFile, setExcelFile] = useState(null);
   const itemsPerPage = 10;
   const token = localStorage.getItem("token");
 
@@ -160,25 +161,10 @@ function PiketanGuru() {
     }
   };
 
-  // const handleImport = async (event) => {
-  //   const file = event.target.files[0];
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   try {
-  //     await axios.post("/piket/import", formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     fetchPiketan();
-  //     closeImportModal();
-  //   } catch (error) {
-  //     console.error("Error importing data", error);
-  //   }
-  // };
-
+  const handleExcelChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+  
   const openImportModal = () => {
     setShowImportModal(true);
   };
@@ -194,6 +180,74 @@ function PiketanGuru() {
   const closePDFModal = () => {
     setShowPDFModal(false);
     window.location.reload();
+  };
+
+  const importExcell = async (e) => {
+    e.preventDefault();
+    if (!excelFile) {
+      Swal.fire({
+        title: "Error", 
+        text: "Anda belum memilih file untuk diimport!.", 
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2500,
+      }).then(() => {
+        window.location.reload();
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda akan mengimpor data dari file ini.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, impor!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData();
+        formData.append("file", excelFile);
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await axios.post(
+            `http://localhost:4001/piket/upload/import-piketan`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Sukses!",
+            text: "Berhasil Ditambahkan",
+            showConfirmButton: false,
+            timer: 2500,
+          }).then(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          console.error("Error importing file:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Gagal mengimpor file. " + error.message,
+            showConfirmButton: false,
+            timer: 2500,
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+      }
+    });
   };
 
   const handleDeletePiketById = async (id) => {
@@ -251,7 +305,6 @@ function PiketanGuru() {
           showConfirmButton: false,
           timer: 1500,
         }).then(() => {
-          // Redirect to PDF page
           window.location.href = `/pdf/page?tanggal=${selectedTanggal}&kelasId=${selectedKelasId}`;
         });
       } catch (error) {
@@ -450,7 +503,7 @@ function PiketanGuru() {
                     <input
                       type="file"
                       accept=".xlsx,.xls"
-                      // onChange={handleImport}
+                      onChange={handleExcelChange}
                       className="border border-gray-400 p-2 w-full mb-4"
                     />
                   </div>
@@ -463,7 +516,7 @@ function PiketanGuru() {
                       Batal
                     </button>
                     <button
-                      // onClick={importExcell}
+                      onClick={importExcell}
                       className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       Import

@@ -119,8 +119,8 @@ function KBMGuru() {
     const kelass = kelas.find((k) => k.id === kbm.kelasId);
     const kelasName = kelass?.kelas;
     const namaKelas = kelass?.nama_kelas;
-    const isNamaGuruMatch = user ?.username.toLowerCase() .includes(searchTerm.toLowerCase());
-    const isKelasMatch = kelass && namaKelas && `${kelasName} - ${namaKelas}` .toLowerCase() .includes(searchTerm.toLowerCase());
+    const isNamaGuruMatch = user?.username.toLowerCase().includes(searchTerm.toLowerCase());
+    const isKelasMatch = kelass && namaKelas && `${kelasName} - ${namaKelas}`.toLowerCase().includes(searchTerm.toLowerCase());
     const isMateriMatch = kbm.materi && kbm.materi.toLowerCase().includes(searchTerm.toLowerCase());
     const isJam_masukiMatch = kbm.jam_masuk && kbm.jam_masuk.toLowerCase().includes(searchTerm.toLowerCase());
     const isJam_pulangMatch = kbm.jam_pulang && kbm.jam_pulang.toLowerCase().includes(searchTerm.toLowerCase());
@@ -248,7 +248,7 @@ function KBMGuru() {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Gagal mendapatkan data untuk diekspor. " + error.message,
+        text: "Tidak ada data KBM untuk diekspor",
         showConfirmButton: false,
         timer: 2000,
       });
@@ -309,7 +309,15 @@ function KBMGuru() {
           });
         } catch (error) {
           console.error("Error importing file:", error);
-          Swal.fire("Error", "Gagal mengimpor file. " + error.message, "error");
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Gagal mengimpor file. " + error.message,
+            showConfirmButton: false,
+            timer: 2500,
+          }).then(() => {
+            window.location.reload();
+          });
         }
       }
     });
@@ -484,7 +492,7 @@ function KBMGuru() {
                         >
                           <td className="py-2 px-4">{currentPage * itemsPerPage + index + 1}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{users.find((u) => u.id === kbm.userId)?.username}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{kelas.find((k) => k.id === kbm.kelasId)?.kelas} -{kelas.find((k) => k.id === kbm.kelasId) ?.nama_kelas}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{`${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}`}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_masuk}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_pulang}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.materi}</td>
