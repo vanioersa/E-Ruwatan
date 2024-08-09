@@ -378,7 +378,7 @@ function KBMGuru() {
         >
           <h1 className="text-3xl font-semibold text-gray-800">KBM</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex md:flex-row md:justify-start md:items-center">
+            <div className="flex md:flex-row md:justify-start md:items-center">
               <select
                 className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
                 value={itemsPerPage}
@@ -412,8 +412,6 @@ function KBMGuru() {
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export All KBM
                 </button> */}
-              </div>
-              <div className="flex space-x-2 w-full md:w-auto">
                 <button
                   onClick={exportExcellKBM}
                   className="w-full md:w-auto bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -421,6 +419,8 @@ function KBMGuru() {
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export KBM
                 </button>
+              </div>
+              <div className="flex space-x-2 w-full md:w-auto">
                 <button
                   onClick={openImportModal}
                   className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -495,8 +495,8 @@ function KBMGuru() {
                           <td className="py-2 px-4 text-center whitespace-nowrap">{`${kelas.find((k) => k.id === kbm.kelasId)?.kelas} - ${kelas.find((k) => k.id === kbm.kelasId)?.nama_kelas}`}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_masuk}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.jam_pulang}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{kbm.materi}</td>
-                          <td className="py-2 px-4 text-center">{kbm.keterangan ? (<span>{kbm.keterangan}</span>) : (<span className="text-gray-400 italic text-center whitespace-nowrap">Keterangan belum ditambahkan</span>)}</td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap capitalize">{kbm.materi}</td>
+                          <td className="py-2 px-4 text-center capitalize">{kbm.keterangan ? (<span>{kbm.keterangan}</span>) : (<span className="text-gray-400 italic text-center whitespace-nowrap">Keterangan belum ditambahkan</span>)}</td>
                           <td className="py-3 px-4 text-center">
                             <div className="flex justify-center gap-2">
                               <Link to={`/EditKBM/${kbm.id}`}>

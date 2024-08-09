@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
 import axios from "axios";
-import NavproAdmin from "../../../component/Navpro_admin";
+import NavproAdmin from "./Navpro_admin";
 
 const EditAdmin = () => {
   const id = localStorage.getItem("id");
@@ -11,10 +11,6 @@ const EditAdmin = () => {
   const [admin, setAdmin] = useState({
     username: "",
     email: "",
-    alamat: "",
-    gender: "",
-    telepon: "",
-    status_nikah: "",
   });
 
   useEffect(() => {
@@ -60,12 +56,7 @@ const EditAdmin = () => {
         initialAdminData.username !== admin.username ||
         initialAdminData.email !== admin.email;
 
-      const isDataChanged =
-        isUsernameEmailChanged ||
-        initialAdminData.alamat !== admin.alamat ||
-        initialAdminData.gender !== admin.gender ||
-        initialAdminData.telepon !== admin.telepon ||
-        initialAdminData.status_nikah !== admin.status_nikah;
+      const isDataChanged = isUsernameEmailChanged;
 
       if (!isDataChanged) {
         Swal.fire({
@@ -81,7 +72,7 @@ const EditAdmin = () => {
       if (isUsernameEmailChanged) {
         Swal.fire({
           icon: "question",
-          title: "Apakah Anda yakin ",
+          title: "Apakah Anda yakin",
           text: "ingin mengubah email atau username?",
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
@@ -174,147 +165,55 @@ const EditAdmin = () => {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-96 md:w-full">
-        <NavproAdmin />
-
-          <div className="block md:flex">
+        <div className="w-full max-w-4xl md:mt-[15%] mt-[10%]">
+          <NavproAdmin />
+          <div className="flex flex-col md:flex-row">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 py-10 px-14 lg:ml-4 rounded-xl shadow-md border border-gray-200"
+              className="md:flex-1 p-4 sm:p-6 lg:p-8 rounded-xl shadow-md flex flex-col"
             >
-              <h1 className="text-xl font-semibold text-gray-800">
+               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Edit Profile</strong>
               </h1>
               <br />
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="pb-1">
-                    <label
-                      htmlFor="username"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Username
-                    </label>
-                    <input
-                      id="username"
-                      name="username"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
-                      type="text"
-                      autoComplete="off"
-                      value={admin.username}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="pb-1">
-                    <label
-                      htmlFor="email"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
-                      type="email"
-                      autoComplete="off"
-                      value={admin.email}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="pb-1">
-                    <label
-                      htmlFor="alamat"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Alamat
-                    </label>
-                    <input
-                      id="alamat"
-                      name="alamat"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
-                      type="text"
-                      value={admin.alamat}
-                      onChange={handleChange}
-                      placeholder="tambahkan alamat anda"
-                    />
-                  </div>
-                  <div className="pb-1">
-                    <label
-                      htmlFor="telepon"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Telepon
-                    </label>
-                    <input
-                      id="telepon"
-                      name="telepon"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-600"
-                      type="number"
-                      value={admin.telepon}
-                      onChange={handleChange}
-                      placeholder="tambahkan no telfon anda"
-                    />
-                  </div>
-                  <div className="pb-1">
-                    <label
-                      htmlFor="gender"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Gender
-                    </label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
-                      value={admin.gender}
-                      onChange={handleChange}
-                    >
-                      <option className="text-gray-700" value="">
-                        Pilih Jenis Kelamin
-                      </option>
-                      <option className="text-gray-700" value="Laki-laki">
-                        Laki-laki
-                      </option>
-                      <option className="text-gray-700" value="Perempuan">
-                        Perempuan
-                      </option>
-                    </select>
-                  </div>
-                  <div className="pb-1">
-                    <label
-                      htmlFor="status_nikah"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Status Nikah
-                    </label>
-                    <select
-                      id="status_nikah"
-                      name="status_nikah"
-                      autoComplete="off"
-                      className="border rounded-lg px-4 py-2 w-full text-gray-700"
-                      value={admin.status_nikah}
-                      onChange={handleChange}
-                    >
-                      <option className="text-gray-700" value="">
-                        Pilih Status Nikah
-                      </option>
-                      <option className="text-gray-700" value="Belum Menikah">
-                        Belum Menikah
-                      </option>
-                      <option className="text-gray-700" value="Menikah">
-                        Menikah
-                      </option>
-                      <option className="text-gray-700" value="Cerai">
-                        Cerai
-                      </option>
-                    </select>
-                  </div>
+              <form onSubmit={handleSubmit} className="flex flex-col flex-grow">
+                <div className="pb-2 pt-2">
+                  <label
+                    htmlFor="username"
+                    className="font-semibold text-gray-700 block"
+                  >
+                    Username
+                  </label>
+                  <input
+                    id="username"
+                    name="username"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type="text"
+                    autoComplete="off"
+                    value={admin.username}
+                    onChange={handleChange}
+                    placeholder="Tambahkan username anda"
+                  />
                 </div>
-                <div className="float-end mt-4">
+                <div className="pb-2 pt-2">
+                  <label
+                    htmlFor="email"
+                    className="font-semibold text-gray-700 block"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    className="border rounded-lg px-4 py-2 w-full text-gray-600"
+                    type="email"
+                    autoComplete="off"
+                    value={admin.email}
+                    onChange={handleChange}
+                    placeholder="Tambahkan email anda"
+                  />
+                </div>
+                <div className="md:mt-auto flex justify-end mt-5">
                   <button
                     type="submit"
                     className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"

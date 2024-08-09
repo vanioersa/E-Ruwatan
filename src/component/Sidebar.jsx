@@ -134,34 +134,34 @@ const SidebarAdmin = () => {
           </div>
 
           {userMenuOpen && (
-            <div
-              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 bg-white"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="user-menu-button"
-              tabIndex="-1"
-            >
-              <Link to="/profile_admin">
-                <button
-                  className="block px-4 py-2 text-sm"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="user-menu-item-0"
-                >
-                  Profile
-                </button>
-              </Link>
-              <button
-                onClick={logout}
-                className="block px-4 py-2 text-sm w-full text-left"
-                role="menuitem"
-                tabIndex="-1"
-                id="user-menu-item-2"
-              >
-                Keluar
-              </button>
-            </div>
-          )}
+  <div
+    className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md py-1 bg-white"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="user-menu-button"
+    tabIndex="-1"
+  >
+    <Link to="/profile_admin">
+      <button
+        className="block px-4 py-2 text-sm"
+        role="menuitem"
+        tabIndex="-1"
+        id="user-menu-item-0"
+      >
+        Profile
+      </button>
+    </Link>
+    <button
+      onClick={logout}
+      className="block px-4 py-2 text-sm w-full text-left"
+      role="menuitem"
+      tabIndex="-1"
+      id="user-menu-item-2"
+    >
+      Keluar
+    </button>
+  </div>
+)}
         </div>
       </nav>
 

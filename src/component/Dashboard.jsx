@@ -315,8 +315,8 @@ function Dashboard() {
                     <tr className="bg-gray-200 text-gray-900 text-sm">
                       <th className="py-2 px-4 text-left">No.</th>
                       <th className="py-2 px-4 text-center whitespace-nowrap">Nama Siswa</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">NISN</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">Tempat Lahir</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Kelas</th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">Jenis kelamin</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -328,13 +328,14 @@ function Dashboard() {
                           className="bg-white border-b hover:bg-gray-100 transition duration-200 ease-in-out"
                         >
                           <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
+                          <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
                             {item.nama_siswa}
                           </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">{item.nisn}</td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {item.tempat}
+                          {kelas.find((k) => k.id === item.kelasId)?.kelas} -{" "}
+                          {kelas.find((k) => k.id === item.kelasId)?.nama_kelas}
                           </td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">{item.gender}</td>
                         </tr>
                       ))
                     ) : (

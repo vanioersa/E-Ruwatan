@@ -49,7 +49,7 @@ const SidebarGuru = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
-        localStorage.removeItem("jabatan"); // Hapus jabatan dari local storage saat logout
+        localStorage.removeItem("jabatan");
         Swal.fire({
           title: "Berhasil Keluar",
           text: "Anda telah berhasil keluar.",
@@ -74,7 +74,7 @@ const SidebarGuru = () => {
       }
     };
 
-    handleResize(); // Check initial window size
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -131,8 +131,8 @@ const SidebarGuru = () => {
 
           {userMenuOpen && (
             <div
-              className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 bg-white"
-              role="menu"
+            className="fixed right-0 z-20 mt-2 w-48 origin-top-right rounded-md py-1 bg-white shadow-lg border border-gray-200"
+            role="menu"
               aria-orientation="vertical"
               aria-labelledby="user-menu-button"
               tabIndex="-1"
@@ -290,7 +290,7 @@ const SidebarGuru = () => {
                 style={{ fontFamily: "Poopins", fontWeight: "bold" }}
                 className="mx-2 font-medium"
               >
-                Piketan
+                Piket
               </span>
             </Link>
           </li>

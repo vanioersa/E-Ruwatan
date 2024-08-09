@@ -17,15 +17,12 @@ import ReactPaginate from "react-paginate";
 
 function PiketanGuru() {
   const [showImportModal, setShowImportModal] = useState(false);
-  const [showPDFModal, setShowPDFModal] = useState(false);
   const [piketan, setPiketan] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [kelas, setKelas] = useState([]);
-  const [selectedTanggal, setSelectedTanggal] = useState("");
-  const [selectedKelasId, setSelectedKelasId] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [excelFile, setExcelFile] = useState(null);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemPerPage] = useState(10);
   const token = localStorage.getItem("token");
 
   const fetchPiketan = useCallback(async () => {
@@ -63,12 +60,7 @@ function PiketanGuru() {
   const offset = currentPage * itemsPerPage;
   const filteredPiketan = piketan.filter((piket) => {
     const kelasInfo = kelas.find((k) => k.id === piket.kelasId);
-    const statusCounts = {
-      Masuk: 0,
-      Izin: 0,
-      Sakit: 0,
-      Alpha: 0,
-    };
+    const statusCounts = { Masuk: 0, Izin: 0, Sakit: 0, Alpha: 0 };
 
     piket.siswaStatusList.forEach((siswaStatus) => {
       siswaStatus.statusList.forEach((status) => {
@@ -106,6 +98,74 @@ function PiketanGuru() {
 
   const currentPiketan = filteredPiketan.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredPiketan.length / itemsPerPage);
+
+  const handleAllPDF = async () => {
+    const result = await Swal.fire({
+      title: "Apakah Anda Yakin?",
+      text: "Anda akan mengunduh laporan PDF.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Tidak",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          Swal.fire({
+            icon: "error",
+            title: "Token Tidak Ditemukan",
+            text: "Silakan masuk untuk mengunduh laporan!",
+          });
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/pdf",
+        };
+
+        const response = await axios.get(
+          "http://localhost:4001/piket/export-piketan-pdf",
+          {
+            headers: headers,
+            responseType: "blob",
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Ekspor-All-piket.pdf");
+        document.body.appendChild(link);
+        link.click();
+
+        link.remove();
+        window.URL.revokeObjectURL(url);
+
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Laporan PDF telah berhasil diunduh.",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Terjadi kesalahan saat mengunduh laporan!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    }
+  };
 
   const handleExport = async () => {
     if (piketan.length === 0) {
@@ -148,7 +208,7 @@ function PiketanGuru() {
           title: "Sukses!",
           text: "File berhasil diunduh",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
         });
       } catch (error) {
         console.error("Error exporting data", error);
@@ -156,6 +216,8 @@ function PiketanGuru() {
           icon: "error",
           title: "Oops...",
           text: "Gagal mengekspor data!",
+          showConfirmButton: false,
+          timer: 2000,
         });
       }
     }
@@ -164,7 +226,7 @@ function PiketanGuru() {
   const handleExcelChange = (e) => {
     setExcelFile(e.target.files[0]);
   };
-  
+
   const openImportModal = () => {
     setShowImportModal(true);
   };
@@ -173,24 +235,15 @@ function PiketanGuru() {
     setShowImportModal(false);
   };
 
-  const openPDFModal = () => {
-    setShowPDFModal(true);
-  };
-
-  const closePDFModal = () => {
-    setShowPDFModal(false);
-    window.location.reload();
-  };
-
   const importExcell = async (e) => {
     e.preventDefault();
     if (!excelFile) {
       Swal.fire({
-        title: "Error", 
-        text: "Anda belum memilih file untuk diimport!.", 
+        title: "Error",
+        text: "Anda belum memilih file untuk diimport!.",
         icon: "error",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 2000,
       }).then(() => {
         window.location.reload();
       });
@@ -230,7 +283,7 @@ function PiketanGuru() {
             title: "Sukses!",
             text: "Berhasil Ditambahkan",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 2000,
           }).then(() => {
             window.location.reload();
           });
@@ -241,13 +294,63 @@ function PiketanGuru() {
             title: "Error!",
             text: "Gagal mengimpor file. " + error.message,
             showConfirmButton: false,
-            timer: 2500,
+            timer: 2000,
           }).then(() => {
             window.location.reload();
           });
         }
       }
     });
+  };
+
+  const handlePDFPiketById = async (id) => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Konfirmasi",
+      text: "Anda yakin ingin mengunduh PDF untuk piket ini?",
+      showCancelButton: true,
+      confirmButtonText: "Ya",
+      cancelButtonText: "Tidak",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.get(
+          `http://localhost:4001/piket/export-by-id/pdf/${id}`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Ekspor-Piket-${id}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        Swal.fire({
+          title: "Berhasil",
+          text: "PDF berhasil diunduh!",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Error downloading PDF:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to download PDF.",
+        });
+      }
+    }
   };
 
   const handleDeletePiketById = async (id) => {
@@ -294,43 +397,9 @@ function PiketanGuru() {
     }
   };
 
-  const handleExportPDF = async () => {
-    if (selectedTanggal && selectedKelasId) {
-      try {
-        setShowPDFModal(false);
-        Swal.fire({
-          icon: "success",
-          title: "Berhasil!",
-          text: "File PDF berhasil diunduh",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          window.location.href = `/pdf/page?tanggal=${selectedTanggal}&kelasId=${selectedKelasId}`;
-        });
-      } catch (error) {
-        console.error("Error exporting PDF", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Gagal mengekspor PDF!",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Peringatan",
-        text: "Silakan pilih tanggal dan kelas terlebih dahulu!",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-    }
-  };
-
   const downloadFormat = async (e) => {
     e.preventDefault();
-  
+
     const isConfirmed = await Swal.fire({
       title: "Apakah Anda yakin?",
       text: "Anda akan mengunduh template ini!",
@@ -340,11 +409,11 @@ function PiketanGuru() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, unduh!",
     });
-  
+
     if (!isConfirmed.isConfirmed) {
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -356,16 +425,16 @@ function PiketanGuru() {
           },
         }
       );
-  
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
-  
+
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "Templat-Piketan.xlsx");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-  
+
       await Swal.fire({
         title: "Berhasil!",
         text: "Template berhasil diunduh.",
@@ -382,11 +451,11 @@ function PiketanGuru() {
         text: "Terjadi kesalahan saat mengunduh template.",
         icon: "error",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       });
     }
   };
-  
+
   const formatTanggal = (date) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     return new Date(date).toLocaleDateString("id-ID", options);
@@ -402,98 +471,58 @@ function PiketanGuru() {
           style={{ backgroundColor: "white" }}
           className="my-10 border border-gray-200 md:mt-20 mt-20 rounded-xl shadow-lg p-6"
         >
-          <h1 className="text-3xl font-semibold text-gray-800">Piketan</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">Piket</h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="text"
-              placeholder="Cari Piketan"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+            <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={itemsPerPage}
+                onChange={(e) => setItemPerPage(Number(e.target.value))}
+                style={{ height: "45px" }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+              <input
+                type="search"
+                placeholder="Cari Guru..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                style={{ height: "45px" }}
+              />
+            </div>
             <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 w-full md:w-auto">
               <div className="flex space-x-2 w-full md:w-auto">
                 <Link to={`/tambahpiketan`} className="w-full md:w-auto">
                   <button className="w-full md:w-auto bg-blue-500 hover:bg-blue-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <FontAwesomeIcon icon={faPlus} /> Tambah Piketan
+                    <FontAwesomeIcon icon={faPlus} /> Tambah Piket
                   </button>
                 </Link>
                 <button
                   onClick={handleExport}
-                  className="w-full md:w-auto bg-green-500 hover:bg-green-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full md:w-auto bg-green-500 hover:bg-green-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <FontAwesomeIcon icon={faFileExport} /> Export Piket
                 </button>
+              </div>
+              <div className="flex space-x-2 w-full md:w-auto">
                 <button
-                  onClick={openPDFModal}
-                  className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                  onClick={handleAllPDF}
+                  className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-2 py-2 rounded focus:outline-none focus:ring-2 focus:ring-rose-500"
                 >
-                  <FontAwesomeIcon icon={faUpload} /> Export PDF
+                  <FontAwesomeIcon icon={faUpload} /> Export All PDF
                 </button>
                 <button
                   onClick={openImportModal}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-2 mx-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <FontAwesomeIcon icon={faUpload} /> Import Data
                 </button>
               </div>
             </div>
-
-            {showPDFModal && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-                <div className="bg-white p-6 w-11/12 sm:w-3/4 md:w-1/3 rounded-lg shadow-lg flex flex-col">
-                  <h2 className="text-2xl font-semibold mb-4">Import Data</h2>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Tanggal:
-                    </label>
-                    <select
-                      value={selectedTanggal}
-                      onChange={(e) => setSelectedTanggal(e.target.value)}
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                    >
-                      <option value="">Pilih Tanggal</option>
-                      {piketan.map((piket, index) => (
-                        <option key={index} value={piket.tanggal}>
-                          {formatTanggal(piket.tanggal)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Kelas:
-                    </label>
-                    <select
-                      value={selectedKelasId}
-                      onChange={(e) => setSelectedKelasId(e.target.value)}
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                    >
-                      <option value="">Pilih Kelas</option>
-                      {kelas.map((kelas) => (
-                        <option key={kelas.id_kelas} value={kelas.id_kelas}>
-                          {kelas.kelas} - {kelas.nama_kelas}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex justify-between">
-                    <button
-                      onClick={closePDFModal}
-                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={handleExportPDF}
-                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Export PDF
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {showImportModal && (
               <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
@@ -508,31 +537,32 @@ function PiketanGuru() {
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                  <div className="flex">
+                    <div className="flex">
+                      <button
+                        onClick={closeImportModal}
+                        className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                      >
+                        Batal
+                      </button>
+                      <button
+                        onClick={importExcell}
+                        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        Import
+                      </button>
+                    </div>
                     <button
-                      onClick={closeImportModal}
-                      className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                      onClick={downloadFormat}
+                      className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     >
-                      Batal
-                    </button>
-                    <button
-                      onClick={importExcell}
-                      className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Import
+                      Unduh Templat
                     </button>
                   </div>
-                  <button
-                    onClick={downloadFormat}
-                    className="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                  >
-                    Unduh Templat
-                  </button>
-                </div>
                 </div>
               </div>
             )}
           </div>
+
           <div className="mt-4 overflow-x-auto rounded-lg border-gray-200">
             <table className="min-w-full bg-white divide-y-2 divide-gray-200 border border-gray-200 table-fixed rounded-xl shadow-lg">
               <thead>
@@ -559,7 +589,7 @@ function PiketanGuru() {
                     <td colSpan="9" className="py-4 px-6 text-center">
                       {filteredPiketan.length === 0
                         ? "Data yang Anda cari tidak ditemukan."
-                        : "Tidak ada data piketan yang ditemukan."}
+                        : "Tidak ada data piket yang ditemukan."}
                     </td>
                   </tr>
                 ) : (
@@ -623,14 +653,19 @@ function PiketanGuru() {
                             <Link
                               to={`/editpiketan/${piket.id}`}
                               className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                              title="Edit"
                             >
                               <FontAwesomeIcon icon={faEdit} />
                             </Link>
                             <button
+                              onClick={() => handlePDFPiketById(piket.id)}
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                              title="Export PDF"
+                            >
+                              <FontAwesomeIcon icon={faUpload} />
+                            </button>
+                            <button
                               onClick={() => handleDeletePiketById(piket.id)}
                               className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                              title="Hapus"
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>

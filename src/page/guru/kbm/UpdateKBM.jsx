@@ -297,7 +297,7 @@ const UpdateKBM = () => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300"
+                className="block w-20 sm:w-24 rounded-lg text-black outline outline-blue-700 py-3 text-sm sm:text-sm font-medium"
               >
                 Simpan
               </button>

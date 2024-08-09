@@ -120,7 +120,7 @@ const TambahPiketan = () => {
 
       Swal.fire({
         title: "Berhasil",
-        text: "Piketan berhasil ditambahkan",
+        text: "Piket berhasil ditambahkan",
         icon: "success",
         timer: 1500,
         showConfirmButton: false,
@@ -128,7 +128,7 @@ const TambahPiketan = () => {
         navigate(-1);
       });
     } catch (error) {
-      console.error("Gagal menambahkan piketan: ", error);
+      console.error("Gagal menambahkan piket: ", error);
       Swal.fire({
         title: "Gagal",
         text: "Siswa sudah terdaftar untuk hari ini. Mohon periksa kembali.",
@@ -149,13 +149,13 @@ const TambahPiketan = () => {
         <SidebarGuru />
       </div>
       <div className="content-page flex-grow p-8 min-h-screen">
-        <h1 className="text-3xl font-semibold mb-6">Tambah Piketan</h1>
+        <h1 className="text-3xl font-semibold mb-6">Tambah Piket</h1>
         <div
           style={{ backgroundColor: "white" }}
           className="add-guru mt-12 md:mt-11 bg-white p-5 mr-0 md:ml-10 border border-gray-200 rounded-xl shadow-lg"
         >
           <p className="text-lg sm:text-xl text-black font-medium mb-4 sm:mb-7">
-            Tambah Piketan
+            Tambah Piket
           </p>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">

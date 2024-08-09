@@ -2,15 +2,7 @@ import React, { useState, useEffect } from "react";
 import SidebarGuru from "../../../component/SidebarGuru";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faArrowLeft,
-  faArrowRight,
-  faTrash,
-  faEdit,
-  faFileExport,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faArrowLeft, faArrowRight, faTrash, faEdit, faFileExport, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { deletePenilaian, getAllPenilaian } from "./api_penilaian";
@@ -20,9 +12,9 @@ function Penilaian() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [dataPerPage] = useState(10);
+  const [dataPerPage, setDataPerPage] = useState(10);
   const [kelas, setKelas] = useState([]);
-  const [siswa, setSiswa] = useState([]);
+  // const [siswa, setSiswa] = useState([]);
   const [showImportModal, setShowImportModal] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
 
@@ -97,7 +89,7 @@ function Penilaian() {
   useEffect(() => {
     fetchData();
     fetchKelas();
-    fetchSiswa();
+    // fetchSiswa();
   }, []);
 
   const fetchData = async () => {
@@ -119,14 +111,14 @@ function Penilaian() {
     }
   };
 
-  const fetchSiswa = async () => {
-    try {
-      const response = await axios.get("http://localhost:4001/siswa/all");
-      setSiswa(response.data);
-    } catch (error) {
-      console.error("Failed to fetch Siswa: ", error);
-    }
-  };
+  // const fetchSiswa = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:4001/siswa/all");
+  //     setSiswa(response.data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch Siswa: ", error);
+  //   }
+  // };
 
   const handleUpdate = (id) => {
     window.location.href = `/EditPenilaian/${id}`;
@@ -167,20 +159,17 @@ function Penilaian() {
   };
 
   const filteredData = data.filter((item) => {
-    const namaSiswa = siswa.find((s) => s.id === item.siswaId)?.nama_siswa;
     const kelass = kelas.find((k) => k.id === item.kelasId)?.kelas;
     const namaKelas = kelas.find((k) => k.id === item.kelasId)?.nama_kelas;
+
     return (
-      namaSiswa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${kelass} - ${namaKelas}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      item.nilai.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.nilai && item.nilai.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.deskripsi && item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (kelass && namaKelas && `${kelass} - ${namaKelas}`.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
 
-  const exportExcell = async (kelas_id, siswa_id) => {
+  const exportExcell = async () => {
     Swal.fire({
       title: "Konfirmasi",
       text: "Anda yakin ingin mengexport data Penilaian?",
@@ -193,7 +182,7 @@ function Penilaian() {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:4001/penilaian/upload/export-penilaian?${kelas_id}${siswa_id}`,
+            `http://localhost:4001/penilaian/upload/export-penilaian`,
             {
               responseType: "blob",
               headers: {
@@ -319,13 +308,27 @@ function Penilaian() {
             Penilaian Guru
           </h1>
           <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <input
-              type="search"
-              placeholder="Cari Penilaian"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 p-2 border border-gray-300 rounded focus:outline-none focus:border-gray-500"
-            />
+          <div className="flex md:flex-row md:justify-start md:items-center">
+              <select
+                className="py-2 pl-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-gray-500"
+                value={dataPerPage}
+                onChange={(e) => setDataPerPage(Number(e.target.value))}
+                style={{ height: "45px" }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+              <input
+                type="search"
+                placeholder="Cari Guru..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 border border-gray-300 rounded-r-lg focus:outline-none focus:border-gray-500"
+                style={{ height: "45px" }}
+              />
+            </div>
             <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 w-full md:w-auto">
               <div className="flex space-x-2 w-full md:w-auto">
                 <Link to={`/Tambahpenilaian`} className="w-full md:w-auto">
@@ -425,7 +428,7 @@ function Penilaian() {
                         <td className="py-2 px-4 text-center">
                           {index + 1 + currentPage * dataPerPage}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
                           {item.siswa.nama_siswa}
                         </td>
                         <td className="py-2 px-4 text-center whitespace-nowrap">
@@ -434,7 +437,7 @@ function Penilaian() {
                         <td className="py-2 px-4 text-center whitespace-nowrap">
                           {item.nilai}
                         </td>
-                        <td className="py-2 px-4 text-center whitespace-nowrap">
+                        <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
                           {item.deskripsi ? (
                             <span>{item.deskripsi}</span>
                           ) : (

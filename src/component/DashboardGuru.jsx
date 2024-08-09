@@ -8,14 +8,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function DashboardGuru() {
-  const [piket, setPiket] = useState([]);
+  // const [piket, setPiket] = useState([]);
   const [Penilaian, setPenilaian] = useState([]);
   const [kbm, setKbm] = useState([]);
   const [user, setUser] = useState([]);
   const [kelas, setKelas] = useState([]);
   const [username, setUsername] = useState("");
   const [jabatan, setJabatan] = useState("");
-  const [kelasId, setKelasId] = useState("");
+  const [kelasData, setKelasData] = useState(null);
   const [hoverStates, setHoverStates] = useState([false, false, false]);
 
   const handleMouseEnter = (index) => {
@@ -31,36 +31,28 @@ function DashboardGuru() {
   };
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
     const storedJabatan = localStorage.getItem("jabatan");
     if (storedJabatan) {
       setJabatan(storedJabatan);
     }
-    const storedkelasId = localStorage.getItem("kelasId");
-    if (storedkelasId) {
-      setKelasId(storedkelasId);
-    }
   }, []);
 
-  useEffect(() => {
-    const fetchPiket = async () => {
-      try {
-        const response = await axios.get("http://localhost:4001/piket/all");
-        setPiket(response.data);
-      } catch (error) {
-        console.error("Failed to fetch Piket: ", error);
-      }
-    };
-    fetchPiket();
-  }, []);
+  // useEffect(() => {
+  //   const fetchPiket = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:4001/piket/all");
+  //       setPiket(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch Piket: ", error);
+  //     }
+  //   };
+  //   fetchPiket();
+  // }, []);
 
   useEffect(() => {
     const fetchPenilaian = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/  /all");
+        const response = await axios.get("http://localhost:4001/penilaian/all");
         setPenilaian(response.data);
       } catch (error) {
         console.error("Failed to fetch Penilaian: ", error);
@@ -82,14 +74,28 @@ function DashboardGuru() {
   }, []);
 
   useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+
     const fetchUser = async () => {
       try {
         const response = await axios.get("http://localhost:4001/users");
+        console.log("Full API response:", response.data);
+        const userData = response.data.find((u) => u.username === storedUsername);
         setUser(response.data);
+        console.log("Matched User Data:", userData);
+        if (userData) {
+          setKelasData(userData.kelas);
+        } else {
+          console.warn("User with the stored username not found.");
+        }
       } catch (error) {
         console.error("Failed to fetch Guru: ", error);
       }
     };
+
     fetchUser();
   }, []);
 
@@ -105,14 +111,10 @@ function DashboardGuru() {
     fetchKelas();
   }, []);
 
-  const getNamaKelas = (kelasId) => {
-    const kelasInfo = kelas.find((k) => k.id === kelasId);
-    if (kelasInfo) {
-      return `${kelasInfo.kelas} - ${kelasInfo.nama_kelas}`;
-    } else {
-      return "Kelas tidak ditemukan";
-    }
-  };
+  // const formatTanggal = (date) => {
+  //   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  //   return new Date(date).toLocaleDateString("id-ID", options);
+  // };
 
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
@@ -130,7 +132,7 @@ function DashboardGuru() {
               Hai, <strong>{username}</strong>!{" "}
               <span style={{ boxShadow: "none" }}>
                 {jabatan === "WaliKelas"
-                  ? `Selamat datang di dashboard Guru Anda sebagai WaliKelas ${kelasId}.`
+                  ? `Selamat datang di dashboard Guru Anda sebagai WaliKelas ${kelasData ? `${kelasData.kelas} - ${kelasData.nama_kelas}` : "tanpa kelas yang ditentukan"}.`
                   : "Selamat datang di dashboard Guru."}
               </span>
             </h1>
@@ -140,7 +142,13 @@ function DashboardGuru() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center">
             {/* Kartu pertama */}
-            <div className={`mb-4 px-3 flex-shrink-0 w-full ${jabatan === "WaliKelas" ? "sm:w-1/2 md:w-1/3" : "sm:w-1/2 md:w-1/2"}`}>
+            <div
+              className={`mb-4 px-3 flex-shrink-0 ${
+                jabatan === "WaliKelas"
+                  ? "w-full md:w-1/2"
+                  : "w-full md:mb-0 md:mt-0 mt-10 mb-5"
+              }`}
+            >
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-cyan-600 to-cyan-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <svg
@@ -193,7 +201,13 @@ function DashboardGuru() {
             </div>
 
             {/* Kartu kedua */}
-            <div className={`mb-4 px-3 flex-shrink-0 w-full ${jabatan === "WaliKelas" ? "sm:w-1/2 md:w-1/3" : "sm:w-1/2 md:w-1/2"}`}>
+            {/* <div
+              className={`mb-4 px-3 flex-shrink-0 w-full ${
+                jabatan === "WaliKelas"
+                  ? "sm:w-1/2 md:w-1/3"
+                  : "sm:w-1/2 md:w-1/2"
+              }`}
+            >
               <div className="shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 md:mt-16 md:my-12">
                 <div className="px-6 py-6 flex items-center justify-between">
                   <svg
@@ -243,11 +257,11 @@ function DashboardGuru() {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Kartu ketiga */}
             {jabatan === "WaliKelas" && (
-              <div className="mb-4 px-3 flex-shrink-0 w-full sm:w-1/2 md:w-1/3">
+              <div className="mb-4 px-3 flex-shrink-0 w-full md:w-1/2">
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden bg-gradient-to-r from-amber-600 to-amber-400 md:mt-16 md:my-12`}
                 >
@@ -298,8 +312,7 @@ function DashboardGuru() {
           </div>
 
           <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-8 justify-center">
-            {/* Tabel KBM */}
-            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
+            <div className="w-full mb-5 overflow-x-auto">
               <div className="py-2 mb-2">
                 <h1
                   className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
@@ -318,6 +331,12 @@ function DashboardGuru() {
                       <th className="py-2 px-4 text-left">No</th>
                       <th className="py-2 px-4 text-center whitespace-nowrap">
                         Nama Guru
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Kelas
+                      </th>
+                      <th className="py-2 px-4 text-center whitespace-nowrap">
+                        Materi
                       </th>
                       <th className="py-2 px-4 text-center whitespace-nowrap">
                         Jam Masuk
@@ -346,6 +365,17 @@ function DashboardGuru() {
                             {user.find((u) => u.id === item.userId)?.username}
                           </td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">
+                            {`${
+                              kelas.find((k) => k.id === item.kelasId)?.kelas
+                            } - ${
+                              kelas.find((k) => k.id === item.kelasId)
+                                ?.nama_kelas
+                            }`}
+                          </td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap capitalize">
+                            {item.materi}
+                          </td>
+                          <td className="py-2 px-4 text-center whitespace-nowrap">
                             {item.jam_masuk}
                           </td>
                           <td className="py-2 px-4 text-center whitespace-nowrap">
@@ -360,86 +390,11 @@ function DashboardGuru() {
                     ).length === 0 && (
                       <tr>
                         <td
-                          colSpan="4"
+                          colSpan="6"
                           className="text-gray-700 text-center py-4"
                           style={{ backgroundColor: "white" }}
                         >
-                          Data KBM Tidak Tersedia
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Tabel Piekatan */}
-            <div className="w-full md:w-1/2 mb-5 overflow-x-auto">
-              <div className="py-2 mb-2">
-                <h1
-                  className="text-gray-800 relative py-2 px-5 bg-gray-100 text-lg font-bold"
-                  style={{
-                    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
-                    borderRadius: "8px",
-                  }}
-                >
-                  Tabel Piketan
-                </h1>
-              </div>
-              <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md bg-white">
-                <table className="w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr className="bg-gray-200 text-gray-900 text-sm">
-                      <th className="py-2 px-4 text-left">No</th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">
-                        Nama Guru
-                      </th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">
-                        Tanggal
-                      </th>
-                      <th className="py-2 px-4 text-center whitespace-nowrap">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {piket
-                      .filter(
-                        (item) =>
-                          kelas.find((k) => k.id === item.kelasId)?.guruId ===
-                          user.find((u) => u.username === username)?.id
-                      )
-                      .slice(0, 5)
-                      .map((item, index) => (
-                        <tr
-                          style={{ backgroundColor: "white" }}
-                          key={item.id}
-                          className="border-b border-gray-200 hover:bg-gray-100 transition duration-200 ease-in-out"
-                        >
-                          <td className="py-2 px-4">{index + 1}</td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {getNamaKelas(item.kelasId)}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {item.tanggal}
-                          </td>
-                          <td className="py-2 px-4 text-center whitespace-nowrap">
-                            {item.status}
-                          </td>
-                        </tr>
-                      ))}
-                    {piket.filter(
-                      (item) =>
-                        kelas.find((k) => k.id === item.kelasId)?.guruId ===
-                        user.find((u) => u.username === username)?.id
-                    ).length === 0 && (
-                      <tr>
-                        <td
-                          style={{ backgroundColor: "white" }}
-                          colSpan="4"
-                          className="text-gray-700 text-center py-4"
-                        >
-                          Data Piekatan Tidak Tersedia
+                          Data Tidak Tersedia
                         </td>
                       </tr>
                     )}

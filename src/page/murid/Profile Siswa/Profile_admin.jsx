@@ -5,20 +5,31 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import SidebarAdmin from "../../../component/Sidebar";
-import Navproadmin from "../../../component/Navpro_admin";
+import NavproAdmin from "./Navpro_admin";
 
 function Profile_Admin() {
   const id = localStorage.getItem("id");
   const token = localStorage.getItem("token");
-  const [admin, setAdmin] = useState({
-    image: "",
-  });
+  const [admin, setAdmin] = useState({ username: "", email: "", image: "" });
   const [image, setImage] = useState(null);
-  const [profilePic, setProfilePic] = useState(
-    "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png"
-  );
-  const [previewImage, setPreviewImagepreviewImage] = useState(null);
-  const [editProfil, setEditProfile] = useState(false);
+  const [profilePic, setProfilePic] = useState( "https://kimia.fkip.usk.ac.id/wp-content/uploads/2017/10/1946429.png" );
+  const [previewImage, setPreviewImage] = useState(null);
+  const [editProfile, setEditProfile] = useState(false);
+  const [fadeOut, setFadeOut] = useState(0);
+  
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const maxScroll = 100;
+    const newFadeOut = Math.min(1, scrollTop / maxScroll);
+    setFadeOut(newFadeOut);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,9 +71,8 @@ function Profile_Admin() {
           ...prevState,
           image: response.data.imageUrl,
         }));
-        window.location.reload();
         setImage(null);
-        setPreviewImagepreviewImage(null);
+        setPreviewImage(null);
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -90,7 +100,7 @@ function Profile_Admin() {
     setEditProfile(true);
     const file = e.target.files[0];
     setImage(file);
-    setPreviewImagepreviewImage(URL.createObjectURL(file));
+    setPreviewImage(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -112,18 +122,27 @@ function Profile_Admin() {
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <SidebarAdmin />
-      <div className="flex flex-grow items-center justify-center">
-        <div className="max-w-4xl w-full">
-          <Navproadmin />
+      <div className="flex-grow flex items-center justify-center p-4">
+        <div className="max-w-4xl w-full md:mt-[15%] mt-[50%] md:overflow-auto overflow-hidden">
+          <div
+            className="relative"
+          >
+            <div
+              className="absolute top-0 left-0 w-full"
+              style={{
+                opacity: 1 - fadeOut,
+                transition: "opacity 0.5s ease",
+              }}
+            >
+              <NavproAdmin />
+            </div>
+          </div>
 
           <div className="block md:flex">
-            <div
-              style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-4 sm:p-6 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
-            >
+            <div className="md:flex-1 p-4 sm:p-6 bg-white shadow-md rounded-l-xl md:rounded-r-none rounded-r-xl overflow-y-auto md:max-h-[440px]">
               <div className="text-center flex justify-between items-center">
                 <span className="text-xl font-semibold text-gray-800">
-                  <strong>Profile {admin.username}</strong>
+                  <strong>Profile {admin.username || "User"}</strong>
                 </span>
               </div>
               <div className="mt-3 rounded-lg">
@@ -141,7 +160,7 @@ function Profile_Admin() {
                       Disarankan Ukuran Gambar 1:1
                     </p>
                     <h4 className="text-gray-900 font-bold">Preview Image</h4>
-                    {editProfil && (
+                    {editProfile && (
                       <>
                         <img
                           className="max-w-xs w-40 h-40 object-cover rounded-full border mb-2 mt-1"
@@ -170,32 +189,29 @@ function Profile_Admin() {
               </div>
             </div>
 
-            <div
-              style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-4 sm:p-6 bg-white shadow-md rounded-tr-xl rounded-br-xl"
-            >
+            <div className="md:flex-1 p-4 sm:p-6 md:ml-5 md:mt-0 mt-5 bg-white shadow-md rounded-r-xl md:rounded-l-none rounded-l-xl overflow-y-auto max-h-[500px]">
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Data Profile</strong>
-              </h1>{" "}
+              </h1>
               <br />
               <div className="pb-4">
-                <div className="flex flex-col sm:flex-row">
-                  <div className="w-full sm:w-1/2 pr-2">
-                    <label
-                      htmlFor="username"
-                      className="font-semibold text-gray-700 block pb-1"
-                    >
-                      Name
-                    </label>
-                    <input
-                      readOnly
-                      id="username"
-                      className="border rounded-xl px-4 py-2 w-full text-gray-900"
-                      type="text"
-                      value={admin.username}
-                    />
-                  </div>
-                  <div className="w-full sm:w-1/2 pl-2">
+                <div className="w-full">
+                  <label
+                    htmlFor="username"
+                    className="font-semibold text-gray-700 block pb-1"
+                  >
+                    Name
+                  </label>
+                  <input
+                    readOnly
+                    id="username"
+                    className="border rounded-xl px-4 py-2 w-full text-gray-900"
+                    type="text"
+                    value={admin.username || ""}
+                  />
+                </div>
+                <div className="pt-4">
+                  <div className="w-full">
                     <label
                       htmlFor="email"
                       className="font-semibold text-gray-700 block pb-1"
@@ -206,8 +222,8 @@ function Profile_Admin() {
                       readOnly
                       id="email"
                       className="border rounded-xl px-4 py-2 w-full text-gray-900"
-                      type="email"
-                      value={admin.email}
+                      type="text"
+                      value={admin.email || ""}
                     />
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../../component/Sidebar";
 import Swal from "sweetalert2";
-import NavproAdmin from "../../../component/Navpro_admin";
+import NavproAdmin from "./Navpro_admin";
 
 function Setting() {
   const [passwordLama, setPasswordLama] = useState("");
@@ -151,12 +151,12 @@ function Setting() {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <Sidebar />
       <div className="flex flex-grow items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl w-full sm:w-96 md:w-full">
+        <div className="max-w-4xl w-full mt-20 md:mt-28">
           <NavproAdmin />
-          <div className="block md:flex">
+          <div className="block md:flex md:mt-8 mt-14">
             <div
               style={{ backgroundColor: "white" }}
-              className="md:flex-1 p-4 sm:p-6 lg:p-8 bg-white shadow-md rounded-tl-xl rounded-bl-xl"
+              className="md:flex-1 p-4 sm:p-6 lg:p-8 shadow-md rounded-xl"
             >
               <h1 className="text-xl font-semibold text-gray-800">
                 <strong>Setting</strong>
@@ -214,23 +214,25 @@ function Setting() {
                     placeholder="masukan password yang baru untuk konfirmasi"
                   />
                 </div>
-                <div className="pb-1 pt-1">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-blue-500"
-                      onChange={toggleShowPassword}
-                    />
-                    <span className="ml-2 text-gray-700">Lihat Password</span>
-                  </label>
-                </div>
-                <div className="flex justify-end mt-4">
-                  <button
-                    type="submit"
-                    className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
-                  >
-                    Submit
-                  </button>
+                <div className="flex flex-col md:flex-row justify-between items-center mt-4">
+                  <div className="flex items-center">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        className="form-checkbox text-blue-500"
+                        onChange={toggleShowPassword}
+                      />
+                      <span className="ml-2 text-gray-700">Lihat Password</span>
+                    </label>
+                  </div>
+                  <div className="flex items-center mt-4 mb-4 md:mb-0 md:mt-0">
+                    <button
+                      type="submit"
+                      className="text-md font-bold text-white bg-blue-500 rounded-full px-8 py-2 hover:bg-blue-600"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>

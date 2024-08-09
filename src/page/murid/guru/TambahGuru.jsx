@@ -189,7 +189,8 @@ const TambahGuru = () => {
           telepon,
           nik,
           nip,
-          jabatan: jabatan === "WaliKelas" ? kelasId : null,
+          jabatan,
+          kelasId: jabatan === "WaliKelas" ? kelasId : null,
           hobi,
           role: "GURU",
         });
